@@ -50,6 +50,9 @@
 #include "TMinuit.h"
 using namespace std;
 
+//RAA histograms
+//
+
 
 // Global Varaibles 
 const Double_t pi       = 3.14159265358979312 ;
@@ -108,6 +111,8 @@ TGraphErrors *Data_CMS_Aj_pp_276TeV();
 
 // Function to calculate Asymmetry as a function of Centrality
 Double_t calDelta(Double_t pT, Double_t alpha, Double_t MM) ;
+
+
 TH1D *Asym_DiJet_Centrality(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, Double_t Alpha, Double_t MM, Double_t NPart, Int_t CentBin);
 
 
@@ -118,7 +123,7 @@ TH1D *Asym_DiJet_Centrality(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, 
 void DiJet()
 {
 
-
+  // RAA histogram
 
   gROOT->SetStyle("Plain");
   gStyle->SetPalette(1);
@@ -213,8 +218,17 @@ void DiJet()
   Double_t RespT = 0.28;  // Relative
   
   //for Energy Loss
-  Double_t alpha = 0.6;
-  Double_t MM = 0.5;
+  //Double_t alpha = 0.5;
+  //Double_t MM = 0.55;
+
+  //Double_t alpha = 0.0;
+  //Double_t MM = 6.0;
+
+
+  Double_t alpha = 1.0;
+  Double_t MM = 0.05;
+
+  
 
 
   // Size of the system
