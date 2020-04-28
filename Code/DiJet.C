@@ -99,7 +99,7 @@ Double_t Npart_Jet_PbPb_276TeV_Cen_70_80 = 15.10  ;
 //const Double_t NPartCent[8] = {356.20, 266.70, 186.40, 129.30, 85.60, 53.00, 30.10, 15.10};
 
 
-//CMS Data Functions 
+//CMS Data Functions : CENT
 TGraphErrors *Data_CMS_Aj_Cent_00_10_276TeV();
 TGraphErrors *Data_CMS_Aj_Cent_10_20_276TeV();
 TGraphErrors *Data_CMS_Aj_Cent_20_30_276TeV();
@@ -107,6 +107,14 @@ TGraphErrors *Data_CMS_Aj_Cent_30_50_276TeV();
 TGraphErrors *Data_CMS_Aj_Cent_50_70_276TeV();
 TGraphErrors *Data_CMS_Aj_Cent_70_100_276TeV();
 TGraphErrors *Data_CMS_Aj_pp_276TeV();
+
+//CMS Data Functions : PT
+TGraphErrors *Data_CMS_Aj_Pt_120_150_276TeV();
+TGraphErrors *Data_CMS_Aj_Pt_150_180_276TeV();
+TGraphErrors *Data_CMS_Aj_Pt_180_220_276TeV();
+TGraphErrors *Data_CMS_Aj_Pt_220_260_276TeV();
+TGraphErrors *Data_CMS_Aj_Pt_260_300_276TeV();
+TGraphErrors *Data_CMS_Aj_Pt_300_500_276TeV();
 
 
 // Function to calculate Asymmetry as a function of Centrality
@@ -146,8 +154,8 @@ void DiJet()
   gStyle->SetLabelFont(42,"xyz");
   gStyle->SetTitleFont(42,"xyz");
   gStyle->SetTitleSize(0.048,"xyz");
-  gStyle->SetPadBottomMargin(0.12);
-  gStyle->SetPadTopMargin(0.03);
+  gStyle->SetPadTopMargin(0.1);
+  gStyle->SetPadBottomMargin(0.2);
   gStyle->SetPadRightMargin(0.065);
   gStyle->SetPadLeftMargin(0.12);
   gStyle->SetTitleXOffset(1.15);
@@ -173,34 +181,92 @@ void DiJet()
   
   // CMS Data Graphs
   TGraphErrors *grf_Data_CMS_Aj_Cent_00_10_276TeV = Data_CMS_Aj_Cent_00_10_276TeV();
-  new TCanvas;
-  grf_Data_CMS_Aj_Cent_00_10_276TeV->Draw("AP");
-  tb->DrawLatex(0.80, 0.20, "0-10%") ;
   TGraphErrors *grf_Data_CMS_Aj_Cent_10_20_276TeV = Data_CMS_Aj_Cent_10_20_276TeV();
-  new TCanvas;
-  grf_Data_CMS_Aj_Cent_10_20_276TeV->Draw("AP");
-  tb->DrawLatex(0.80, 0.20, "10-20%") ;
   TGraphErrors *grf_Data_CMS_Aj_Cent_20_30_276TeV = Data_CMS_Aj_Cent_20_30_276TeV();
-  new TCanvas;
-  grf_Data_CMS_Aj_Cent_20_30_276TeV->Draw("AP");
-  tb->DrawLatex(0.80, 0.20, "20-30%") ;
   TGraphErrors *grf_Data_CMS_Aj_Cent_30_50_276TeV = Data_CMS_Aj_Cent_30_50_276TeV();
-  new TCanvas;
-  grf_Data_CMS_Aj_Cent_30_50_276TeV->Draw("AP");
-  tb->DrawLatex(0.80, 0.20, "30-50%") ;
   TGraphErrors *grf_Data_CMS_Aj_Cent_50_70_276TeV = Data_CMS_Aj_Cent_50_70_276TeV();
-  new TCanvas;
-  grf_Data_CMS_Aj_Cent_50_70_276TeV->Draw("AP");
-  tb->DrawLatex(0.80, 0.20, "50-70%") ;
   TGraphErrors *grf_Data_CMS_Aj_Cent_70_100_276TeV = Data_CMS_Aj_Cent_70_100_276TeV();
-  new TCanvas;
-  grf_Data_CMS_Aj_Cent_70_100_276TeV->Draw("AP");
-  tb->DrawLatex(0.75, 0.20, "70-100%") ;
   TGraphErrors *grf_Data_CMS_Aj_pp_276TeV = Data_CMS_Aj_pp_276TeV();   
-  new TCanvas;
-  grf_Data_CMS_Aj_pp_276TeV->Draw("AP");
-  tb->DrawLatex(0.75, 0.20, "pp") ;
+  
+  TCanvas *Canv_Data_CMS_Aj_Cent_276TeV = new TCanvas("Canv_Data_CMS_Aj_Cent_276TeV","Canv_Data_CMS_Aj_Cent_276TeV",1600,800);//coulamXRows
+  Canv_Data_CMS_Aj_Cent_276TeV->Divide(4,2);
 
+  Canv_Data_CMS_Aj_Cent_276TeV->cd(1);
+  grf_Data_CMS_Aj_Cent_00_10_276TeV->Draw("AP");
+  tb->DrawLatex(0.60, 0.70, "0-10%") ;
+  Canv_Data_CMS_Aj_Cent_276TeV->cd(2);
+  grf_Data_CMS_Aj_Cent_10_20_276TeV->Draw("AP");
+  tb->DrawLatex(0.60, 0.70, "10-20%") ;
+  Canv_Data_CMS_Aj_Cent_276TeV->cd(3);
+  grf_Data_CMS_Aj_Cent_20_30_276TeV->Draw("AP");
+  tb->DrawLatex(0.60, 0.70, "20-30%") ;
+  Canv_Data_CMS_Aj_Cent_276TeV->cd(4);
+  grf_Data_CMS_Aj_Cent_30_50_276TeV->Draw("AP");
+  tb->DrawLatex(0.60, 0.70, "30-50%") ;
+  Canv_Data_CMS_Aj_Cent_276TeV->cd(5);
+  grf_Data_CMS_Aj_Cent_50_70_276TeV->Draw("AP");
+  tb->DrawLatex(0.60, 0.70, "50-70%") ;
+  Canv_Data_CMS_Aj_Cent_276TeV->cd(6);
+  grf_Data_CMS_Aj_Cent_70_100_276TeV->Draw("AP");
+  tb->DrawLatex(0.60, 0.70, "70-100%") ;
+  Canv_Data_CMS_Aj_Cent_276TeV->cd(7);
+  grf_Data_CMS_Aj_pp_276TeV->Draw("AP");
+  tb->DrawLatex(0.60, 0.70, "pp") ;
+
+  
+  TGraphErrors *grf_Data_CMS_Aj_Pt_120_150_276TeV = Data_CMS_Aj_Pt_120_150_276TeV();
+  TGraphErrors *grf_Data_CMS_Aj_Pt_150_180_276TeV = Data_CMS_Aj_Pt_150_180_276TeV();
+  TGraphErrors *grf_Data_CMS_Aj_Pt_180_220_276TeV = Data_CMS_Aj_Pt_180_220_276TeV();
+  TGraphErrors *grf_Data_CMS_Aj_Pt_220_260_276TeV = Data_CMS_Aj_Pt_220_260_276TeV();
+  TGraphErrors *grf_Data_CMS_Aj_Pt_260_300_276TeV = Data_CMS_Aj_Pt_260_300_276TeV();
+  TGraphErrors *grf_Data_CMS_Aj_Pt_300_500_276TeV = Data_CMS_Aj_Pt_300_500_276TeV();
+
+
+
+  TCanvas *Canv_Data_CMS_Aj_Pt_276TeV = new TCanvas("Canv_Data_CMS_Aj_Pt_276TeV","Canv_Data_CMS_Aj_Pt_276TeV",1200,800);//coulamXRows
+  Canv_Data_CMS_Aj_Pt_276TeV->Divide(3,2);
+  
+  Canv_Data_CMS_Aj_Pt_276TeV->cd(1);
+  grf_Data_CMS_Aj_Pt_120_150_276TeV->Draw("AP");
+  tb->DrawLatex(0.55, 0.70, "120 < p_{T,1} < 150 GeV/c") ;
+
+  Canv_Data_CMS_Aj_Pt_276TeV->cd(2);
+  grf_Data_CMS_Aj_Pt_150_180_276TeV->Draw("AP");
+  tb->DrawLatex(0.55, 0.70, "150 < p_{T,1} < 180 GeV/c") ;
+
+  Canv_Data_CMS_Aj_Pt_276TeV->cd(3);
+  grf_Data_CMS_Aj_Pt_180_220_276TeV->Draw("AP");
+  tb->DrawLatex(0.55, 0.70, "180 < p_{T,1} < 220 GeV/c") ;
+
+  Canv_Data_CMS_Aj_Pt_276TeV->cd(4);
+  grf_Data_CMS_Aj_Pt_220_260_276TeV->Draw("AP");
+  tb->DrawLatex(0.55, 0.70, "220 < p_{T,1} < 260 GeV/c") ;
+
+  Canv_Data_CMS_Aj_Pt_276TeV->cd(5);
+  grf_Data_CMS_Aj_Pt_260_300_276TeV->Draw("AP");
+  tb->DrawLatex(0.55, 0.70, "260 < p_{T,1} < 300 GeV/c") ;
+
+  Canv_Data_CMS_Aj_Pt_276TeV->cd(6);
+  grf_Data_CMS_Aj_Pt_300_500_276TeV->Draw("AP");
+  tb->DrawLatex(0.55, 0.70, "300 < p_{T,1} < 500 GeV/c") ;
+
+
+  return;
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
   // Histograms
   TH1D *hAsymmetryDiff = new TH1D("hAsymmetryDiff", "hAsymmetryDiff", 17, 0.0, 1.0);
   hAsymmetryDiff->SetLineWidth(2);
@@ -889,6 +955,226 @@ TGraphErrors *Data_CMS_Aj_pp_276TeV()
   return grf_local;
 			  
 }
+
+//================================================//
+//======= AJ in different Pt bins ================//
+//================================================//
+
+TGraphErrors *Data_CMS_Aj_Pt_120_150_276TeV()
+{
+  // CMS Jet momentum dependence of jet quenching in PbPb collisions at 2.76 TeV
+  //1202.5022
+  //cat Data_Aj_Cent_00_10.txt | awk '{printf "%.3f, ", $1}'
+  
+  const Int_t NN = 12 ;
+
+  Double_t AJ[NN] = {0.026, 0.082, 0.147, 0.208, 0.268, 0.329, 0.390, 0.449, 0.510, 0.571, 0.630, 0.689};
+  Double_t Error_AJ[NN] = {0.0};
+
+  Double_t EvFrac[NN] = {0.101, 0.114, 0.123, 0.114, 0.115, 0.101, 0.096, 0.086, 0.067, 0.049, 0.013, 0.000};
+  Double_t Error_EvFrac[NN] = {0.0}; 
+
+  
+  TGraphErrors *grf_local = new TGraphErrors(NN, AJ, EvFrac, Error_AJ, Error_EvFrac);
+  grf_local->SetMarkerColor(1);
+  grf_local->SetMarkerStyle(20);
+  grf_local->SetMarkerSize(1.8);
+
+  grf_local->GetXaxis()->SetTitle("A_{J}");
+  grf_local->GetYaxis()->SetTitle("Event Fraction");
+  grf_local->GetXaxis()->CenterTitle();
+  grf_local->GetYaxis()->CenterTitle();
+  grf_local->GetYaxis()->SetRangeUser(0.0,0.5);
+  grf_local->GetXaxis()->SetLimits(0.0,1.0);
+  
+  return grf_local;
+			  
+}
+
+
+TGraphErrors *Data_CMS_Aj_Pt_150_180_276TeV()
+{
+  // CMS Jet momentum dependence of jet quenching in PbPb collisions at 2.76 TeV
+  //1202.5022
+  //cat Data_Aj_Cent_00_10.txt | awk '{printf "%.3f, ", $1}'
+  
+  const Int_t NN = 12 ;
+
+  Double_t AJ[NN] = {0.032, 0.093, 0.151, 0.211, 0.272, 0.332, 0.390, 0.450, 0.511, 0.571, 0.629, 0.689};
+  Double_t Error_AJ[NN] = {0.0};
+
+  Double_t EvFrac[NN] = {0.113, 0.125, 0.127, 0.114, 0.107, 0.109, 0.088, 0.072, 0.055, 0.044, 0.031, 0.003};
+  Double_t Error_EvFrac[NN] = {0.0}; 
+
+  
+  TGraphErrors *grf_local = new TGraphErrors(NN, AJ, EvFrac, Error_AJ, Error_EvFrac);
+  grf_local->SetMarkerColor(1);
+  grf_local->SetMarkerStyle(20);
+  grf_local->SetMarkerSize(1.8);
+
+  grf_local->GetXaxis()->SetTitle("A_{J}");
+  grf_local->GetYaxis()->SetTitle("Event Fraction");
+  grf_local->GetXaxis()->CenterTitle();
+  grf_local->GetYaxis()->CenterTitle();
+  grf_local->GetYaxis()->SetRangeUser(0.0,0.5);
+  grf_local->GetXaxis()->SetLimits(0.0,1.0);
+  
+  return grf_local;
+			  
+}
+
+
+
+TGraphErrors *Data_CMS_Aj_Pt_180_220_276TeV()
+{
+  // CMS Jet momentum dependence of jet quenching in PbPb collisions at 2.76 TeV
+  //1202.5022
+  //cat Data_Aj_Cent_00_10.txt | awk '{printf "%.3f, ", $1}'
+  
+  const Int_t NN = 13 ;
+
+  Double_t AJ[NN] = {0.028, 0.089, 0.154, 0.210, 0.271, 0.331, 0.388, 0.448, 0.513, 0.570, 0.630, 0.691, 0.752};
+  Double_t Error_AJ[NN] = {0.0};
+  
+  Double_t EvFrac[NN] = {0.115, 0.136, 0.149, 0.125, 0.115, 0.089, 0.084, 0.059, 0.050, 0.029, 0.023, 0.009, 0.001};
+  Double_t EvFrac_Max[NN] = {0.122, 0.143, 0.158, 0.130, 0.123, 0.094, 0.091, 0.065, 0.055, 0.033, 0.029, 0.015, 0.004};
+  
+  Double_t Error_EvFrac[NN] = {0.0}; 
+  for(int i=0; i<NN; i++){Error_EvFrac[i] = EvFrac_Max[i] - EvFrac[i];}
+
+  
+  TGraphErrors *grf_local = new TGraphErrors(NN, AJ, EvFrac, Error_AJ, Error_EvFrac);
+  grf_local->SetMarkerColor(1);
+  grf_local->SetMarkerStyle(20);
+  grf_local->SetMarkerSize(1.8);
+
+  grf_local->GetXaxis()->SetTitle("A_{J}");
+  grf_local->GetYaxis()->SetTitle("Event Fraction");
+  grf_local->GetXaxis()->CenterTitle();
+  grf_local->GetYaxis()->CenterTitle();
+  grf_local->GetYaxis()->SetRangeUser(0.0,0.5);
+  grf_local->GetXaxis()->SetLimits(0.0,1.0);
+  
+  return grf_local;
+			  
+}
+
+
+TGraphErrors *Data_CMS_Aj_Pt_220_260_276TeV()
+{
+  // CMS Jet momentum dependence of jet quenching in PbPb collisions at 2.76 TeV
+  //1202.5022
+  //cat Data_Aj_Cent_00_10.txt | awk '{printf "%.3f, ", $1}'
+  
+  const Int_t NN = 13 ;
+
+  Double_t AJ[NN] = {0.031, 0.091, 0.148, 0.204, 0.268, 0.329, 0.389, 0.450, 0.510, 0.562, 0.631, 0.687, 0.750};
+  Double_t Error_AJ[NN] = {0.0};
+
+  Double_t EvFrac[NN] = {0.174, 0.136, 0.164, 0.125, 0.108, 0.074, 0.055, 0.047, 0.040, 0.029, 0.012, 0.001, 0.005};
+  Double_t EvFrac_Max[NN] = {0.194, 0.155, 0.181, 0.139, 0.122, 0.085, 0.068, 0.059, 0.048, 0.033, 0.016, 0.006, 0.011};
+
+  Double_t Error_EvFrac[NN] = {0.0}; 
+  for(int i=0; i<NN; i++){Error_EvFrac[i] = EvFrac_Max[i] - EvFrac[i];}
+  
+  TGraphErrors *grf_local = new TGraphErrors(NN, AJ, EvFrac, Error_AJ, Error_EvFrac);
+  grf_local->SetMarkerColor(1);
+  grf_local->SetMarkerStyle(20);
+  grf_local->SetMarkerSize(1.8);
+
+  grf_local->GetXaxis()->SetTitle("A_{J}");
+  grf_local->GetYaxis()->SetTitle("Event Fraction");
+  grf_local->GetXaxis()->CenterTitle();
+  grf_local->GetYaxis()->CenterTitle();
+  grf_local->GetYaxis()->SetRangeUser(0.0,0.5);
+  grf_local->GetXaxis()->SetLimits(0.0,1.0);
+  
+  return grf_local;
+			  
+}
+
+
+TGraphErrors *Data_CMS_Aj_Pt_260_300_276TeV()
+{
+  // CMS Jet momentum dependence of jet quenching in PbPb collisions at 2.76 TeV
+  //1202.5022
+  //cat Data_Aj_Cent_00_10.txt | awk '{printf "%.3f, ", $1}'
+  
+  const Int_t NN = 14 ;
+
+  Double_t AJ[NN] = {0.034, 0.095, 0.154, 0.209, 0.273, 0.333, 0.389, 0.449, 0.509, 0.568, 0.628, 0.684, 0.748, 0.804};
+  Double_t Error_AJ[NN] = {0.0};
+
+  Double_t EvFrac[NN] = {0.155, 0.207, 0.182, 0.108, 0.077, 0.085, 0.046, 0.041, 0.041, 0.017, 0.006, 0.002, 0.002, 0.002};
+  Double_t EvFrac_Max[NN] = {0.184, 0.238, 0.211, 0.128, 0.093, 0.106, 0.060, 0.056, 0.056, 0.027, 0.014, 0.008, 0.008, 0.008};
+
+  Double_t Error_EvFrac[NN] = {0.0}; 
+  for(int i=0; i<NN; i++){Error_EvFrac[i] = EvFrac_Max[i] - EvFrac[i];}
+  
+  TGraphErrors *grf_local = new TGraphErrors(NN, AJ, EvFrac, Error_AJ, Error_EvFrac);
+  grf_local->SetMarkerColor(1);
+  grf_local->SetMarkerStyle(20);
+  grf_local->SetMarkerSize(1.8);
+
+  grf_local->GetXaxis()->SetTitle("A_{J}");
+  grf_local->GetYaxis()->SetTitle("Event Fraction");
+  grf_local->GetXaxis()->CenterTitle();
+  grf_local->GetYaxis()->CenterTitle();
+  grf_local->GetYaxis()->SetRangeUser(0.0,0.5);
+  grf_local->GetXaxis()->SetLimits(0.0,1.0);
+  
+  return grf_local;
+			  
+}
+
+
+
+TGraphErrors *Data_CMS_Aj_Pt_300_500_276TeV()
+{
+  // CMS Jet momentum dependence of jet quenching in PbPb collisions at 2.76 TeV
+  //1202.5022
+  //cat Data_Aj_Cent_00_10.txt | awk '{printf "%.3f, ", $1}'
+  
+  const Int_t NN = 13 ;
+
+  Double_t AJ[NN] = {0.030, 0.086, 0.151, 0.208, 0.269, 0.330, 0.389, 0.449, 0.508, 0.569, 0.632, 0.691, 0.751};
+  Double_t Error_AJ[NN] = {0.0};
+
+  Double_t EvFrac[NN] = {0.228, 0.179, 0.168, 0.119, 0.119, 0.039, 0.030, 0.030, 0.021, 0.021, 0.020, 0.010, 0.008};
+  Double_t EvFrac_Max[NN] = {0.277, 0.222, 0.212, 0.154, 0.154, 0.060, 0.047, 0.047, 0.033, 0.033, 0.035, 0.021, 0.021};
+
+  Double_t Error_EvFrac[NN] = {0.0}; 
+  for(int i=0; i<NN; i++){Error_EvFrac[i] = EvFrac_Max[i] - EvFrac[i];}
+  
+  TGraphErrors *grf_local = new TGraphErrors(NN, AJ, EvFrac, Error_AJ, Error_EvFrac);
+  grf_local->SetMarkerColor(1);
+  grf_local->SetMarkerStyle(20);
+  grf_local->SetMarkerSize(1.8);
+
+  grf_local->GetXaxis()->SetTitle("A_{J}");
+  grf_local->GetYaxis()->SetTitle("Event Fraction");
+  grf_local->GetXaxis()->CenterTitle();
+  grf_local->GetYaxis()->CenterTitle();
+  grf_local->GetYaxis()->SetRangeUser(0.0,0.5);
+  grf_local->GetXaxis()->SetLimits(0.0,1.0);
+  
+  return grf_local;
+			  
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 // Glaubar Centrality Functions 2.76 TeV
