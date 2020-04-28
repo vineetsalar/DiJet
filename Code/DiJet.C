@@ -99,7 +99,7 @@ Double_t Npart_Jet_PbPb_276TeV_Cen_70_80 = 15.10  ;
 //const Double_t NPartCent[8] = {356.20, 266.70, 186.40, 129.30, 85.60, 53.00, 30.10, 15.10};
 
 
-//CMS Data Functions : CENT
+//CMS Data Functions AJ as a func of CENT
 TGraphErrors *Data_CMS_Aj_Cent_00_10_276TeV();
 TGraphErrors *Data_CMS_Aj_Cent_10_20_276TeV();
 TGraphErrors *Data_CMS_Aj_Cent_20_30_276TeV();
@@ -108,13 +108,25 @@ TGraphErrors *Data_CMS_Aj_Cent_50_70_276TeV();
 TGraphErrors *Data_CMS_Aj_Cent_70_100_276TeV();
 TGraphErrors *Data_CMS_Aj_pp_276TeV();
 
-//CMS Data Functions : PT
+//CMS Data Functions AJ as a func of PT
 TGraphErrors *Data_CMS_Aj_Pt_120_150_276TeV();
 TGraphErrors *Data_CMS_Aj_Pt_150_180_276TeV();
 TGraphErrors *Data_CMS_Aj_Pt_180_220_276TeV();
 TGraphErrors *Data_CMS_Aj_Pt_220_260_276TeV();
 TGraphErrors *Data_CMS_Aj_Pt_260_300_276TeV();
 TGraphErrors *Data_CMS_Aj_Pt_300_500_276TeV();
+
+
+//ATLAS Data Functions RAA as a func of Cent
+TGraphErrors *jet_atlas_raa_pbpb_276tev_00_rapidity_21_centrality_zero_ten();
+TGraphErrors *jet_atlas_raa_pbpb_276tev_00_rapidity_21_centrality_ten_twenty();
+TGraphErrors *jet_atlas_raa_pbpb_276tev_00_rapidity_21_centrality_twenty_thirty();
+TGraphErrors *jet_atlas_raa_pbpb_276tev_00_rapidity_21_centrality_thirty_forty();
+TGraphErrors *jet_atlas_raa_pbpb_276tev_00_rapidity_21_centrality_forty_fifty();
+TGraphErrors *jet_atlas_raa_pbpb_276tev_00_rapidity_21_centrality_fifty_sixty();
+TGraphErrors *jet_atlas_raa_pbpb_276tev_00_rapidity_21_centrality_sixty_seventy();
+TGraphErrors *jet_atlas_raa_pbpb_276tev_00_rapidity_21_centrality_seventy_eighty();
+
 
 
 // Function to calculate Asymmetry as a function of Centrality
@@ -251,20 +263,22 @@ void DiJet()
   tb->DrawLatex(0.55, 0.70, "300 < p_{T,1} < 500 GeV/c") ;
 
 
-  return;
+  
+  TGraphErrors *grf_Data_ATLAS_RAA_Cent_00_10_276TeV = jet_atlas_raa_pbpb_276tev_00_rapidity_21_centrality_zero_ten();
+
+  new TCanvas;
+  grf_Data_ATLAS_RAA_Cent_00_10_276TeV->Draw("AP");
+
+
+
+
+
+
 
 
 
   
-
-
-
-
-
-
-
-
-
+  return;
 
   
   // Histograms
@@ -280,6 +294,7 @@ void DiJet()
   fJetpp276tev->SetParameters(jet_00_rapidity_21_pp_276tev_dNdy, jet_00_rapidity_21_pp_276tev_nn, jet_00_rapidity_21_pp_276tev_pzero);
 
 
+  
   Double_t ResPhi = 0.3; // relative
   Double_t RespT = 0.28;  // Relative
   
@@ -602,13 +617,26 @@ void FitParaTsallisPP276TeV()
   TF1 *fitfunc_jet_00_rapidity_21_pp_276tev = new TF1("fitfunc_jet_00_rapidity_21_pp_276tev", tsallis_fitting_function, 0.0, 500.0, 3);
 
   fitfunc_jet_00_rapidity_21_pp_276tev->SetParNames("dN/dy", "nn", "pzero");
-  fitfunc_jet_00_rapidity_21_pp_276tev->SetParameters(1000.0, 6.0, 0.1) ;
-  fitfunc_jet_00_rapidity_21_pp_276tev->SetParLimits(0, 750.0, 1100.0); 
-  fitfunc_jet_00_rapidity_21_pp_276tev->SetParLimits(1, 4.0,   500.0) ;
-  // fitfunc_jet_00_rapidity_21_pp_276tev->SetParLimits(2, 0.1, 2.0) ;
+  //fitfunc_jet_00_rapidity_21_pp_276tev->SetParameters(1000.0, 6.0, 0.1) ;
+  //fitfunc_jet_00_rapidity_21_pp_276tev->SetParLimits(0, 750.0, 1100.0); 
+  //fitfunc_jet_00_rapidity_21_pp_276tev->SetParLimits(1, 4.0,   500.0) ;
+  fitfunc_jet_00_rapidity_21_pp_276tev->SetParameters(1.0, 6.0, 10) ;
+  fitfunc_jet_00_rapidity_21_pp_276tev->SetParLimits(0, 0.00001, 100.0);
+  fitfunc_jet_00_rapidity_21_pp_276tev->SetParLimits(1, 4.0,   10.0) ;
+  fitfunc_jet_00_rapidity_21_pp_276tev->SetParLimits(2, 0.5, 50.0) ;
+  
   fitfunc_jet_00_rapidity_21_pp_276tev->SetLineColor(1);
   fitfunc_jet_00_rapidity_21_pp_276tev->SetLineStyle(1);
   fitfunc_jet_00_rapidity_21_pp_276tev->SetLineWidth(4);
+
+  fitfunc_jet_00_rapidity_21_pp_276tev->SetParNames("dN/dy", "nn", "pzero");
+
+
+  //dNdy  = 0.00252839  
+  //nn    = 7.28245 
+  //pzero = 22.6085  
+
+
   gr_atlas_jet_yield_00_rapidity_21->Fit(fitfunc_jet_00_rapidity_21_pp_276tev,  "ME", "", 35.0, 360.0) ;
   fitfunc_jet_00_rapidity_21_pp_276tev->Draw("same");  
 
@@ -725,7 +753,7 @@ TGraphErrors *Data_CMS_Aj_Cent_00_10_276TeV()
   TGraphErrors *grf_local = new TGraphErrors(NN, AJ, EvFrac, Error_AJ, Error_EvFrac);
   grf_local->SetMarkerColor(1);
   grf_local->SetMarkerStyle(20);
-  grf_local->SetMarkerSize(1.8);
+  grf_local->SetMarkerSize(1.5);
 
   grf_local->GetXaxis()->SetTitle("A_{J}");
   grf_local->GetYaxis()->SetTitle("Event Fraction");
@@ -768,7 +796,7 @@ TGraphErrors *Data_CMS_Aj_Cent_10_20_276TeV()
   TGraphErrors *grf_local = new TGraphErrors(NN, AJ, EvFrac, Error_AJ, Error_EvFrac);
   grf_local->SetMarkerColor(1);
   grf_local->SetMarkerStyle(20);
-  grf_local->SetMarkerSize(1.8);
+  grf_local->SetMarkerSize(1.5);
   grf_local->GetXaxis()->SetTitle("A_{J}");
   grf_local->GetYaxis()->SetTitle("Event Fraction");
   grf_local->GetXaxis()->CenterTitle();
@@ -794,7 +822,7 @@ TGraphErrors *Data_CMS_Aj_Cent_20_30_276TeV()
   TGraphErrors *grf_local = new TGraphErrors(NN, AJ, EvFrac, Error_AJ, Error_EvFrac);
   grf_local->SetMarkerColor(1);
   grf_local->SetMarkerStyle(20);
-  grf_local->SetMarkerSize(1.8);
+  grf_local->SetMarkerSize(1.5);
   grf_local->GetXaxis()->SetTitle("A_{J}");
   grf_local->GetYaxis()->SetTitle("Event Fraction");
   grf_local->GetXaxis()->CenterTitle();
@@ -821,7 +849,7 @@ TGraphErrors *Data_CMS_Aj_Cent_30_50_276TeV()
   TGraphErrors *grf_local = new TGraphErrors(NN, AJ, EvFrac, Error_AJ, Error_EvFrac);
   grf_local->SetMarkerColor(1);
   grf_local->SetMarkerStyle(20);
-  grf_local->SetMarkerSize(1.8);
+  grf_local->SetMarkerSize(1.5);
   grf_local->GetXaxis()->SetTitle("A_{J}");
   grf_local->GetYaxis()->SetTitle("Event Fraction");
   grf_local->GetXaxis()->CenterTitle();
@@ -861,7 +889,7 @@ TGraphErrors *Data_CMS_Aj_Cent_50_70_276TeV()
   TGraphErrors *grf_local = new TGraphErrors(NN, AJ, EvFrac, Error_AJ, Error_EvFrac);
   grf_local->SetMarkerColor(1);
   grf_local->SetMarkerStyle(20);
-  grf_local->SetMarkerSize(1.8);
+  grf_local->SetMarkerSize(1.5);
   grf_local->GetXaxis()->SetTitle("A_{J}");
   grf_local->GetYaxis()->SetTitle("Event Fraction");
   grf_local->GetXaxis()->CenterTitle();
@@ -902,7 +930,7 @@ TGraphErrors *Data_CMS_Aj_Cent_70_100_276TeV()
   TGraphErrors *grf_local = new TGraphErrors(NN, AJ, EvFrac, Error_AJ, Error_EvFrac);
   grf_local->SetMarkerColor(1);
   grf_local->SetMarkerStyle(20);
-  grf_local->SetMarkerSize(1.8);
+  grf_local->SetMarkerSize(1.5);
   grf_local->GetXaxis()->SetTitle("A_{J}");
   grf_local->GetYaxis()->SetTitle("Event Fraction");
   grf_local->GetXaxis()->CenterTitle();
@@ -944,7 +972,7 @@ TGraphErrors *Data_CMS_Aj_pp_276TeV()
   TGraphErrors *grf_local = new TGraphErrors(NN, AJ, EvFrac, Error_AJ, Error_EvFrac);
   grf_local->SetMarkerColor(4);
   grf_local->SetMarkerStyle(24);
-  grf_local->SetMarkerSize(1.8);
+  grf_local->SetMarkerSize(1.5);
   grf_local->GetXaxis()->SetTitle("A_{J}");
   grf_local->GetYaxis()->SetTitle("Event Fraction");
   grf_local->GetXaxis()->CenterTitle();
@@ -978,7 +1006,7 @@ TGraphErrors *Data_CMS_Aj_Pt_120_150_276TeV()
   TGraphErrors *grf_local = new TGraphErrors(NN, AJ, EvFrac, Error_AJ, Error_EvFrac);
   grf_local->SetMarkerColor(1);
   grf_local->SetMarkerStyle(20);
-  grf_local->SetMarkerSize(1.8);
+  grf_local->SetMarkerSize(1.5);
 
   grf_local->GetXaxis()->SetTitle("A_{J}");
   grf_local->GetYaxis()->SetTitle("Event Fraction");
@@ -1010,7 +1038,7 @@ TGraphErrors *Data_CMS_Aj_Pt_150_180_276TeV()
   TGraphErrors *grf_local = new TGraphErrors(NN, AJ, EvFrac, Error_AJ, Error_EvFrac);
   grf_local->SetMarkerColor(1);
   grf_local->SetMarkerStyle(20);
-  grf_local->SetMarkerSize(1.8);
+  grf_local->SetMarkerSize(1.5);
 
   grf_local->GetXaxis()->SetTitle("A_{J}");
   grf_local->GetYaxis()->SetTitle("Event Fraction");
@@ -1046,7 +1074,7 @@ TGraphErrors *Data_CMS_Aj_Pt_180_220_276TeV()
   TGraphErrors *grf_local = new TGraphErrors(NN, AJ, EvFrac, Error_AJ, Error_EvFrac);
   grf_local->SetMarkerColor(1);
   grf_local->SetMarkerStyle(20);
-  grf_local->SetMarkerSize(1.8);
+  grf_local->SetMarkerSize(1.5);
 
   grf_local->GetXaxis()->SetTitle("A_{J}");
   grf_local->GetYaxis()->SetTitle("Event Fraction");
@@ -1080,7 +1108,7 @@ TGraphErrors *Data_CMS_Aj_Pt_220_260_276TeV()
   TGraphErrors *grf_local = new TGraphErrors(NN, AJ, EvFrac, Error_AJ, Error_EvFrac);
   grf_local->SetMarkerColor(1);
   grf_local->SetMarkerStyle(20);
-  grf_local->SetMarkerSize(1.8);
+  grf_local->SetMarkerSize(1.5);
 
   grf_local->GetXaxis()->SetTitle("A_{J}");
   grf_local->GetYaxis()->SetTitle("Event Fraction");
@@ -1114,7 +1142,7 @@ TGraphErrors *Data_CMS_Aj_Pt_260_300_276TeV()
   TGraphErrors *grf_local = new TGraphErrors(NN, AJ, EvFrac, Error_AJ, Error_EvFrac);
   grf_local->SetMarkerColor(1);
   grf_local->SetMarkerStyle(20);
-  grf_local->SetMarkerSize(1.8);
+  grf_local->SetMarkerSize(1.5);
 
   grf_local->GetXaxis()->SetTitle("A_{J}");
   grf_local->GetYaxis()->SetTitle("Event Fraction");
@@ -1149,7 +1177,7 @@ TGraphErrors *Data_CMS_Aj_Pt_300_500_276TeV()
   TGraphErrors *grf_local = new TGraphErrors(NN, AJ, EvFrac, Error_AJ, Error_EvFrac);
   grf_local->SetMarkerColor(1);
   grf_local->SetMarkerStyle(20);
-  grf_local->SetMarkerSize(1.8);
+  grf_local->SetMarkerSize(1.5);
 
   grf_local->GetXaxis()->SetTitle("A_{J}");
   grf_local->GetYaxis()->SetTitle("Event Fraction");
@@ -1162,6 +1190,253 @@ TGraphErrors *Data_CMS_Aj_Pt_300_500_276TeV()
 			  
 }
 
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+// =============================== ATLAS Data Jet RAA 2.76 TeV =================================// 
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+// Rapidity : 0.0 - 2.1 and Centrality : 0 - 10 % 
+TGraphErrors *jet_atlas_raa_pbpb_276tev_00_rapidity_21_centrality_zero_ten()
+{
+  int N_point         = 9 ;
+  double pT[15]       = {56.5, 71.0, 89.5, 112.5, 141.5, 178.5, 225.0, 283.5, 357.0 }; 
+  double pT_err[15]   = {6.5, 8.0, 10.5, 12.5, 16.5, 20.5, 26.0, 32.5, 41.0 } ;
+  double raa[15]      = {0.472, 0.491, 0.453, 0.478, 0.511, 0.565, 0.598, 0.595, 0.563 } ;
+  double stat_err[15] = {0.011799999999999998, 0.010802, 0.008154, 0.007647999999999999, 0.008176000000000001,
+			 0.0113, 0.017342, 0.031534999999999994, 0.053485 };
+  double syst_err[15] = {0.05435587740070064, 0.08343822336315654, 0.06473622013988768, 0.052501723552660626,
+			 0.05534391863610671, 0.06402723990615243, 0.07539070218534909, 0.09135526996293097,
+			 0.13564678562354507 };
+  
+  for(int i=0; i<N_point; i++){
+    stat_err[i] = sqrt(stat_err[i]*stat_err[i] + syst_err[i]*syst_err[i]);
+  }
+
+  TGraphErrors *gr_data = new TGraphErrors(N_point, pT, raa, pT_err, stat_err);
+  //gr_data->SetMarkerColor(2);
+  //gr_data->SetMarkerStyle(20);
+
+
+  gr_data->SetMarkerColor(1);
+  gr_data->SetMarkerStyle(21);
+  gr_data->SetMarkerSize(1.5);
+
+  gr_data->GetXaxis()->SetTitle("p_{T} GeV/c");
+  gr_data->GetYaxis()->SetTitle("R_{AA}");
+  gr_data->GetXaxis()->CenterTitle();
+  gr_data->GetYaxis()->CenterTitle();
+  gr_data->GetYaxis()->SetRangeUser(0.0,1.5);
+  gr_data->GetXaxis()->SetLimits(0.0,400.0);
+  
+
+
+
+
+  
+  //  gr_data->SetMarkerSize(1.5);
+  //  gr_data->Draw("sameP");
+  
+  return gr_data ;
+
+}
+
+
+// Rapidity : 0.0 - 2.1 and Centrality : 10 - 20 % 
+TGraphErrors *jet_atlas_raa_pbpb_276tev_00_rapidity_21_centrality_ten_twenty()
+{
+  int N_point         = 8 ;
+  double pT[15]       = {56.5, 71.0, 89.5, 112.5, 141.5, 178.5, 225.0, 283.5 }; 
+  double pT_err[15]   = {6.5, 8.0, 10.5, 12.5, 16.5, 20.5, 26.0, 32.5 };
+  double raa[15]      = {0.525, 0.529, 0.496, 0.543, 0.58, 0.651, 0.653, 0.657 }; 
+  double stat_err[15] = {0.0126, 0.013754000000000002, 0.008928, 0.008688000000000001, 0.009859999999999999,
+			 0.014322000000000001, 0.022202, 0.040077 };
+  double syst_err[15] = {0.07913406346195044, 0.07710708064762925, 0.04466754705600028, 0.0552073737194589,
+			 0.05947475094525406, 0.0699484277521661, 0.0784823419948717, 0.10211014442747597 };
+  
+  
+  for(int i=0; i<N_point; i++){
+    stat_err[i] = sqrt(stat_err[i]*stat_err[i] + syst_err[i]*syst_err[i]);
+  }
+
+  TGraphErrors *gr_data = new TGraphErrors(N_point, pT, raa, pT_err, stat_err);
+  gr_data->SetMarkerColor(2);
+  gr_data->SetMarkerStyle(20);
+  //  gr_data->SetMarkerSize(1.5);
+  //  gr_data->Draw("sameP");
+  
+  return gr_data ;
+
+}
+
+
+// Rapidity : 0.0 - 2.1 and Centrality : 20 - 30 % 
+TGraphErrors *jet_atlas_raa_pbpb_276tev_00_rapidity_21_centrality_twenty_thirty()
+{
+  int N_point         =  8 ;
+  double pT[15]       = {56.5, 71.0, 89.5, 112.5, 141.5, 178.5, 225.0, 283.5 };
+  double pT_err[15]   = {6.5, 8.0, 10.5, 12.5, 16.5, 20.5, 26.0, 32.5 };
+  double raa[15]      = {0.525, 0.612, 0.569, 0.603, 0.646, 0.668, 0.678, 0.693 };
+  double stat_err[15] = {0.0105, 0.011016, 0.008535, 0.007839, 0.010336000000000001, 0.014696, 0.025764000000000002,
+			 0.043658999999999996 };
+  double syst_err[15] = {0.04394033596821945, 0.04984325783894949, 0.052726992205131516, 0.05972135866672828,
+			 0.06435405180717063, 0.07073864527964895, 0.07955745719918404, 0.09429384914192442 };
+  
+  for(int i=0; i<N_point; i++){
+    stat_err[i] = sqrt(stat_err[i]*stat_err[i] + syst_err[i]*syst_err[i]);
+  }
+
+  TGraphErrors *gr_data = new TGraphErrors(N_point, pT, raa, pT_err, stat_err);
+  gr_data->SetMarkerColor(2);
+  gr_data->SetMarkerStyle(20);
+  //  gr_data->SetMarkerSize(1.5);
+  //  gr_data->Draw("sameP");
+  
+  return gr_data ;
+
+}
+
+
+// Rapidity : 0.0 - 2.1 and Centrality : 30 - 40 % 
+TGraphErrors *jet_atlas_raa_pbpb_276tev_00_rapidity_21_centrality_thirty_forty()
+{
+  int N_point         = 9 ;
+  double pT[15]       = {44.5, 56.5, 71.0, 89.5, 112.5, 141.5, 178.5, 225.0, 283.5 };
+  double pT_err[15]   = {5.5, 6.5, 8.0, 10.5, 12.5, 16.5, 20.5, 26.0, 32.5 };
+  double raa[15]      = {0.542, 0.636, 0.676, 0.646, 0.676, 0.726, 0.768, 0.781, 0.786 } ;
+  double stat_err[15] = {0.01084, 0.010812, 0.012168000000000002, 0.008398000000000001, 0.008788,
+			 0.011616000000000001, 0.019200000000000002, 0.032021, 0.049518 };
+  double syst_err[15] = {0.050102029699404395, 0.052299158234143696, 0.06069712111789158, 0.05365690155049955,
+			 0.05949952161152222, 0.06826330577989904, 0.08064, 0.09072047052898259,
+			 0.10676299077864015 };
+
+  for(int i=0; i<N_point; i++){
+    stat_err[i] = sqrt(stat_err[i]*stat_err[i] + syst_err[i]*syst_err[i]);
+  }
+
+  TGraphErrors *gr_data = new TGraphErrors(N_point, pT, raa, pT_err, stat_err);
+  gr_data->SetMarkerColor(2);
+  gr_data->SetMarkerStyle(20);
+  //  gr_data->SetMarkerSize(1.5);
+  //  gr_data->Draw("sameP");
+  
+  return gr_data ;
+
+}
+
+
+// Rapidity : 0.0 - 2.1 and Centrality : 40 - 50 % 
+TGraphErrors *jet_atlas_raa_pbpb_276tev_00_rapidity_21_centrality_forty_fifty()
+{
+  int N_point         = 9 ;
+  double pT[15]       = {44.5, 56.5, 71.0, 89.5, 112.5, 141.5, 178.5, 225.0, 283.5 } ;
+  double pT_err[15]   = {5.5, 6.5, 8.0, 10.5, 12.5, 16.5, 20.5, 26.0, 32.5 } ;
+  double raa[15]      = {0.633, 0.707, 0.747, 0.716, 0.745, 0.776, 0.766, 0.725, 0.679 } ;
+  double stat_err[15] = {0.01266, 0.013432999999999999, 0.013446, 0.01074, 0.011175000000000001, 0.01552,
+			 0.024512000000000003, 0.041325, 0.061789000000000004 };
+  double syst_err[15] = {0.058046479660699486, 0.05817196687408807, 0.06816144756385387, 0.060733515623583,
+			 0.06801160452452214, 0.07559132267661416, 0.08290512519742071, 0.10722649509333035,
+			 0.11789403304238939 };;
+
+  for(int i=0; i<N_point; i++){
+    stat_err[i] = sqrt(stat_err[i]*stat_err[i] + syst_err[i]*syst_err[i]);
+  }
+
+  TGraphErrors *gr_data = new TGraphErrors(N_point, pT, raa, pT_err, stat_err);
+  gr_data->SetMarkerColor(2);
+  gr_data->SetMarkerStyle(20);
+  //  gr_data->SetMarkerSize(1.5);
+  //  gr_data->Draw("sameP");
+  
+  return gr_data ;
+
+}
+
+
+// Rapidity : 0.0 - 2.1 and Centrality : 50 - 60 % 
+TGraphErrors *jet_atlas_raa_pbpb_276tev_00_rapidity_21_centrality_fifty_sixty()
+{
+  int N_point         = 9 ;
+  double pT[15]       = {44.5, 56.5, 71.0, 89.5, 112.5, 141.5, 178.5, 225.0, 283.5 };
+  double pT_err[15]   = {5.5, 6.5, 8.0, 10.5, 12.5, 16.5, 20.5, 26.0, 32.5 };
+  double raa[15]      = {0.696, 0.762, 0.797, 0.756, 0.818, 0.809, 0.759, 0.677, 0.623 };
+  double stat_err[15] = {0.015312, 0.016764, 0.017534, 0.013608, 0.015541999999999999, 0.021843, 0.033396,
+			 0.05348300000000001, 0.081613 };
+  double syst_err[15] = {0.07291077549992181, 0.06435630234872106, 0.0687132337836024, 0.06296622294532203,
+			 0.07997178997621598, 0.08381255617746067, 0.09553154035186497, 0.12123026731802583,
+			 0.1683506930131266 };
+
+  for(int i=0; i<N_point; i++){
+    stat_err[i] = sqrt(stat_err[i]*stat_err[i] + syst_err[i]*syst_err[i]);
+  }
+
+  TGraphErrors *gr_data = new TGraphErrors(N_point, pT, raa, pT_err, stat_err);
+  gr_data->SetMarkerColor(2);
+  gr_data->SetMarkerStyle(20);
+  //  gr_data->SetMarkerSize(1.5);
+  //  gr_data->Draw("sameP");
+  
+  return gr_data ;
+
+}
+
+
+
+// Rapidity : 0.0 - 2.1 and Centrality : 60 - 70 % 
+TGraphErrors *jet_atlas_raa_pbpb_276tev_00_rapidity_21_centrality_sixty_seventy()
+{
+  int N_point         = 8 ;
+  double pT[15]       = {44.5, 56.5, 71.0, 89.5, 112.5, 141.5, 178.5, 225.0 } ;
+  double pT_err[15]   = {5.5, 6.5, 8.0, 10.5, 12.5, 16.5, 20.5, 26.0 } ;
+  double raa[15]      = {0.762, 0.773, 0.806, 0.791, 0.809, 0.825, 0.812, 0.768 } ;
+  double stat_err[15] = {0.017526, 0.018552, 0.017732000000000005, 0.016611, 0.020225, 0.030525000000000004,
+			 0.049532, 0.077568 };
+  double syst_err[15] = {0.0842587336007372, 0.06169489225211436, 0.06025624950160772, 0.0649680231036777,
+			 0.08105356425228935, 0.08651886355009525, 0.0994559132882505, 0.13203794072917072 };
+
+  for(int i=0; i<N_point; i++){
+    stat_err[i] = sqrt(stat_err[i]*stat_err[i] + syst_err[i]*syst_err[i]);
+  }
+
+  TGraphErrors *gr_data = new TGraphErrors(N_point, pT, raa, pT_err, stat_err);
+  gr_data->SetMarkerColor(2);
+  gr_data->SetMarkerStyle(20);
+  //  gr_data->SetMarkerSize(1.5);
+  //  gr_data->Draw("sameP");
+  
+  return gr_data ;
+
+}
+
+
+
+// Rapidity : 0.0 - 2.1 and Centrality : 70 - 80 % 
+TGraphErrors *jet_atlas_raa_pbpb_276tev_00_rapidity_21_centrality_seventy_eighty()
+{
+  int N_point         =  7 ;
+  double pT[15]       = {44.5, 56.5, 71.0, 89.5, 112.5, 141.5, 178.5 } ;
+  double pT_err[15]   = {5.5, 6.5, 8.0, 10.5, 12.5, 16.5, 20.5 } ;
+  double raa[15]      = {0.823, 0.795, 0.812, 0.809, 0.814, 0.819, 0.801 } ;
+  double stat_err[15] = {0.024689999999999997, 0.026235, 0.023548, 0.02427, 0.030931999999999998,
+			 0.047501999999999996, 0.078498 };
+  double syst_err[15] = {0.10341675352668928, 0.07952384642357285, 0.07091415012534523, 0.06899304539589479,
+			 0.08790069371739907, 0.09622465819113102, 0.11634094161558088 };
+
+  for(int i=0; i<N_point; i++){
+    stat_err[i] = sqrt(stat_err[i]*stat_err[i] + syst_err[i]*syst_err[i]);
+  }
+
+  TGraphErrors *gr_data = new TGraphErrors(N_point, pT, raa, pT_err, stat_err);
+  gr_data->SetMarkerColor(2);
+  gr_data->SetMarkerStyle(20);
+  //  gr_data->SetMarkerSize(1.5);
+  //  gr_data->Draw("sameP");
+  
+  return gr_data ;
+
+}
 
 
 
