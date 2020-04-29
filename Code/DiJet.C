@@ -57,8 +57,8 @@ using namespace std;
 // Global Varaibles 
 const Double_t pi       = 3.14159265358979312 ;
 const Double_t sigma_alice_276tev  = 62.8 ;  // (mb)
-const Double_t sigma_atlas_502tev  = 67.6 ;  // (mb) 1710.07098
-
+const Double_t sigma_atlas_502tev  = 67.6 * pow(10.0, 6.0);  // (nb) 1710.07098
+//sigma_atlas_502tev  = sigma_atlas_502tev * pow(10.0, 6.0) ;
 
 const Double_t Am = 208.0 ;
 const Double_t R0 = 1.1;
@@ -118,6 +118,7 @@ TGraphErrors *Data_CMS_Aj_Pt_300_500_276TeV();
 
 
 //ATLAS Data Functions RAA as a func of Cent
+              
 TGraphErrors *jet_atlas_raa_pbpb_276tev_00_rapidity_21_centrality_zero_ten();
 TGraphErrors *jet_atlas_raa_pbpb_276tev_00_rapidity_21_centrality_ten_twenty();
 TGraphErrors *jet_atlas_raa_pbpb_276tev_00_rapidity_21_centrality_twenty_thirty();
@@ -126,6 +127,19 @@ TGraphErrors *jet_atlas_raa_pbpb_276tev_00_rapidity_21_centrality_forty_fifty();
 TGraphErrors *jet_atlas_raa_pbpb_276tev_00_rapidity_21_centrality_fifty_sixty();
 TGraphErrors *jet_atlas_raa_pbpb_276tev_00_rapidity_21_centrality_sixty_seventy();
 TGraphErrors *jet_atlas_raa_pbpb_276tev_00_rapidity_21_centrality_seventy_eighty();
+
+
+// ATLAS Data : JetRAA spectra in in PbPb collissions @ 5.02 TeV
+// CERN-EP-2018-105, arXiv:1805.05635 [nucl-ex].
+TGraphErrors *jet_nuclear_modification_factor_raa_atlas_PbPb_502tev_cen_zero0_ten10()        ;
+TGraphErrors *jet_nuclear_modification_factor_raa_atlas_PbPb_502tev_cen_ten10_twenty20()     ;
+TGraphErrors *jet_nuclear_modification_factor_raa_atlas_PbPb_502tev_cen_twenty20_thirty30()  ;
+TGraphErrors *jet_nuclear_modification_factor_raa_atlas_PbPb_502tev_cen_thirty30_forty40()   ;
+TGraphErrors *jet_nuclear_modification_factor_raa_atlas_PbPb_502tev_cen_forty40_fifty50()    ;
+TGraphErrors *jet_nuclear_modification_factor_raa_atlas_PbPb_502tev_cen_fifty50_sixty60()    ;
+TGraphErrors *jet_nuclear_modification_factor_raa_atlas_PbPb_502tev_cen_sixty60_seventy70()  ;
+TGraphErrors *jet_nuclear_modification_factor_raa_atlas_PbPb_502tev_cen_seventy70_eighty80() ;
+TGraphErrors *jet_production_atlas_yield_in_pp_collision_502tev();
 
 
 
@@ -265,18 +279,108 @@ void DiJet()
 
   
   TGraphErrors *grf_Data_ATLAS_RAA_Cent_00_10_276TeV = jet_atlas_raa_pbpb_276tev_00_rapidity_21_centrality_zero_ten();
+  TGraphErrors *grf_Data_ATLAS_RAA_Cent_10_20_276TeV = jet_atlas_raa_pbpb_276tev_00_rapidity_21_centrality_ten_twenty();
+  TGraphErrors *grf_Data_ATLAS_RAA_Cent_20_30_276TeV = jet_atlas_raa_pbpb_276tev_00_rapidity_21_centrality_twenty_thirty();
+  TGraphErrors *grf_Data_ATLAS_RAA_Cent_30_40_276TeV = jet_atlas_raa_pbpb_276tev_00_rapidity_21_centrality_thirty_forty();
+  TGraphErrors *grf_Data_ATLAS_RAA_Cent_40_50_276TeV = jet_atlas_raa_pbpb_276tev_00_rapidity_21_centrality_forty_fifty();
+  TGraphErrors *grf_Data_ATLAS_RAA_Cent_50_60_276TeV = jet_atlas_raa_pbpb_276tev_00_rapidity_21_centrality_fifty_sixty();
+  TGraphErrors *grf_Data_ATLAS_RAA_Cent_60_70_276TeV = jet_atlas_raa_pbpb_276tev_00_rapidity_21_centrality_sixty_seventy();
+  TGraphErrors *grf_Data_ATLAS_RAA_Cent_70_80_276TeV = jet_atlas_raa_pbpb_276tev_00_rapidity_21_centrality_seventy_eighty();
 
-  new TCanvas;
+
+
+
+  //coulamXRows
+  TCanvas *Canv_Data_ATLAS_RAA_Cent_276TeV = new TCanvas("Canv_Data_ATLAS_RAA_Cent_276TeV","Canv_Data_ATLAS_RAA_Cent_276TeV",1200,1200);
+  Canv_Data_ATLAS_RAA_Cent_276TeV->Divide(3,3);
+  
+  Canv_Data_ATLAS_RAA_Cent_276TeV->cd(1);
   grf_Data_ATLAS_RAA_Cent_00_10_276TeV->Draw("AP");
+  tb->DrawLatex(0.60, 0.70, "0-10%") ;
+
+  Canv_Data_ATLAS_RAA_Cent_276TeV->cd(2);
+  grf_Data_ATLAS_RAA_Cent_10_20_276TeV->Draw("AP");
+  tb->DrawLatex(0.60, 0.70, "10-20%") ;
+
+  Canv_Data_ATLAS_RAA_Cent_276TeV->cd(3);
+  grf_Data_ATLAS_RAA_Cent_20_30_276TeV->Draw("AP");
+  tb->DrawLatex(0.60, 0.70, "20-30%") ;
+
+  Canv_Data_ATLAS_RAA_Cent_276TeV->cd(4);
+  grf_Data_ATLAS_RAA_Cent_30_40_276TeV->Draw("AP");
+  tb->DrawLatex(0.60, 0.70, "30-40%") ;
+
+  Canv_Data_ATLAS_RAA_Cent_276TeV->cd(5);
+  grf_Data_ATLAS_RAA_Cent_40_50_276TeV->Draw("AP");
+  tb->DrawLatex(0.60, 0.70, "40-50%") ;
+
+  Canv_Data_ATLAS_RAA_Cent_276TeV->cd(6);
+  grf_Data_ATLAS_RAA_Cent_50_60_276TeV->Draw("AP");
+  tb->DrawLatex(0.60, 0.70, "50-60%") ;
+
+  Canv_Data_ATLAS_RAA_Cent_276TeV->cd(7);
+  grf_Data_ATLAS_RAA_Cent_60_70_276TeV->Draw("AP");
+  tb->DrawLatex(0.60, 0.70, "60-70%") ;
+
+  Canv_Data_ATLAS_RAA_Cent_276TeV->cd(8);
+  grf_Data_ATLAS_RAA_Cent_70_80_276TeV->Draw("AP");
+  tb->DrawLatex(0.60, 0.70, "70-80%") ;
+
+
+
+
+  TGraphErrors *grf_Data_ATLAS_RAA_Cent_00_10_502TeV = jet_nuclear_modification_factor_raa_atlas_PbPb_502tev_cen_zero0_ten10()        ;
+  TGraphErrors *grf_Data_ATLAS_RAA_Cent_10_20_502TeV =jet_nuclear_modification_factor_raa_atlas_PbPb_502tev_cen_ten10_twenty20()     ;
+  TGraphErrors *grf_Data_ATLAS_RAA_Cent_20_30_502TeV = jet_nuclear_modification_factor_raa_atlas_PbPb_502tev_cen_twenty20_thirty30()  ;
+  TGraphErrors *grf_Data_ATLAS_RAA_Cent_30_40_502TeV = jet_nuclear_modification_factor_raa_atlas_PbPb_502tev_cen_thirty30_forty40()   ;
+  TGraphErrors *grf_Data_ATLAS_RAA_Cent_40_50_502TeV = jet_nuclear_modification_factor_raa_atlas_PbPb_502tev_cen_forty40_fifty50()    ;
+  TGraphErrors *grf_Data_ATLAS_RAA_Cent_50_60_502TeV = jet_nuclear_modification_factor_raa_atlas_PbPb_502tev_cen_fifty50_sixty60()    ;
+  TGraphErrors *grf_Data_ATLAS_RAA_Cent_60_70_502TeV = jet_nuclear_modification_factor_raa_atlas_PbPb_502tev_cen_sixty60_seventy70()  ;
+  TGraphErrors *grf_Data_ATLAS_RAA_Cent_70_80_502TeV = jet_nuclear_modification_factor_raa_atlas_PbPb_502tev_cen_seventy70_eighty80() ;
+
+  
+  //coulamXRows
+  TCanvas *Canv_Data_ATLAS_RAA_Cent_502TeV = new TCanvas("Canv_Data_ATLAS_RAA_Cent_502TeV","Canv_Data_ATLAS_RAA_Cent_502TeV",1200,1200);
+  Canv_Data_ATLAS_RAA_Cent_502TeV->Divide(3,3);
+  
+  Canv_Data_ATLAS_RAA_Cent_502TeV->cd(1);
+  grf_Data_ATLAS_RAA_Cent_00_10_502TeV->Draw("AP");
+  tb->DrawLatex(0.60, 0.70, "0-10%") ;
+
+  Canv_Data_ATLAS_RAA_Cent_502TeV->cd(2);
+  grf_Data_ATLAS_RAA_Cent_10_20_502TeV->Draw("AP");
+  tb->DrawLatex(0.60, 0.70, "10-20%") ;
+
+  Canv_Data_ATLAS_RAA_Cent_502TeV->cd(3);
+  grf_Data_ATLAS_RAA_Cent_20_30_502TeV->Draw("AP");
+  tb->DrawLatex(0.60, 0.70, "20-30%") ;
+
+  Canv_Data_ATLAS_RAA_Cent_502TeV->cd(4);
+  grf_Data_ATLAS_RAA_Cent_30_40_502TeV->Draw("AP");
+  tb->DrawLatex(0.60, 0.70, "30-40%") ;
+
+  Canv_Data_ATLAS_RAA_Cent_502TeV->cd(5);
+  grf_Data_ATLAS_RAA_Cent_40_50_502TeV->Draw("AP");
+  tb->DrawLatex(0.60, 0.70, "40-50%") ;
+
+  Canv_Data_ATLAS_RAA_Cent_502TeV->cd(6);
+  grf_Data_ATLAS_RAA_Cent_50_60_502TeV->Draw("AP");
+  tb->DrawLatex(0.60, 0.70, "50-60%") ;
+
+  Canv_Data_ATLAS_RAA_Cent_502TeV->cd(7);
+  grf_Data_ATLAS_RAA_Cent_60_70_502TeV->Draw("AP");
+  tb->DrawLatex(0.60, 0.70, "60-70%") ;
+
+  Canv_Data_ATLAS_RAA_Cent_502TeV->cd(8);
+  grf_Data_ATLAS_RAA_Cent_70_80_502TeV->Draw("AP");
+  tb->DrawLatex(0.60, 0.70, "70-80%") ;
 
 
 
 
 
 
-
-
-
+  
   
   return;
 
@@ -620,6 +724,7 @@ void FitParaTsallisPP276TeV()
   //fitfunc_jet_00_rapidity_21_pp_276tev->SetParameters(1000.0, 6.0, 0.1) ;
   //fitfunc_jet_00_rapidity_21_pp_276tev->SetParLimits(0, 750.0, 1100.0); 
   //fitfunc_jet_00_rapidity_21_pp_276tev->SetParLimits(1, 4.0,   500.0) ;
+
   fitfunc_jet_00_rapidity_21_pp_276tev->SetParameters(1.0, 6.0, 10) ;
   fitfunc_jet_00_rapidity_21_pp_276tev->SetParLimits(0, 0.00001, 100.0);
   fitfunc_jet_00_rapidity_21_pp_276tev->SetParLimits(1, 4.0,   10.0) ;
@@ -1216,28 +1321,15 @@ TGraphErrors *jet_atlas_raa_pbpb_276tev_00_rapidity_21_centrality_zero_ten()
   }
 
   TGraphErrors *gr_data = new TGraphErrors(N_point, pT, raa, pT_err, stat_err);
-  //gr_data->SetMarkerColor(2);
-  //gr_data->SetMarkerStyle(20);
-
-
   gr_data->SetMarkerColor(1);
   gr_data->SetMarkerStyle(21);
   gr_data->SetMarkerSize(1.5);
-
   gr_data->GetXaxis()->SetTitle("p_{T} GeV/c");
   gr_data->GetYaxis()->SetTitle("R_{AA}");
   gr_data->GetXaxis()->CenterTitle();
   gr_data->GetYaxis()->CenterTitle();
   gr_data->GetYaxis()->SetRangeUser(0.0,1.5);
   gr_data->GetXaxis()->SetLimits(0.0,400.0);
-  
-
-
-
-
-  
-  //  gr_data->SetMarkerSize(1.5);
-  //  gr_data->Draw("sameP");
   
   return gr_data ;
 
@@ -1262,11 +1354,15 @@ TGraphErrors *jet_atlas_raa_pbpb_276tev_00_rapidity_21_centrality_ten_twenty()
   }
 
   TGraphErrors *gr_data = new TGraphErrors(N_point, pT, raa, pT_err, stat_err);
-  gr_data->SetMarkerColor(2);
-  gr_data->SetMarkerStyle(20);
-  //  gr_data->SetMarkerSize(1.5);
-  //  gr_data->Draw("sameP");
-  
+  gr_data->SetMarkerColor(1);
+  gr_data->SetMarkerStyle(21);
+  gr_data->SetMarkerSize(1.5);
+  gr_data->GetXaxis()->SetTitle("p_{T} GeV/c");
+  gr_data->GetYaxis()->SetTitle("R_{AA}");
+  gr_data->GetXaxis()->CenterTitle();
+  gr_data->GetYaxis()->CenterTitle();
+  gr_data->GetYaxis()->SetRangeUser(0.0,1.5);
+  gr_data->GetXaxis()->SetLimits(0.0,400.0);
   return gr_data ;
 
 }
@@ -1289,11 +1385,17 @@ TGraphErrors *jet_atlas_raa_pbpb_276tev_00_rapidity_21_centrality_twenty_thirty(
   }
 
   TGraphErrors *gr_data = new TGraphErrors(N_point, pT, raa, pT_err, stat_err);
-  gr_data->SetMarkerColor(2);
-  gr_data->SetMarkerStyle(20);
-  //  gr_data->SetMarkerSize(1.5);
-  //  gr_data->Draw("sameP");
-  
+
+  gr_data->SetMarkerColor(1);
+  gr_data->SetMarkerStyle(21);
+  gr_data->SetMarkerSize(1.5);
+  gr_data->GetXaxis()->SetTitle("p_{T} GeV/c");
+  gr_data->GetYaxis()->SetTitle("R_{AA}");
+  gr_data->GetXaxis()->CenterTitle();
+  gr_data->GetYaxis()->CenterTitle();
+  gr_data->GetYaxis()->SetRangeUser(0.0,1.5);
+  gr_data->GetXaxis()->SetLimits(0.0,400.0);
+
   return gr_data ;
 
 }
@@ -1317,10 +1419,15 @@ TGraphErrors *jet_atlas_raa_pbpb_276tev_00_rapidity_21_centrality_thirty_forty()
   }
 
   TGraphErrors *gr_data = new TGraphErrors(N_point, pT, raa, pT_err, stat_err);
-  gr_data->SetMarkerColor(2);
-  gr_data->SetMarkerStyle(20);
-  //  gr_data->SetMarkerSize(1.5);
-  //  gr_data->Draw("sameP");
+  gr_data->SetMarkerColor(1);
+  gr_data->SetMarkerStyle(21);
+  gr_data->SetMarkerSize(1.5);
+  gr_data->GetXaxis()->SetTitle("p_{T} GeV/c");
+  gr_data->GetYaxis()->SetTitle("R_{AA}");
+  gr_data->GetXaxis()->CenterTitle();
+  gr_data->GetYaxis()->CenterTitle();
+  gr_data->GetYaxis()->SetRangeUser(0.0,1.5);
+  gr_data->GetXaxis()->SetLimits(0.0,400.0);
   
   return gr_data ;
 
@@ -1345,10 +1452,15 @@ TGraphErrors *jet_atlas_raa_pbpb_276tev_00_rapidity_21_centrality_forty_fifty()
   }
 
   TGraphErrors *gr_data = new TGraphErrors(N_point, pT, raa, pT_err, stat_err);
-  gr_data->SetMarkerColor(2);
-  gr_data->SetMarkerStyle(20);
-  //  gr_data->SetMarkerSize(1.5);
-  //  gr_data->Draw("sameP");
+  gr_data->SetMarkerColor(1);
+  gr_data->SetMarkerStyle(21);
+  gr_data->SetMarkerSize(1.5);
+  gr_data->GetXaxis()->SetTitle("p_{T} GeV/c");
+  gr_data->GetYaxis()->SetTitle("R_{AA}");
+  gr_data->GetXaxis()->CenterTitle();
+  gr_data->GetYaxis()->CenterTitle();
+  gr_data->GetYaxis()->SetRangeUser(0.0,1.5);
+  gr_data->GetXaxis()->SetLimits(0.0,400.0);
   
   return gr_data ;
 
@@ -1373,11 +1485,16 @@ TGraphErrors *jet_atlas_raa_pbpb_276tev_00_rapidity_21_centrality_fifty_sixty()
   }
 
   TGraphErrors *gr_data = new TGraphErrors(N_point, pT, raa, pT_err, stat_err);
-  gr_data->SetMarkerColor(2);
-  gr_data->SetMarkerStyle(20);
-  //  gr_data->SetMarkerSize(1.5);
-  //  gr_data->Draw("sameP");
-  
+  gr_data->SetMarkerColor(1);
+  gr_data->SetMarkerStyle(21);
+  gr_data->SetMarkerSize(1.5);
+  gr_data->GetXaxis()->SetTitle("p_{T} GeV/c");
+  gr_data->GetYaxis()->SetTitle("R_{AA}");
+  gr_data->GetXaxis()->CenterTitle();
+  gr_data->GetYaxis()->CenterTitle();
+  gr_data->GetYaxis()->SetRangeUser(0.0,1.5);
+  gr_data->GetXaxis()->SetLimits(0.0,400.0);
+
   return gr_data ;
 
 }
@@ -1401,11 +1518,15 @@ TGraphErrors *jet_atlas_raa_pbpb_276tev_00_rapidity_21_centrality_sixty_seventy(
   }
 
   TGraphErrors *gr_data = new TGraphErrors(N_point, pT, raa, pT_err, stat_err);
-  gr_data->SetMarkerColor(2);
-  gr_data->SetMarkerStyle(20);
-  //  gr_data->SetMarkerSize(1.5);
-  //  gr_data->Draw("sameP");
-  
+  gr_data->SetMarkerColor(1);
+  gr_data->SetMarkerStyle(21);
+  gr_data->SetMarkerSize(1.5);
+  gr_data->GetXaxis()->SetTitle("p_{T} GeV/c");
+  gr_data->GetYaxis()->SetTitle("R_{AA}");
+  gr_data->GetXaxis()->CenterTitle();
+  gr_data->GetYaxis()->CenterTitle();
+  gr_data->GetYaxis()->SetRangeUser(0.0,1.5);
+  gr_data->GetXaxis()->SetLimits(0.0,400.0);
   return gr_data ;
 
 }
@@ -1429,10 +1550,15 @@ TGraphErrors *jet_atlas_raa_pbpb_276tev_00_rapidity_21_centrality_seventy_eighty
   }
 
   TGraphErrors *gr_data = new TGraphErrors(N_point, pT, raa, pT_err, stat_err);
-  gr_data->SetMarkerColor(2);
-  gr_data->SetMarkerStyle(20);
-  //  gr_data->SetMarkerSize(1.5);
-  //  gr_data->Draw("sameP");
+  gr_data->SetMarkerColor(1);
+  gr_data->SetMarkerStyle(21);
+  gr_data->SetMarkerSize(1.5);
+  gr_data->GetXaxis()->SetTitle("p_{T} GeV/c");
+  gr_data->GetYaxis()->SetTitle("R_{AA}");
+  gr_data->GetXaxis()->CenterTitle();
+  gr_data->GetYaxis()->CenterTitle();
+  gr_data->GetYaxis()->SetRangeUser(0.0,1.5);
+  gr_data->GetXaxis()->SetLimits(0.0,400.0);
   
   return gr_data ;
 
@@ -1440,11 +1566,414 @@ TGraphErrors *jet_atlas_raa_pbpb_276tev_00_rapidity_21_centrality_seventy_eighty
 
 
 
+//=================== ATLAS 5 TeV Jet RAA ===============================//
 
 
 
 
+TGraphErrors *jet_nuclear_modification_factor_raa_atlas_PbPb_502tev_cen_zero0_ten10()
+{
+  int N_point               = 15 ;
+  double pT[20]             = {1.060000e+02 ,1.185000e+02 ,1.330000e+02 ,1.495000e+02 ,1.675000e+02 ,
+			       1.880000e+02 ,2.110000e+02 ,2.370000e+02 ,2.660000e+02 ,2.985000e+02 ,
+			       3.350000e+02 ,3.760000e+02 ,4.495000e+02 ,5.655000e+02 ,8.145000e+02 } ;
+  double pT_err_minus[20]   = {6.000000e+00 ,6.500000e+00 ,8.000000e+00 ,8.500000e+00 ,9.500000e+00 ,
+			       1.100000e+01 ,1.200000e+01 ,1.400000e+01 ,1.500000e+01 ,1.750000e+01 ,
+			       1.900000e+01 ,2.200000e+01 ,5.150000e+01 ,6.450000e+01 ,1.845000e+02 } ;
+  double pT_err_plus[20]    = {6.000000e+00 ,6.500000e+00 ,8.000000e+00 ,8.500000e+00 ,9.500000e+00 ,
+			       1.100000e+01 ,1.200000e+01 ,1.400000e+01 ,1.500000e+01 ,1.750000e+01 ,
+			       1.900000e+01 ,2.200000e+01 ,5.150000e+01 ,6.450000e+01 ,1.845000e+02 } ;
+  double RAA[20]            = {4.381000e-01 ,4.633000e-01 ,4.847000e-01 ,5.023000e-01 ,5.151000e-01 ,
+			       5.350000e-01 ,5.570000e-01 ,5.720000e-01 ,5.610000e-01 ,5.630000e-01 ,
+			       5.890000e-01 ,5.890000e-01 ,5.930000e-01 ,5.600000e-01 ,6.200000e-01 } ;
+  double stat_err_minus[20] = {1.679613e-02 ,1.733522e-02 ,1.784124e-02 ,1.797081e-02 ,1.779522e-02 ,
+			       1.832184e-02 ,2.043747e-02 ,2.169539e-02 ,2.242075e-02 ,2.378424e-02 ,
+			       2.845505e-02 ,3.459321e-02 ,3.759907e-02 ,6.461958e-02 ,1.617890e-01 } ;
+  double stat_err_plus[20]  = {1.714235e-02 ,1.740402e-02 ,1.763576e-02 ,1.777020e-02 ,1.779522e-02 ,
+			       1.832184e-02 ,2.043747e-02 ,2.169539e-02 ,2.242075e-02 ,2.378424e-02 ,
+			       2.845505e-02 ,3.459321e-02 ,3.759907e-02 ,6.461958e-02 ,1.617890e-01 } ;
 
+  double pT_err[20], stat_err[20] ;
+  for(int i=0; i<N_point; i++){
+    
+    pT_err[i]   = (pT_err_minus[i]   + pT_err_plus[i])/2.0  ;
+    stat_err[i] = (stat_err_minus[i] + stat_err_plus[i])/2.0 ;
+  }
+
+  TGraphErrors *gr_data = new TGraphErrors(N_point, pT, RAA, pT_err, stat_err) ;
+  gr_data->SetMarkerColor(1);
+  gr_data->SetMarkerStyle(21);
+  gr_data->SetMarkerSize(1.5);
+  gr_data->GetXaxis()->SetTitle("p_{T} GeV/c");
+  gr_data->GetYaxis()->SetTitle("R_{AA}");
+  gr_data->GetXaxis()->CenterTitle();
+  gr_data->GetYaxis()->CenterTitle();
+  gr_data->GetYaxis()->SetRangeUser(0.0,1.5);
+  gr_data->GetXaxis()->SetLimits(0.0,500.0);
+
+  return gr_data ; 
+  
+}
+
+
+TGraphErrors *jet_nuclear_modification_factor_raa_atlas_PbPb_502tev_cen_ten10_twenty20()     
+{
+  int N_point               =  12 ;
+  double pT[20]             = {1.060000e+02 ,1.185000e+02 ,1.330000e+02 ,1.495000e+02 ,1.675000e+02 ,
+			       1.880000e+02 ,2.110000e+02 ,2.370000e+02 ,2.660000e+02 ,2.985000e+02 ,
+			       3.570000e+02 ,5.140000e+02 } ;
+  double pT_err_minus[20]   = {6.000000e+00 ,6.500000e+00 ,8.000000e+00 ,8.500000e+00 ,9.500000e+00 ,
+			       1.100000e+01 ,1.200000e+01 ,1.400000e+01 ,1.500000e+01 ,1.750000e+01 ,
+			       4.100000e+01 ,1.160000e+02 } ;
+  double pT_err_plus[20]    = {6.000000e+00 ,6.500000e+00 ,8.000000e+00 ,8.500000e+00 ,9.500000e+00 ,
+			       1.100000e+01 ,1.200000e+01 ,1.400000e+01 ,1.500000e+01 ,1.750000e+01 ,
+			       4.100000e+01 ,1.160000e+02 } ;
+  double RAA[20]            = {5.047000e-01 ,5.279000e-01 ,5.506000e-01 ,5.702000e-01 ,5.860000e-01 ,
+			       5.950000e-01 ,6.140000e-01 ,6.500000e-01 ,6.480000e-01 ,6.400000e-01 ,
+			       6.820000e-01 ,6.600000e-01 } ;
+  double stat_err_minus[20] = {1.929093e-02 ,1.950359e-02 ,1.986706e-02 ,2.004969e-02 ,2.023092e-02 ,
+			       2.045214e-02 ,2.180115e-02 ,2.392258e-02 ,2.520496e-02 ,2.793367e-02 ,
+			       3.074557e-02 ,4.417341e-02 } ;
+  double stat_err_plus[20]  = {1.923408e-02 ,1.933753e-02 ,1.975601e-02 ,1.999550e-02 ,2.023092e-02 ,
+			       2.045214e-02 ,2.180115e-02 ,2.392258e-02 ,2.520496e-02 ,2.793367e-02 ,
+			       3.074557e-02 ,4.417341e-02 } ;
+
+  double pT_err[20], stat_err[20] ;
+  for(int i=0; i<N_point; i++){
+    
+    pT_err[i]   = (pT_err_minus[i]   + pT_err_plus[i])/2.0  ;
+    stat_err[i] = (stat_err_minus[i] + stat_err_plus[i])/2.0 ;
+  }
+
+  TGraphErrors *gr_data = new TGraphErrors(N_point, pT, RAA, pT_err, stat_err) ;
+   gr_data->SetMarkerColor(1);
+  gr_data->SetMarkerStyle(21);
+  gr_data->SetMarkerSize(1.5);
+  gr_data->GetXaxis()->SetTitle("p_{T} GeV/c");
+  gr_data->GetYaxis()->SetTitle("R_{AA}");
+  gr_data->GetXaxis()->CenterTitle();
+  gr_data->GetYaxis()->CenterTitle();
+  gr_data->GetYaxis()->SetRangeUser(0.0,1.5);
+  gr_data->GetXaxis()->SetLimits(0.0,500.0);
+  return gr_data ; 
+
+}
+
+TGraphErrors *jet_nuclear_modification_factor_raa_atlas_PbPb_502tev_cen_twenty20_thirty30()  
+{
+  int N_point               =  14 ;
+  double pT[20]             = {8.400000e+01 ,9.450000e+01 ,1.060000e+02 ,1.185000e+02 ,1.330000e+02 ,
+			       1.495000e+02 ,1.675000e+02 ,1.880000e+02 ,2.110000e+02 ,2.370000e+02 ,
+			       2.660000e+02 ,2.985000e+02 ,3.570000e+02 ,5.140000e+02 } ;
+  double pT_err_minus[20]   = {5.000000e+00 ,5.500000e+00 ,6.000000e+00 ,6.500000e+00 ,8.000000e+00 ,
+			       8.500000e+00 ,9.500000e+00 ,1.100000e+01 ,1.200000e+01 ,1.400000e+01 ,
+			       1.500000e+01 ,1.750000e+01 ,4.100000e+01 ,1.160000e+02 } ;
+  double pT_err_plus[20]    = {5.000000e+00 ,5.500000e+00 ,6.000000e+00 ,6.500000e+00 ,8.000000e+00 ,
+			       8.500000e+00 ,9.500000e+00 ,1.100000e+01 ,1.200000e+01 ,1.400000e+01 ,
+			       1.500000e+01 ,1.750000e+01 ,4.100000e+01 ,1.160000e+02 } ;
+  double RAA[20]            = {5.380000e-01 ,5.620000e-01 ,5.769000e-01 ,5.980000e-01 ,6.170000e-01 ,
+			       6.270000e-01 ,6.450000e-01 ,6.710000e-01 ,6.830000e-01 ,7.020000e-01 ,
+			       7.230000e-01 ,7.480000e-01 ,7.170000e-01 ,8.000000e-01 } ;
+  double stat_err_minus[20] = {2.508007e-02 ,2.549529e-02 ,2.524837e-02 ,2.539705e-02 ,2.539705e-02 ,
+			       2.594244e-02 ,2.594244e-02 ,2.687024e-02 ,2.783900e-02 ,2.941105e-02 ,
+			       3.162293e-02 ,3.602791e-02 ,3.870413e-02 ,5.834389e-02 } ;
+  double stat_err_plus[20]  = {2.508007e-02 ,2.549529e-02 ,2.528774e-02 ,2.539705e-02 ,2.539705e-02 ,
+			       2.557362e-02 ,2.594244e-02 ,2.687024e-02 ,2.783900e-02 ,2.941105e-02 ,
+			       3.162293e-02 ,3.602791e-02 ,3.837981e-02 ,5.834389e-02 } ;
+
+  double pT_err[20], stat_err[20] ;
+  for(int i=0; i<N_point; i++){
+    
+    pT_err[i]   = (pT_err_minus[i]   + pT_err_plus[i])/2.0  ;
+    stat_err[i] = (stat_err_minus[i] + stat_err_plus[i])/2.0 ;
+  }
+
+  TGraphErrors *gr_data = new TGraphErrors(N_point, pT, RAA, pT_err, stat_err) ;
+  gr_data->SetMarkerColor(1);
+  gr_data->SetMarkerStyle(21);
+  gr_data->SetMarkerSize(1.5);
+  gr_data->GetXaxis()->SetTitle("p_{T} GeV/c");
+  gr_data->GetYaxis()->SetTitle("R_{AA}");
+  gr_data->GetXaxis()->CenterTitle();
+  gr_data->GetYaxis()->CenterTitle();
+  gr_data->GetYaxis()->SetRangeUser(0.0,1.5);
+  gr_data->GetXaxis()->SetLimits(0.0,500.0);
+
+
+
+  return gr_data ; 
+
+}
+
+TGraphErrors *jet_nuclear_modification_factor_raa_atlas_PbPb_502tev_cen_thirty30_forty40()   
+{
+  int N_point               =  13 ;
+  double pT[20]             = {8.400000e+01 ,9.450000e+01 ,1.060000e+02 ,1.185000e+02 ,1.330000e+02 ,
+			       1.495000e+02 ,1.675000e+02 ,1.880000e+02 ,2.110000e+02 ,2.370000e+02 ,
+			       2.835000e+02 ,3.570000e+02 ,5.140000e+02 } ;
+  double pT_err_minus[20]   = {5.000000e+00 ,5.500000e+00 ,6.000000e+00 ,6.500000e+00 ,8.000000e+00 ,
+			       8.500000e+00 ,9.500000e+00 ,1.100000e+01 ,1.200000e+01 ,1.400000e+01 ,
+			       3.250000e+01 ,4.100000e+01 ,1.160000e+02 } ;
+  double pT_err_plus[20]    = {5.000000e+00 ,5.500000e+00 ,6.000000e+00 ,6.500000e+00 ,8.000000e+00 ,
+			       8.500000e+00 ,9.500000e+00 ,1.100000e+01 ,1.200000e+01 ,1.400000e+01 ,
+			       3.250000e+01 ,4.100000e+01 ,1.160000e+02 } ;
+  double RAA[20]            = {6.060000e-01 ,6.200000e-01 ,6.470000e-01 ,6.720000e-01 ,6.920000e-01 ,
+			       7.110000e-01 ,7.250000e-01 ,7.370000e-01 ,7.540000e-01 ,7.820000e-01 ,
+			       7.780000e-01 ,7.600000e-01 ,7.400000e-01 } ;
+  double stat_err_minus[20] = {3.422704e-02 ,3.441642e-02 ,3.415392e-02 ,3.489255e-02 ,3.489255e-02 ,
+			       3.519219e-02 ,3.537640e-02 ,3.606231e-02 ,3.731608e-02 ,3.945238e-02 ,
+			       3.965463e-02 ,5.236879e-02 ,7.773345e-02 } ;
+  double stat_err_plus[20]  = {3.444546e-02 ,3.463365e-02 ,3.415392e-02 ,3.464809e-02 ,3.464809e-02 ,
+			       3.519219e-02 ,3.537640e-02 ,3.606231e-02 ,3.731608e-02 ,3.945238e-02 ,
+			       3.965463e-02 ,5.236879e-02 ,7.773345e-02 } ;
+
+  double pT_err[20], stat_err[20] ;
+  for(int i=0; i<N_point; i++){
+    
+    pT_err[i]   = (pT_err_minus[i]   + pT_err_plus[i])/2.0  ;
+    stat_err[i] = (stat_err_minus[i] + stat_err_plus[i])/2.0 ;
+  }
+
+  TGraphErrors *gr_data = new TGraphErrors(N_point, pT, RAA, pT_err, stat_err) ;
+  gr_data->SetMarkerColor(1);
+  gr_data->SetMarkerStyle(21);
+  gr_data->SetMarkerSize(1.5);
+  gr_data->GetXaxis()->SetTitle("p_{T} GeV/c");
+  gr_data->GetYaxis()->SetTitle("R_{AA}");
+  gr_data->GetXaxis()->CenterTitle();
+  gr_data->GetYaxis()->CenterTitle();
+  gr_data->GetYaxis()->SetRangeUser(0.0,1.5);
+  gr_data->GetXaxis()->SetLimits(0.0,500.0);
+
+
+  return gr_data ; 
+
+}
+
+TGraphErrors *jet_nuclear_modification_factor_raa_atlas_PbPb_502tev_cen_forty40_fifty50()    
+{
+  int N_point               =  14 ;
+  double pT[20]             = {5.300000e+01 ,5.950000e+01 ,6.650000e+01 ,7.450000e+01 ,8.400000e+01 ,
+			       9.450000e+01 ,1.060000e+02 ,1.185000e+02 ,1.330000e+02 ,1.495000e+02 ,
+			       1.675000e+02 ,1.880000e+02 ,2.250000e+02 ,3.245000e+02 } ;
+  double pT_err_minus[20]   = {3.000000e+00 ,3.500000e+00 ,3.500000e+00 ,4.500000e+00 ,5.000000e+00 ,
+			       5.500000e+00 ,6.000000e+00 ,6.500000e+00 ,8.000000e+00 ,8.500000e+00 ,
+			       9.500000e+00 ,1.100000e+01 ,2.600000e+01 ,7.350000e+01 } ;
+  double pT_err_plus[20]    = {3.000000e+00 ,3.500000e+00 ,3.500000e+00 ,4.500000e+00 ,5.000000e+00 ,
+			       5.500000e+00 ,6.000000e+00 ,6.500000e+00 ,8.000000e+00 ,8.500000e+00 ,
+			       9.500000e+00 ,1.100000e+01 ,2.600000e+01 ,7.350000e+01 } ;
+  double RAA[20]            = {6.120000e-01 ,6.400000e-01 ,6.610000e-01 ,6.820000e-01 ,7.020000e-01 ,
+			       7.330000e-01 ,7.380000e-01 ,7.440000e-01 ,7.660000e-01 ,7.840000e-01 ,
+			       7.760000e-01 ,8.010000e-01 ,8.360000e-01 ,8.480000e-01 } ;
+  double stat_err_minus[20] = {4.932839e-02 ,4.689659e-02 ,4.674709e-02 ,4.666144e-02 ,4.661856e-02 ,
+			       4.713056e-02 ,4.617673e-02 ,4.617673e-02 ,4.648968e-02 ,4.683257e-02 ,
+			       4.703499e-02 ,4.794048e-02 ,4.821089e-02 ,5.154891e-02 } ;
+  double stat_err_plus[20]  = {4.851072e-02 ,4.660783e-02 ,4.674709e-02 ,4.666144e-02 ,4.682190e-02 ,
+			       4.713056e-02 ,4.636044e-02 ,4.617673e-02 ,4.648968e-02 ,4.667215e-02 ,
+			       4.703499e-02 ,4.794048e-02 ,4.821089e-02 ,5.169420e-02 } ;
+
+  double pT_err[20], stat_err[20] ;
+  for(int i=0; i<N_point; i++){
+    
+    pT_err[i]   = (pT_err_minus[i]   + pT_err_plus[i])/2.0  ;
+    stat_err[i] = (stat_err_minus[i] + stat_err_plus[i])/2.0 ;
+  }
+
+  TGraphErrors *gr_data = new TGraphErrors(N_point, pT, RAA, pT_err, stat_err) ;
+  gr_data->SetMarkerColor(1);
+  gr_data->SetMarkerStyle(21);
+  gr_data->SetMarkerSize(1.5);
+  gr_data->GetXaxis()->SetTitle("p_{T} GeV/c");
+  gr_data->GetYaxis()->SetTitle("R_{AA}");
+  gr_data->GetXaxis()->CenterTitle();
+  gr_data->GetYaxis()->CenterTitle();
+  gr_data->GetYaxis()->SetRangeUser(0.0,1.5);
+  gr_data->GetXaxis()->SetLimits(0.0,500.0);
+
+  return gr_data ; 
+
+}
+
+TGraphErrors *jet_nuclear_modification_factor_raa_atlas_PbPb_502tev_cen_fifty50_sixty60()    
+{
+  int N_point               =  14 ;
+  double pT[20]             = {5.300000e+01 ,5.950000e+01 ,6.650000e+01 ,7.450000e+01 ,8.400000e+01 ,
+			       9.450000e+01 ,1.060000e+02 ,1.185000e+02 ,1.330000e+02 ,1.495000e+02 ,
+			       1.675000e+02 ,1.880000e+02 ,2.250000e+02 ,3.245000e+02 } ;
+  double pT_err_minus[20]   = {3.000000e+00 ,3.500000e+00 ,3.500000e+00 ,4.500000e+00 ,5.000000e+00 ,
+			       5.500000e+00 ,6.000000e+00 ,6.500000e+00 ,8.000000e+00 ,8.500000e+00 ,
+			       9.500000e+00 ,1.100000e+01 ,2.600000e+01 ,7.350000e+01 } ;
+  double pT_err_plus[20]    = {3.000000e+00 ,3.500000e+00 ,3.500000e+00 ,4.500000e+00 ,5.000000e+00 ,
+			       5.500000e+00 ,6.000000e+00 ,6.500000e+00 ,8.000000e+00 ,8.500000e+00 ,
+			       9.500000e+00 ,1.100000e+01 ,2.600000e+01 ,7.350000e+01 } ;
+  double RAA[20]            = {7.020000e-01 ,7.230000e-01 ,7.500000e-01 ,7.810000e-01 ,7.910000e-01 ,
+			       7.930000e-01 ,8.020000e-01 ,8.150000e-01 ,8.500000e-01 ,8.620000e-01 ,
+			       8.600000e-01 ,8.730000e-01 ,8.840000e-01 ,9.600000e-01 } ;
+  double stat_err_minus[20] = {6.460193e-02 ,6.400320e-02 ,6.347763e-02 ,6.217242e-02 ,6.163124e-02 ,
+			       6.204361e-02 ,6.069110e-02 ,6.103614e-02 ,6.286820e-02 ,6.204361e-02 ,
+			       6.246127e-02 ,6.390156e-02 ,6.376841e-02 ,7.316017e-02 } ;
+  double stat_err_plus[20]  = {6.423714e-02 ,6.400320e-02 ,6.347763e-02 ,6.217242e-02 ,6.163124e-02 ,
+			       6.204361e-02 ,6.078166e-02 ,6.103614e-02 ,6.286820e-02 ,6.172852e-02 ,
+			       6.234108e-02 ,6.390156e-02 ,6.376841e-02 ,7.316017e-02 } ;
+
+  double pT_err[20], stat_err[20] ;
+  for(int i=0; i<N_point; i++){
+    
+    pT_err[i]   = (pT_err_minus[i]   + pT_err_plus[i])/2.0  ;
+    stat_err[i] = (stat_err_minus[i] + stat_err_plus[i])/2.0 ;
+  }
+
+  TGraphErrors *gr_data = new TGraphErrors(N_point, pT, RAA, pT_err, stat_err) ;
+  gr_data->SetMarkerColor(1);
+  gr_data->SetMarkerStyle(21);
+  gr_data->SetMarkerSize(1.5);
+  gr_data->GetXaxis()->SetTitle("p_{T} GeV/c");
+  gr_data->GetYaxis()->SetTitle("R_{AA}");
+  gr_data->GetXaxis()->CenterTitle();
+  gr_data->GetYaxis()->CenterTitle();
+  gr_data->GetYaxis()->SetRangeUser(0.0,1.5);
+  gr_data->GetXaxis()->SetLimits(0.0,500.0);
+
+
+  return gr_data ; 
+
+}
+
+TGraphErrors *jet_nuclear_modification_factor_raa_atlas_PbPb_502tev_cen_sixty60_seventy70()  
+{
+  int N_point               =  14 ;
+  double pT[20]             = {5.300000e+01 ,5.950000e+01 ,6.650000e+01 ,7.450000e+01 ,8.400000e+01 ,
+			       9.450000e+01 ,1.060000e+02 ,1.185000e+02 ,1.330000e+02 ,1.495000e+02 ,
+			       1.675000e+02 ,1.880000e+02 ,2.250000e+02 ,3.245000e+02 } ;
+  double pT_err_minus[20]   = {3.000000e+00 ,3.500000e+00 ,3.500000e+00 ,4.500000e+00 ,5.000000e+00 ,
+			       5.500000e+00 ,6.000000e+00 ,6.500000e+00 ,8.000000e+00 ,8.500000e+00 ,
+			       9.500000e+00 ,1.100000e+01 ,2.600000e+01 ,7.350000e+01 } ;
+  double pT_err_plus[20]    = {3.000000e+00 ,3.500000e+00 ,3.500000e+00 ,4.500000e+00 ,5.000000e+00 ,
+			       5.500000e+00 ,6.000000e+00 ,6.500000e+00 ,8.000000e+00 ,8.500000e+00 ,
+			       9.500000e+00 ,1.100000e+01 ,2.600000e+01 ,7.350000e+01 } ;
+  double RAA[20]            = {7.820000e-01 ,8.190000e-01 ,8.280000e-01 ,8.330000e-01 ,8.610000e-01 ,
+			       8.810000e-01 ,8.670000e-01 ,8.690000e-01 ,9.090000e-01 ,9.240000e-01 ,
+			       8.740000e-01 ,8.570000e-01 ,9.180000e-01 ,8.600000e-01 } ;
+  double stat_err_minus[20] = {8.313657e-02 ,8.216258e-02 ,8.169266e-02 ,8.158241e-02 ,8.182109e-02 ,
+			       8.291978e-02 ,7.931387e-02 ,7.975393e-02 ,7.992303e-02 ,8.052136e-02 ,
+			       8.124463e-02 ,8.279909e-02 ,8.459131e-02 ,9.338999e-02 } ;
+  double stat_err_plus[20]  = {8.495110e-02 ,8.274473e-02 ,8.145361e-02 ,8.137991e-02 ,8.182109e-02 ,
+			       8.299813e-02 ,7.939578e-02 ,7.955306e-02 ,7.972258e-02 ,8.052136e-02 ,
+			       8.133689e-02 ,8.288963e-02 ,8.451444e-02 ,9.338999e-02 } ;
+
+  double pT_err[20], stat_err[20] ;
+  for(int i=0; i<N_point; i++){
+    
+    pT_err[i]   = (pT_err_minus[i]   + pT_err_plus[i])/2.0  ;
+    stat_err[i] = (stat_err_minus[i] + stat_err_plus[i])/2.0 ;
+  }
+
+  TGraphErrors *gr_data = new TGraphErrors(N_point, pT, RAA, pT_err, stat_err) ;
+  gr_data->SetMarkerColor(1);
+  gr_data->SetMarkerStyle(21);
+  gr_data->SetMarkerSize(1.5);
+  gr_data->GetXaxis()->SetTitle("p_{T} GeV/c");
+  gr_data->GetYaxis()->SetTitle("R_{AA}");
+  gr_data->GetXaxis()->CenterTitle();
+  gr_data->GetYaxis()->CenterTitle();
+  gr_data->GetYaxis()->SetRangeUser(0.0,1.5);
+  gr_data->GetXaxis()->SetLimits(0.0,500.0);
+
+  return gr_data ; 
+
+}
+
+TGraphErrors *jet_nuclear_modification_factor_raa_atlas_PbPb_502tev_cen_seventy70_eighty80() 
+{
+  int N_point               = 13 ;
+  double pT[20]             = {5.300000e+01 ,5.950000e+01 ,6.650000e+01 ,7.450000e+01 ,8.400000e+01 ,
+			       9.450000e+01 ,1.060000e+02 ,1.185000e+02 ,1.330000e+02 ,1.495000e+02 ,
+			       1.675000e+02 ,1.880000e+02 ,2.250000e+02 } ;
+  double pT_err_minus[20]   = {3.000000e+00 ,3.500000e+00 ,3.500000e+00 ,4.500000e+00 ,5.000000e+00 ,
+			       5.500000e+00 ,6.000000e+00 ,6.500000e+00 ,8.000000e+00 ,8.500000e+00 ,
+			       9.500000e+00 ,1.100000e+01 ,2.600000e+01 } ;
+  double pT_err_plus[20]    = {3.000000e+00 ,3.500000e+00 ,3.500000e+00 ,4.500000e+00 ,5.000000e+00 ,
+			       5.500000e+00 ,6.000000e+00 ,6.500000e+00 ,8.000000e+00 ,8.500000e+00 ,
+			       9.500000e+00 ,1.100000e+01 ,2.600000e+01 } ;
+  double RAA[20]            = {8.210000e-01 ,8.530000e-01 ,8.750000e-01 ,8.600000e-01 ,8.570000e-01 ,
+			       8.800000e-01 ,9.070000e-01 ,9.050000e-01 ,9.170000e-01 ,9.330000e-01 ,
+			       9.260000e-01 ,9.000000e-01 ,9.600000e-01 } ;
+  double stat_err_minus[20] = {1.024407e-01 ,1.013661e-01 ,1.012970e-01 ,1.021963e-01 ,1.033929e-01 ,
+			       1.057454e-01 ,9.926273e-02 ,9.935336e-02 ,1.000554e-01 ,1.013464e-01 ,
+			       1.034171e-01 ,1.057454e-01 ,1.099186e-01 } ;
+  double stat_err_plus[20]  = {1.016026e-01 ,1.006980e-01 ,1.011142e-01 ,1.023674e-01 ,1.036826e-01 ,
+			       1.057454e-01 ,9.889939e-02 ,9.925769e-02 ,9.995044e-02 ,1.012625e-01 ,
+			       1.034171e-01 ,1.057454e-01 ,1.099186e-01 } ;
+
+  double pT_err[20], stat_err[20] ;
+  for(int i=0; i<N_point; i++){
+    
+    pT_err[i]   = (pT_err_minus[i]   + pT_err_plus[i])/2.0  ;
+    stat_err[i] = (stat_err_minus[i] + stat_err_plus[i])/2.0 ;
+  }
+
+  TGraphErrors *gr_data = new TGraphErrors(N_point, pT, RAA, pT_err, stat_err) ;
+  gr_data->SetMarkerColor(1);
+  gr_data->SetMarkerStyle(21);
+  gr_data->SetMarkerSize(1.5);
+  gr_data->GetXaxis()->SetTitle("p_{T} GeV/c");
+  gr_data->GetYaxis()->SetTitle("R_{AA}");
+  gr_data->GetXaxis()->CenterTitle();
+  gr_data->GetYaxis()->CenterTitle();
+  gr_data->GetYaxis()->SetRangeUser(0.0,1.5);
+  gr_data->GetXaxis()->SetLimits(0.0,500.0);
+
+
+
+  return gr_data ; 
+
+}
+
+
+
+
+TGraphErrors *jet_production_atlas_yield_in_pp_collision_502tev()
+{
+  //  sigma_atlas_502tev  = sigma_atlas_502tev * pow(10.0, 6.0) ; // For convert mb to nb 
+  
+  int N_point               = 14 ;
+  double pT[20]             = {4.500000e+01 ,5.650000e+01 ,7.100000e+01 ,8.950000e+01 ,1.130000e+02 ,
+			       1.420000e+02 ,1.790000e+02 ,2.255000e+02 ,2.835000e+02 ,3.570000e+02 ,
+			       4.495000e+02 ,5.660000e+02 ,7.155000e+02 ,9.000000e+02  } ;
+  double pT_err_minus[20]   = {5.000000e+00 ,6.500000e+00 ,8.000000e+00 ,1.050000e+01 ,1.300000e+01 ,
+			       1.600000e+01 ,2.100000e+01 ,2.550000e+01 ,3.250000e+01 ,4.100000e+01 ,
+			       5.150000e+01 ,6.500000e+01 ,8.450000e+01 ,1.000000e+02  } ;
+  double pT_err_plus[20]    = {5.000000e+00 ,6.500000e+00 ,8.000000e+00 ,1.050000e+01 ,1.300000e+01 ,
+			       1.600000e+01 ,2.100000e+01 ,2.550000e+01 ,3.250000e+01 ,4.100000e+01 ,
+			       5.150000e+01 ,6.500000e+01 ,8.450000e+01 ,1.000000e+02  } ;
+  double yield[20]          = {1.361100e+02 ,4.362000e+01 ,1.374900e+01 ,4.051000e+00 ,1.154300e+00 ,
+			       3.131000e-01 ,8.267000e-02 ,2.019000e-02 ,4.644000e-03 ,9.610000e-04 ,
+			       1.850000e-04 ,3.610000e-05 ,4.500000e-06 ,4.800000e-07  } ;
+  double stat_err_minus[20] = {2.131543e+01 ,5.729302e+00 ,1.627702e+00 ,4.307865e-01 ,1.187099e-01 ,
+			       2.999033e-02 ,7.973544e-03 ,1.850432e-03 ,4.265993e-04 ,8.832327e-05 ,
+			       1.772005e-05 ,3.781534e-06 ,7.141428e-07 ,1.489966e-07  } ;
+  double stat_err_plus[20]  = {2.238793e+01 ,6.016444e+00 ,1.684001e+00 ,4.455581e-01 ,1.211684e-01 ,
+			       3.106944e-02 ,8.042207e-03 ,1.879787e-03 ,4.314881e-04 ,8.929726e-05 ,
+			       1.868154e-05 ,3.871692e-06 ,7.874008e-07 ,1.489966e-07  } ;
+  
+  double pT_err[20], stat_err[20] ;
+  for(int i=0; i<N_point; i++){
+    yield[i]          = yield[i]/sigma_atlas_502tev ;
+    stat_err_minus[i] = stat_err_minus[i]/sigma_atlas_502tev ;
+    stat_err_plus[i]  = stat_err_plus[i]/sigma_atlas_502tev  ;
+
+    pT_err[i]   = (pT_err_minus[i]    + pT_err_plus[i])/2.0 ;
+    stat_err[i] = ( stat_err_minus[i] + stat_err_plus[i])/2.0 ;
+  }
+    
+  TGraphErrors *gr_data = new TGraphErrors(N_point, pT, yield, pT_err, stat_err) ;
+  gr_data->SetMarkerColor(2) ;
+  gr_data->SetMarkerStyle(20) ;
+  //  gr_data->SetMarkerSize(2) ;
+
+  return gr_data ; 
+
+}
 
 
 
