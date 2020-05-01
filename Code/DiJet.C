@@ -382,12 +382,18 @@ void DiJet()
 
   
   
-  return;
+  // return;
 
   
   // Histograms
   TH1D *hAsymmetryDiff = new TH1D("hAsymmetryDiff", "hAsymmetryDiff", 17, 0.0, 1.0);
   hAsymmetryDiff->SetLineWidth(2);
+
+  TH1D *hist_Pt_Initial = new TH1D("hist_Pt_Initial", "hist_Pt_Initial", 25, 0.0, 500.0);
+  TH1D *hist_Pt_Final = new TH1D("hist_Pt_Final", "hist_Pt_Final", 25, 0.0, 500.0);
+  TH1D *hist_Pt_Ratio = new TH1D("hist_Pt_Ratio", "hist_Pt_Ratio", 25, 0.0, 500.0);
+
+
   // Random distribution;
   TRandom3 rand(0); 
   // pp distribution fit 
@@ -400,7 +406,9 @@ void DiJet()
 
   
   Double_t ResPhi = 0.3; // relative
-  Double_t RespT = 0.28;  // Relative
+  // Double_t RespT = 0.28;  // Relative
+
+   Double_t RespT = 0.0;  // Relative
   
   //for Energy Loss
   //Double_t alpha = 0.5;
@@ -410,8 +418,10 @@ void DiJet()
   //Double_t MM = 6.0;
 
 
-  Double_t alpha = 1.0;
-  Double_t MM = 0.05;
+  //Double_t alpha = 0.5;
+  //Double_t MM = 0.2;
+  Double_t alpha = 0.55;
+  Double_t MM = 0.4;
 
   
 
@@ -419,9 +429,10 @@ void DiJet()
   // Size of the system
   Double_t Npart = Npart_Jet_PbPb_276TeV_Cen_0_10;
   Double_t RR = RA*sqrt(Npart/(2*Am));
+
   int nn = 5000000;
   
-  for(int i=1; i<= nn; i++) {
+  for(int i=0; i< nn; i++) {
 
     // Generate pT 
     Double_t pT = fJetpp276tev->GetRandom();
@@ -443,25 +454,35 @@ void DiJet()
     Double_t d1 = sqrt(RR*RR - rr*rr*sin(Phi1)) - rr*cos(Phi1);
     Double_t d2 = sqrt(RR*RR - rr*rr*sin(Phi2)) - rr*cos(Phi2); 
 
-    
-    // Calculate DeltapT
+    hist_Pt_Initial->Fill(rand.Gaus(pT, pT*RespT));
+    //hist_Pt_Initial->Fill(rand.Gaus(pT, pT*RespT));
+
+
+      // Calculate DeltapT
     Double_t dEdx = calDelta(pT, alpha, MM);
 
     Double_t E1 = pT-dEdx*d1;
     Double_t E2 = pT-dEdx*d2;
+
     //for pp no energy loss
-    E1 = pT;
-    E2 = pT;
+    //E1 = pT;
+    //E2 = pT;
 
     
     // Smear pT
     Double_t pT1 = rand.Gaus(E1, E1*RespT);
     Double_t pT2 = rand.Gaus(E2, E2*RespT);
 
+
+    
+
+    
     //Exp cut on pT
     Double_t L_Pt = TMath::Max(pT1,pT2);
     Double_t SubL_Pt = TMath::Min(pT1,pT2);;
 
+    hist_Pt_Final->Fill(L_Pt);
+    //hist_Pt_Final->Fill(SubL_Pt);
 
     
     if(L_Pt< 120.0 || SubL_Pt < 30.0 || DeltaPhi < (2.0*pi)/3.0) continue; 
@@ -480,9 +501,11 @@ void DiJet()
     hAsymmetryDiff->Fill(pTDiff);
   } 
 
+
+
+
   hAsymmetryDiff->Scale(1.0/ hAsymmetryDiff->Integral());
 
-  
   new TCanvas;
   hAsymmetryDiff->SetLineColor(1);
   hAsymmetryDiff->GetXaxis()->SetTitle("Asymmetry");
@@ -494,11 +517,11 @@ void DiJet()
   hAsymmetryDiff->SetMarkerColor(2);
   
   
-  //grf_Data_CMS_Aj_Cent_00_10_276TeV->Draw("AP");
-  //tb->DrawLatex(0.80, 0.20, "0-10%") ;
+  grf_Data_CMS_Aj_Cent_00_10_276TeV->Draw("AP");
+  tb->DrawLatex(0.60, 0.70, "0-10%") ;
   
-  grf_Data_CMS_Aj_pp_276TeV->Draw("AP");
-  tb->DrawLatex(0.75, 0.20, "pp") ;
+  //grf_Data_CMS_Aj_pp_276TeV->Draw("AP");
+  //tb->DrawLatex(0.60, 0.70, "pp") ;
 
   hAsymmetryDiff->Draw("Psame");
   
@@ -515,6 +538,40 @@ void DiJet()
   gPad->SaveAs("Figure/OutFigures/Aj.png");
   gPad->SaveAs("Figure/OutFigures/Aj.pdf");
 
+
+
+  //hist_Pt_Final->Scale(1.0/ hist_Pt_Final->Integral());
+  //hist_Pt_Initial->Scale(1.0/hist_Pt_Initial->Integral());
+
+
+ 
+
+  new TCanvas;
+  gPad->SetLogy(1);
+  hist_Pt_Final->SetMarkerColor(2);
+  hist_Pt_Initial->Draw("P");
+  TH1D *temp_hist = (TH1D*)hist_Pt_Final->Clone("temp_hist");
+  temp_hist->SetMarkerColor(2);
+  temp_hist->Draw("Psame");
+  
+  hist_Pt_Final->Divide(hist_Pt_Final,hist_Pt_Initial,1.0,1.0,"B");
+
+  new TCanvas;
+  grf_Data_ATLAS_RAA_Cent_00_10_276TeV->Draw("AP");
+  hist_Pt_Final->Draw("Psame");
+  
+
+
+
+
+
+
+
+
+
+
+  
+  return;
 
   //CentBins (0,10,20,30,50,70,100)
   const Int_t NCentBins = 6;
