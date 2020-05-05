@@ -148,7 +148,7 @@ Double_t calDelta(Double_t pT, Double_t alpha, Double_t MM) ;
 
 
 TH1D *Asym_DiJet_Centrality(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, Double_t Alpha, Double_t MM, Double_t NPart, Int_t CentBin);
-
+TH1D *Asym_DiJet_Pt(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, Double_t Alpha, Double_t MM, Double_t NPart, Double_t LPtMin, Double_t LPtMax, , Int_t PtBin);
 
 
 
@@ -406,9 +406,8 @@ void DiJet()
 
   
   Double_t ResPhi = 0.3; // relative
-  // Double_t RespT = 0.28;  // Relative
-
-   Double_t RespT = 0.0;  // Relative
+  Double_t RespT = 0.28;  // Relative
+  //Double_t RespT = 0.0;  // Relative
   
   //for Energy Loss
   //Double_t alpha = 0.5;
@@ -418,10 +417,10 @@ void DiJet()
   //Double_t MM = 6.0;
 
 
-  //Double_t alpha = 0.5;
-  //Double_t MM = 0.2;
-  Double_t alpha = 0.55;
-  Double_t MM = 0.4;
+  Double_t alpha = 0.5;
+  Double_t MM = 0.2;
+  //Double_t alpha = 0.55;
+  //Double_t MM = 0.4;
 
   
 
@@ -438,7 +437,7 @@ void DiJet()
     Double_t pT = fJetpp276tev->GetRandom();
 
 
-    // if(pT<30.0) continue;
+    if(pT<30.0) continue;
     
     // Generate position 
     Double_t rr = rand.Uniform(0.0,1.0)*RR;
@@ -454,11 +453,10 @@ void DiJet()
     Double_t d1 = sqrt(RR*RR - rr*rr*sin(Phi1)) - rr*cos(Phi1);
     Double_t d2 = sqrt(RR*RR - rr*rr*sin(Phi2)) - rr*cos(Phi2); 
 
-    hist_Pt_Initial->Fill(rand.Gaus(pT, pT*RespT));
-    //hist_Pt_Initial->Fill(rand.Gaus(pT, pT*RespT));
-
-
-      // Calculate DeltapT
+    Double_t pTppMeas = rand.Gaus(pT, pT*RespT);
+    if(pTppMeas>50.0) hist_Pt_Initial->Fill(pTppMeas);
+    
+    // Calculate DeltapT
     Double_t dEdx = calDelta(pT, alpha, MM);
 
     Double_t E1 = pT-dEdx*d1;
@@ -473,7 +471,7 @@ void DiJet()
     Double_t pT1 = rand.Gaus(E1, E1*RespT);
     Double_t pT2 = rand.Gaus(E2, E2*RespT);
 
-
+    if(pT1 > 50.0) hist_Pt_Final->Fill(pT1);
     
 
     
@@ -481,10 +479,7 @@ void DiJet()
     Double_t L_Pt = TMath::Max(pT1,pT2);
     Double_t SubL_Pt = TMath::Min(pT1,pT2);;
 
-    hist_Pt_Final->Fill(L_Pt);
-    //hist_Pt_Final->Fill(SubL_Pt);
-
-    
+        
     if(L_Pt< 120.0 || SubL_Pt < 30.0 || DeltaPhi < (2.0*pi)/3.0) continue; 
 
 
@@ -632,8 +627,13 @@ void DiJet()
   //CanvasGenFractionMuonCut->SaveAs("Plots/GenJets/GenJetFrac_GenMuPtCut_All.png");
   //CanvasGenFractionMuonCut->SaveAs("Plots/GenJets/GenJetFrac_GenMuPtCut_All.pdf");
 
-
-
+  // make here pt functions
+  TGraphErrors *grf_Data_CMS_Aj_Pt_120_150_276TeV = Data_CMS_Aj_Pt_120_150_276TeV();
+  TGraphErrors *grf_Data_CMS_Aj_Pt_150_180_276TeV = Data_CMS_Aj_Pt_150_180_276TeV();
+  TGraphErrors *grf_Data_CMS_Aj_Pt_180_220_276TeV = Data_CMS_Aj_Pt_180_220_276TeV();
+  TGraphErrors *grf_Data_CMS_Aj_Pt_220_260_276TeV = Data_CMS_Aj_Pt_220_260_276TeV();
+  TGraphErrors *grf_Data_CMS_Aj_Pt_260_300_276TeV = Data_CMS_Aj_Pt_260_300_276TeV();
+  TGraphErrors *grf_Data_CMS_Aj_Pt_300_500_276TeV = Data_CMS_Aj_Pt_300_500_276TeV();
   
 
 
@@ -715,6 +715,116 @@ TH1D *Asym_DiJet_Centrality(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, 
   hAsymmetryOut->SetMarkerColor(kRed);
   return hAsymmetryOut;
 }
+
+
+
+
+
+TH1D *Asym_DiJet_Pt(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, Double_t Alpha, Double_t MM, Double_t NPart, Double_t LPtMin, Double_t LPtMax, , Int_t PtBin)
+{
+
+  const Double_t SLPtMin = 30.0;
+  
+  //initialize the random number generator
+  TRandom3 rand(0);
+  
+  //Histogram Name should come from the Centrality Loop
+
+
+  TH1D *hAsymmetryOut = new TH1D(Form("hAsymmetryOut_%d ",CentBin),Form("hAsymmetryOut_%d ",PtBin), 17, 0.0, 1.0);
+
+  Double_t RR = RA*sqrt(NPart/(2*Am));
+  const Int_t NEvents = 5000000;
+  
+  for(int i=0; i< NEvents; i++) {
+
+    // Generate Pt 
+    Double_t Pt = JetPtFuncPP->GetRandom();
+
+    if(Pt < SLPtMin) continue;
+    
+    // Generate position 
+    Double_t rr = rand.Uniform(0.0,1.0)*RR;
+    Double_t Phi = rand.Uniform(0.0,1.0)*2.0*pi;
+    
+    // Smear Phi
+    Double_t Phi1 = rand.Gaus(Phi, Phi*ResPhi);
+    Double_t Phi2 = rand.Gaus(Phi+pi, (Phi+pi)*ResPhi);
+    
+    Double_t DeltaPhi = (Phi2 - Phi1); 
+    
+    // Calculate pathlength
+    Double_t d1 = sqrt(RR*RR - rr*rr*sin(Phi1)) - rr*cos(Phi1);
+    Double_t d2 = sqrt(RR*RR - rr*rr*sin(Phi2)) - rr*cos(Phi2); 
+
+    
+    // Calculate DeltaPt
+    Double_t dEdx = calDelta(Pt, Alpha, MM);
+    
+    Double_t E1 = Pt-dEdx*d1;
+    Double_t E2 = Pt-dEdx*d2;
+
+    // Smear Pt
+    Double_t Pt1 = rand.Gaus(E1, E1*ResPt);
+    Double_t Pt2 = rand.Gaus(E2, E2*ResPt);
+
+    //Exp cut on Pt
+    Double_t L_Pt = TMath::Max(Pt1,Pt2);
+    Double_t SubL_Pt = TMath::Min(Pt1,Pt2);;
+
+
+        
+    if( (L_Pt < LPtMin || L_Pt > LPtMax) || (SubL_Pt < SLPtMin) || DeltaPhi < (2.0*pi)/3.0) continue; 
+
+
+    Double_t PtDiff = (L_Pt-SubL_Pt)/(L_Pt+SubL_Pt); 
+    //cout << Pt1 << "  " << Pt2<<"   "<<PtDiff << endl;
+    
+    hAsymmetryOut->Fill(PtDiff);
+  } 
+
+  hAsymmetryOut->Scale(1.0/hAsymmetryOut->Integral());
+  hAsymmetryOut->GetXaxis()->SetTitle("A_{J}");
+  hAsymmetryOut->GetYaxis()->SetTitle("Event Fraction");
+  hAsymmetryOut->GetXaxis()->CenterTitle();
+  hAsymmetryOut->GetYaxis()->CenterTitle();
+  hAsymmetryOut->SetMarkerColor(kRed);
+  return hAsymmetryOut;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
