@@ -148,7 +148,7 @@ Double_t calDelta(Double_t pT, Double_t alpha, Double_t MM) ;
 
 
 TH1D *Asym_DiJet_Centrality(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, Double_t Alpha, Double_t MM, Double_t NPart, Int_t CentBin);
-TH1D *Asym_DiJet_Pt(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, Double_t Alpha, Double_t MM, Double_t NPart, Double_t LPtMin, Double_t LPtMax, , Int_t PtBin);
+TH1D *Asym_DiJet_Pt(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, Double_t Alpha, Double_t MM, Double_t NPart, Double_t LPtMin, Double_t LPtMax, Int_t PtBin);
 
 
 
@@ -376,12 +376,6 @@ void DiJet()
   tb->DrawLatex(0.60, 0.70, "70-80%") ;
 
 
-
-
-
-
-  
-  
   // return;
 
   
@@ -417,10 +411,10 @@ void DiJet()
   //Double_t MM = 6.0;
 
 
-  Double_t alpha = 0.5;
-  Double_t MM = 0.2;
-  //Double_t alpha = 0.55;
-  //Double_t MM = 0.4;
+  //Double_t alpha = 0.5;
+  //Double_t MM = 0.2;
+  Double_t alpha = 0.55;
+  Double_t MM = 0.4;
 
   
 
@@ -507,7 +501,7 @@ void DiJet()
   hAsymmetryDiff->GetXaxis()->CenterTitle();
   hAsymmetryDiff->GetYaxis()->SetTitle("No. of Events");
   hAsymmetryDiff->GetYaxis()->CenterTitle();
-  hAsymmetryDiff->GetYaxis()->SetRangeUser(0,0.2);
+  hAsymmetryDiff->GetYaxis()->SetRangeUser(0,0.32);
   hAsymmetryDiff->SetLineColor(2);
   hAsymmetryDiff->SetMarkerColor(2);
   
@@ -534,13 +528,6 @@ void DiJet()
   gPad->SaveAs("Figure/OutFigures/Aj.pdf");
 
 
-
-  //hist_Pt_Final->Scale(1.0/ hist_Pt_Final->Integral());
-  //hist_Pt_Initial->Scale(1.0/hist_Pt_Initial->Integral());
-
-
- 
-
   new TCanvas;
   gPad->SetLogy(1);
   hist_Pt_Final->SetMarkerColor(2);
@@ -561,12 +548,46 @@ void DiJet()
 
 
 
+  // make here pt functions
+
+  //PtBins (120,150,180,220,260,300,500)
+  const Int_t NPtBins = 6;
+  const Int_t APtBins[NPtBins+1]={120,150,180,220,260,300,500};
+  
+  TH1D *HistOutJetAsymPt[NPtBins];
+
+  TGraphErrors *grf_Data_CMS_Aj_Pt_276TeV[NPtBins]={grf_Data_CMS_Aj_Pt_120_150_276TeV,grf_Data_CMS_Aj_Pt_150_180_276TeV,
+						    grf_Data_CMS_Aj_Pt_180_220_276TeV, grf_Data_CMS_Aj_Pt_220_260_276TeV,
+						    grf_Data_CMS_Aj_Pt_260_300_276TeV, grf_Data_CMS_Aj_Pt_300_500_276TeV};
 
 
+  TCanvas *Canv_Asym_DiJet_Pt = new TCanvas("Canv_Asym_DiJet_Pt","Canv_Asym_DiJet_Pt",1200,800);//coulamXRows
+  Canv_Asym_DiJet_Pt->Divide(3,2);
+  
+  for(int i=0; i< NPtBins; i++) {
+    cout<<" calculation for Pt "<<APtBins[i]<<"  "<<APtBins[i+1]<<" GeV/c "<<endl;
 
+    //Asym_DiJet_Pt(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, Double_t Alpha, Double_t MM, Double_t NPart, Double_t LPtMin, Double_t LPtMax, Int_t PtBin)
+    HistOutJetAsymPt[i] = Asym_DiJet_Pt(fJetpp276tev,  RespT, ResPhi, alpha, MM, NPartFunc(0,20), APtBins[i], APtBins[i+1], i);
+
+    
+    Canv_Asym_DiJet_Pt->cd(i+1);
+    
+    gPad->SetTopMargin(0.1);
+    gPad->SetBottomMargin(0.2);
+    grf_Data_CMS_Aj_Pt_276TeV[i]->Draw("AP");
+    HistOutJetAsymPt[i]->GetYaxis()->SetRangeUser(0.0,0.32);
+    HistOutJetAsymPt[i]->Draw("Psame");
+    leg->Draw("same");
+    tb->DrawLatex(0.60,0.70,Form("%0d < p_{T} < %0d",APtBins[i],APtBins[i+1]));
+
+  }
+
+  Canv_Asym_DiJet_Pt->SaveAs("Figure/OutFigures/Fig_Asym_DiJet_Pt.pdf");
+  Canv_Asym_DiJet_Pt->SaveAs("Figure/OutFigures/Fig_Asym_DiJet_Pt.png");
 
   
-  return;
+  //return;
 
   //CentBins (0,10,20,30,50,70,100)
   const Int_t NCentBins = 6;
@@ -581,8 +602,8 @@ void DiJet()
     
   // Canvas defined outside the centrality loop
   
-  TCanvas *Canv_Asym_DiJet_Centrality = new TCanvas("Canv_Asym_DiJet_Centrality","Canv_Asym_DiJet_Centrality",1600,800);//coulamXRows
-  Canv_Asym_DiJet_Centrality->Divide(4,2);
+  TCanvas *Canv_Asym_DiJet_Centrality = new TCanvas("Canv_Asym_DiJet_Centrality","Canv_Asym_DiJet_Centrality",1200,800);//coulamXRows
+  Canv_Asym_DiJet_Centrality->Divide(3,2);
   char LatexChar[400];
 
   for(int i=0; i< NCentBins; i++) {
@@ -603,41 +624,15 @@ void DiJet()
 
   }
 
-  Canv_Asym_DiJet_Centrality->cd(7);
-  gPad->SetTopMargin(0.1);
-  gPad->SetBottomMargin(0.2);
-  grf_Data_CMS_Aj_pp_276TeV->Draw("AP");
-  hAsymmetryDiff->Draw("Psame");
-  leg->Draw("same");
-  tb->DrawLatex(0.6, 0.7, "pp") ;
-  Canv_Asym_DiJet_Centrality->SaveAs("Figure/OutFigures/Fig_Asym_DiJet_Centrality.pdf");
-  Canv_Asym_DiJet_Centrality->SaveAs("Figure/OutFigures/Fig_Asym_DiJet_Centrality.png");
-
-
-  //integarted gen fractions
-  //CanvasGenFractionMuonCut->cd(i+1);
+  //Canv_Asym_DiJet_Centrality->cd(7);
   //gPad->SetTopMargin(0.1);
   //gPad->SetBottomMargin(0.2);
-  //h->Draw();
-  //graph_GenJetFracGraph->Draw("Bsame");
-  //graph_GenMuonPtCut_GenJetFrac[i]->Draw("Bsame");  
-  //lgd_GenMuonGenJetFrac->Draw("same");
-  //sprintf(LatexChar,"#mu p_{T} > %.1f GeV/c",MuonPtCut[i]);
-  //tb->DrawLatex(0.28,0.68,LatexChar);
-  //CanvasGenFractionMuonCut->SaveAs("Plots/GenJets/GenJetFrac_GenMuPtCut_All.png");
-  //CanvasGenFractionMuonCut->SaveAs("Plots/GenJets/GenJetFrac_GenMuPtCut_All.pdf");
-
-  // make here pt functions
-  TGraphErrors *grf_Data_CMS_Aj_Pt_120_150_276TeV = Data_CMS_Aj_Pt_120_150_276TeV();
-  TGraphErrors *grf_Data_CMS_Aj_Pt_150_180_276TeV = Data_CMS_Aj_Pt_150_180_276TeV();
-  TGraphErrors *grf_Data_CMS_Aj_Pt_180_220_276TeV = Data_CMS_Aj_Pt_180_220_276TeV();
-  TGraphErrors *grf_Data_CMS_Aj_Pt_220_260_276TeV = Data_CMS_Aj_Pt_220_260_276TeV();
-  TGraphErrors *grf_Data_CMS_Aj_Pt_260_300_276TeV = Data_CMS_Aj_Pt_260_300_276TeV();
-  TGraphErrors *grf_Data_CMS_Aj_Pt_300_500_276TeV = Data_CMS_Aj_Pt_300_500_276TeV();
-  
-
-
-
+  //grf_Data_CMS_Aj_pp_276TeV->Draw("AP");
+  //hAsymmetryDiff->Draw("Psame");
+  //leg->Draw("same");
+  //tb->DrawLatex(0.6, 0.7, "pp") ;
+  Canv_Asym_DiJet_Centrality->SaveAs("Figure/OutFigures/Fig_Asym_DiJet_Centrality.pdf");
+  Canv_Asym_DiJet_Centrality->SaveAs("Figure/OutFigures/Fig_Asym_DiJet_Centrality.png");
 
   
   
@@ -658,7 +653,7 @@ TH1D *Asym_DiJet_Centrality(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, 
   //Histogram Name should come from the Centrality Loop
 
 
-  TH1D *hAsymmetryOut = new TH1D(Form("hAsymmetryOut_%d ",CentBin),Form("hAsymmetryOut_%d ",CentBin), 17, 0.0, 1.0);
+  TH1D *hAsymmetryOut = new TH1D(Form("hAsymmetryOutCent_%d ",CentBin),Form("hAsymmetryOutCent_%d ",CentBin), 17, 0.0, 1.0);
 
   Double_t RR = RA*sqrt(NPart/(2*Am));
   const Int_t NEvents = 5000000;
@@ -667,8 +662,6 @@ TH1D *Asym_DiJet_Centrality(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, 
 
     // Generate Pt 
     Double_t Pt = JetPtFuncPP->GetRandom();
-
-
     
     // Generate position 
     Double_t rr = rand.Uniform(0.0,1.0)*RR;
@@ -720,7 +713,7 @@ TH1D *Asym_DiJet_Centrality(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, 
 
 
 
-TH1D *Asym_DiJet_Pt(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, Double_t Alpha, Double_t MM, Double_t NPart, Double_t LPtMin, Double_t LPtMax, , Int_t PtBin)
+TH1D *Asym_DiJet_Pt(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, Double_t Alpha, Double_t MM, Double_t NPart, Double_t LPtMin, Double_t LPtMax, Int_t PtBin)
 {
 
   const Double_t SLPtMin = 30.0;
@@ -731,17 +724,17 @@ TH1D *Asym_DiJet_Pt(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, Double_t
   //Histogram Name should come from the Centrality Loop
 
 
-  TH1D *hAsymmetryOut = new TH1D(Form("hAsymmetryOut_%d ",CentBin),Form("hAsymmetryOut_%d ",PtBin), 17, 0.0, 1.0);
+  TH1D *hAsymmetryOut = new TH1D(Form("hAsymmetryOutPt_%d ",PtBin),Form("hAsymmetryOutPt_%d ",PtBin), 17, 0.0, 1.0);
 
   Double_t RR = RA*sqrt(NPart/(2*Am));
-  const Int_t NEvents = 5000000;
+  const Int_t NEvents = 5000000*8;
   
   for(int i=0; i< NEvents; i++) {
 
     // Generate Pt 
     Double_t Pt = JetPtFuncPP->GetRandom();
 
-    if(Pt < SLPtMin) continue;
+    //if(Pt < SLPtMin) continue;
     
     // Generate position 
     Double_t rr = rand.Uniform(0.0,1.0)*RR;
@@ -1284,7 +1277,7 @@ TGraphErrors *Data_CMS_Aj_Pt_120_150_276TeV()
   grf_local->GetYaxis()->SetTitle("Event Fraction");
   grf_local->GetXaxis()->CenterTitle();
   grf_local->GetYaxis()->CenterTitle();
-  grf_local->GetYaxis()->SetRangeUser(0.0,0.5);
+  grf_local->GetYaxis()->SetRangeUser(0.0,0.32);
   grf_local->GetXaxis()->SetLimits(0.0,1.0);
   
   return grf_local;
@@ -1316,7 +1309,7 @@ TGraphErrors *Data_CMS_Aj_Pt_150_180_276TeV()
   grf_local->GetYaxis()->SetTitle("Event Fraction");
   grf_local->GetXaxis()->CenterTitle();
   grf_local->GetYaxis()->CenterTitle();
-  grf_local->GetYaxis()->SetRangeUser(0.0,0.5);
+  grf_local->GetYaxis()->SetRangeUser(0.0,0.32);
   grf_local->GetXaxis()->SetLimits(0.0,1.0);
   
   return grf_local;
@@ -1352,7 +1345,7 @@ TGraphErrors *Data_CMS_Aj_Pt_180_220_276TeV()
   grf_local->GetYaxis()->SetTitle("Event Fraction");
   grf_local->GetXaxis()->CenterTitle();
   grf_local->GetYaxis()->CenterTitle();
-  grf_local->GetYaxis()->SetRangeUser(0.0,0.5);
+  grf_local->GetYaxis()->SetRangeUser(0.0,0.32);
   grf_local->GetXaxis()->SetLimits(0.0,1.0);
   
   return grf_local;
@@ -1386,7 +1379,7 @@ TGraphErrors *Data_CMS_Aj_Pt_220_260_276TeV()
   grf_local->GetYaxis()->SetTitle("Event Fraction");
   grf_local->GetXaxis()->CenterTitle();
   grf_local->GetYaxis()->CenterTitle();
-  grf_local->GetYaxis()->SetRangeUser(0.0,0.5);
+  grf_local->GetYaxis()->SetRangeUser(0.0,0.32);
   grf_local->GetXaxis()->SetLimits(0.0,1.0);
   
   return grf_local;
@@ -1420,7 +1413,7 @@ TGraphErrors *Data_CMS_Aj_Pt_260_300_276TeV()
   grf_local->GetYaxis()->SetTitle("Event Fraction");
   grf_local->GetXaxis()->CenterTitle();
   grf_local->GetYaxis()->CenterTitle();
-  grf_local->GetYaxis()->SetRangeUser(0.0,0.5);
+  grf_local->GetYaxis()->SetRangeUser(0.0,0.32);
   grf_local->GetXaxis()->SetLimits(0.0,1.0);
   
   return grf_local;
@@ -1455,7 +1448,7 @@ TGraphErrors *Data_CMS_Aj_Pt_300_500_276TeV()
   grf_local->GetYaxis()->SetTitle("Event Fraction");
   grf_local->GetXaxis()->CenterTitle();
   grf_local->GetYaxis()->CenterTitle();
-  grf_local->GetYaxis()->SetRangeUser(0.0,0.5);
+  grf_local->GetYaxis()->SetRangeUser(0.0,0.32);
   grf_local->GetXaxis()->SetLimits(0.0,1.0);
   
   return grf_local;
