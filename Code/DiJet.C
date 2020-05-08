@@ -727,7 +727,7 @@ TH1D *Asym_DiJet_Pt(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, Double_t
   TH1D *hAsymmetryOut = new TH1D(Form("hAsymmetryOutPt_%d ",PtBin),Form("hAsymmetryOutPt_%d ",PtBin), 17, 0.0, 1.0);
 
   Double_t RR = RA*sqrt(NPart/(2*Am));
-  const Int_t NEvents = 5000000*8;
+  const Int_t NEvents = 5000000;
   
   for(int i=0; i< NEvents; i++) {
 
@@ -736,7 +736,7 @@ TH1D *Asym_DiJet_Pt(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, Double_t
 
     //if(Pt < SLPtMin) continue;
     
-    // Generate position 
+    // Generate position
     Double_t rr = rand.Uniform(0.0,1.0)*RR;
     Double_t Phi = rand.Uniform(0.0,1.0)*2.0*pi;
     
