@@ -16,6 +16,7 @@
 #include <cstdlib>
 #include <cmath>
 #include "TGraphErrors.h"
+#include "TGraphMultiErrors.h"
 #include "TMultiGraph.h"
 #include "TLegend.h"
 #include <fstream>
@@ -80,10 +81,6 @@ Double_t tsallis_fitting_function(Double_t* x, Double_t* par);
 void FitParaTsallisPP276TeV();
 
 
-
-
-
-
 ////
 
 Double_t Npart_Jet_PbPb_276TeV_Cen_0_10  = 356.20 ;
@@ -97,6 +94,13 @@ Double_t Npart_Jet_PbPb_276TeV_Cen_70_80 = 15.10  ;
 
 
 //const Double_t NPartCent[8] = {356.20, 266.70, 186.40, 129.30, 85.60, 53.00, 30.10, 15.10};
+//CMS Data Functions XJ as a func of CENT
+TGraphMultiErrors *Data_CMS_XJ_GammaJet_Cent_00_10_276TeV();
+
+TGraphErrors *Data_Syst_CMS_XJ_GammaJet_Cent_00_10_276TeV();
+
+
+
 
 
 //CMS Data Functions AJ as a func of CENT
@@ -204,8 +208,16 @@ void DiJet()
   tb->SetTextAlign(12); 
   tb->SetTextColor(1);
   tb->SetTextSize(0.04);
+
+
+
+
+
+
+
+
   
-  // CMS Data Graphs
+  // CMS Data Graphs AJ
   TGraphErrors *grf_Data_CMS_Aj_Cent_00_10_276TeV = Data_CMS_Aj_Cent_00_10_276TeV();
   TGraphErrors *grf_Data_CMS_Aj_Cent_10_20_276TeV = Data_CMS_Aj_Cent_10_20_276TeV();
   TGraphErrors *grf_Data_CMS_Aj_Cent_20_30_276TeV = Data_CMS_Aj_Cent_20_30_276TeV();
@@ -239,6 +251,32 @@ void DiJet()
   grf_Data_CMS_Aj_pp_276TeV->Draw("AP");
   tb->DrawLatex(0.60, 0.70, "pp") ;
 
+
+  // CMS Data Graphs XJ
+
+  TGraphMultiErrors *grf_Data_CMS_XJ_GammaJet_Cent_00_10_276TeV = Data_CMS_XJ_GammaJet_Cent_00_10_276TeV();
+
+
+
+
+
+
+
+
+
+
+  TCanvas *Canv_Data_CMS_XJ_GammaJet_Cent_276TeV = new TCanvas("Canv_Data_CMS_XJ_GammaJet_Cent_276TeV","Canv_Data_CMS_XJ_GammaJet_Cent_276TeV",1200,800);//coulamXRows
+  Canv_Data_CMS_XJ_GammaJet_Cent_276TeV->Divide(3,2);
+
+  Canv_Data_CMS_XJ_GammaJet_Cent_276TeV->cd(1);
+  gPad->SetLeftMargin(0.2);
+  //gme->Draw("APS ; Z ; 5 s=0.5");
+  grf_Data_CMS_XJ_GammaJet_Cent_00_10_276TeV->Draw("APS ; Z ; 5 s=0.5");
+  grf_Data_Syst_CMS_XJ_GammaJet_Cent_00_10_276TeV->Draw("a2same");
+  tb->DrawLatex(0.75, 0.70, "0-10%") ;
+
+  return;
+  
   
   TGraphErrors *grf_Data_CMS_Aj_Pt_120_150_276TeV = Data_CMS_Aj_Pt_120_150_276TeV();
   TGraphErrors *grf_Data_CMS_Aj_Pt_150_180_276TeV = Data_CMS_Aj_Pt_150_180_276TeV();
@@ -381,10 +419,19 @@ void DiJet()
   
   // Histograms
   TH1D *hAsymmetryDiff = new TH1D("hAsymmetryDiff", "hAsymmetryDiff", 17, 0.0, 1.0);
+  hAsymmetryDiff->Sumw2();
   hAsymmetryDiff->SetLineWidth(2);
 
   TH1D *hist_Pt_Initial = new TH1D("hist_Pt_Initial", "hist_Pt_Initial", 25, 0.0, 500.0);
+  hist_Pt_Initial->Sumw2();
+  hist_Pt_Initial->GetXaxis()->SetTitle("p_{T} (GeV/c)");
+  hist_Pt_Initial->GetYaxis()->SetTitle("Events");
+  
   TH1D *hist_Pt_Final = new TH1D("hist_Pt_Final", "hist_Pt_Final", 25, 0.0, 500.0);
+  hist_Pt_Final->Sumw2();
+  hist_Pt_Final->GetXaxis()->SetTitle("p_{T} (GeV/c)");
+  hist_Pt_Final->GetYaxis()->SetTitle("Events");
+ 
   TH1D *hist_Pt_Ratio = new TH1D("hist_Pt_Ratio", "hist_Pt_Ratio", 25, 0.0, 500.0);
 
 
@@ -416,9 +463,6 @@ void DiJet()
   Double_t alpha = 0.55;
   Double_t MM = 0.4;
 
-  
-
-
   // Size of the system
   Double_t Npart = Npart_Jet_PbPb_276TeV_Cen_0_10;
   Double_t RR = RA*sqrt(Npart/(2*Am));
@@ -427,6 +471,7 @@ void DiJet()
   
   for(int i=0; i< nn; i++) {
 
+    
     // Generate pT 
     Double_t pT = fJetpp276tev->GetRandom();
 
@@ -448,6 +493,8 @@ void DiJet()
     Double_t d2 = sqrt(RR*RR - rr*rr*sin(Phi2)) - rr*cos(Phi2); 
 
     Double_t pTppMeas = rand.Gaus(pT, pT*RespT);
+    //Double_t pTppMeas = pT;
+
     if(pTppMeas>50.0) hist_Pt_Initial->Fill(pTppMeas);
     
     // Calculate DeltapT
@@ -527,7 +574,9 @@ void DiJet()
   gPad->SaveAs("Figure/OutFigures/Aj.png");
   gPad->SaveAs("Figure/OutFigures/Aj.pdf");
 
-
+  TLine *line1 = new TLine(0,1,500,1);
+  line1->SetLineColor(2);
+ 
   new TCanvas;
   gPad->SetLogy(1);
   hist_Pt_Final->SetMarkerColor(2);
@@ -535,17 +584,18 @@ void DiJet()
   TH1D *temp_hist = (TH1D*)hist_Pt_Final->Clone("temp_hist");
   temp_hist->SetMarkerColor(2);
   temp_hist->Draw("Psame");
-  
+    
   hist_Pt_Final->Divide(hist_Pt_Final,hist_Pt_Initial,1.0,1.0,"B");
 
   new TCanvas;
+  hist_Pt_Final->Draw("P");
+  line1->Draw("same");
+ 
+  new TCanvas;
   grf_Data_ATLAS_RAA_Cent_00_10_276TeV->Draw("AP");
   hist_Pt_Final->Draw("Psame");
-  
-
-
-
-
+  line1->Draw("same");
+  //return;
 
 
   // make here pt functions
@@ -732,7 +782,7 @@ TH1D *Asym_DiJet_Pt(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, Double_t
   for(int i=0; i< NEvents; i++) {
 
     // Generate Pt 
-    Double_t Pt = JetPtFuncPP->GetRandom();
+    Double_t Pt = JetPtFuncPP->GetRandom(LPtMin, LPtMax);
 
     //if(Pt < SLPtMin) continue;
     
@@ -989,31 +1039,213 @@ TGraphErrors *jet_atlas_yield_00_rapidity_21_pp_276tev()
 
 
 
+
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
+//+++++++++++++++++++++++++   CMS Data Functions for XJ (Gamma+Jet) +++++++++++++++++++++++++++++++++++++++++++//
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
+
+TGraphMultiErrors *Data_CMS_XJ_GammaJet_Cent_00_10_276TeV()
+{
+
+  // CMS jet quenching using isolated-photon + jet correlations in PbPb collisions at 2.76 TeV
+  //Published in Phys.Lett. B718 (2013) 773-794
+  //CMS-HIN-11-010, CERN-PH-EP-2012-089
+  //DOI: 10.1016/j.physletb.2012.11.003
+  //e-Print: arXiv:1205.0206 [nucl-ex] | PDF
+  //cat Data_Aj_Cent_00_10.txt | awk '{printf "%.3f, ", $1}'
+  //https://unix.stackexchange.com/questions/26723/print-odd-numbered-lines-print-even-numbered-lines
+  //sed -n 1~2p filename | awk '{printf "%.3f, ", $2}' // print odd number of lines
+  //sed -n 2~2p filename | awk '{printf "%.3f, ", $2}' // print even number of lines
+  
+  const Int_t NN = 15 ;
+  Double_t XJ[NN] = {0.200, 0.330, 0.466, 0.584, 0.706, 0.820, 0.959, 1.071, 1.187, 1.317, 1.432, 1.563, 1.693, 1.809, 1.926};
+  Double_t Error_XJ_Low[NN] = {0.0};
+  Double_t Error_XJ_High[NN] = {0.0};
+
+ 
+  Double_t EvFrac[NN] = {0.079, 0.041, 1.456, 1.717, 1.516, 0.835, 1.394, 0.433, 0.367, 0.262, 0.014, 0.015, 0.074, -0.012, 0.086};
+  Double_t EvFrac_Max[NN] = {0.127, 0.138, 1.764, 2.015, 1.795, 1.046, 1.615, 0.606, 0.521, 0.368, 0.071, 0.053, 0.112, 0.017, 0.124};
+  Double_t EvFrac_Min[NN] = {0.021, -0.093, 1.196, 1.438, 1.257, 0.623, 1.134, 0.241, 0.223, 0.147, -0.063, -0.053, -0.013, -0.060, 0.028};
+
+  Double_t Error_EvFrac_High[NN] = {0.0}; 
+  Double_t Error_EvFrac_Low[NN] = {0.0};
+  
+  for(int i=0; i<NN; i++){Error_EvFrac_High[i] = EvFrac_Max[i] - EvFrac[i]; Error_EvFrac_Low[i] =  EvFrac[i] - EvFrac_Min[i]; }
+
+  Double_t EvFracSyst_Max[NN] = {0.108, 0.070, 1.937, 2.140, 1.795, 0.960, 1.595, 0.510, 0.463, 0.330, 0.042, 0.034, 0.093, 0.008, 0.124};
+  Double_t EvFracSyst_Min[NN] = {0.040, -0.007, 1.024, 1.313, 1.247, 0.719, 1.172, 0.337, 0.290, 0.176, -0.025, -0.024, 0.016, -0.060, 0.028};
+  
+  Double_t SystError_EvFrac_High[NN] = {0.0}; 
+  Double_t SystError_EvFrac_Low[NN] = {0.0};
+  
+  for(int i=0; i<NN; i++){SystError_EvFrac_High[i] = EvFracSyst_Max[i] - EvFrac[i]; SystError_EvFrac_Low[i] =  EvFrac[i] - EvFracSyst_Min[i]; }
+
+
+  //auto gme = new TGraphMultiErrors("gme", "TGraphMultiErrors Example", np, x, y, exl, exh, eylstat, eyhstat);
+  //gme->AddYError(np, eylsys, eyhsys);
+  //gme->SetMarkerStyle(20);
+  //gme->SetLineColor(kRed);
+  //gme->GetAttLine(0)->SetLineColor(kRed);
+  //gme->GetAttLine(1)->SetLineColor(kBlue);
+  //gme->GetAttFill(1)->SetFillStyle(0);
+  //gme->Draw("APS ; Z ; 5 s=0.5");
+
+  
+  TGraphMultiErrors *grf_local = new TGraphMultiErrors(NN, XJ, EvFrac, Error_XJ_Low, Error_XJ_High, Error_EvFrac_Low,Error_EvFrac_High);
+  grf_local->AddYError(NN,  SystError_EvFrac_Low, SystError_EvFrac_High);
+  grf_local->SetMarkerColor(1);
+  grf_local->SetMarkerStyle(20);
+  grf_local->SetMarkerSize(1.5);
+
+  grf_local->GetAttFill(1)->SetFillStyle(0);
+  
+  grf_local->GetXaxis()->SetTitle("X_{J#gamma}=p_{T}^{Jet}/p_{T}^{#gamma}");
+  grf_local->GetYaxis()->SetTitle("#frac{1}{N_{J#gamma}}#frac{dN_{J#gamma}}{dx_{J#gamma}}");
+  grf_local->GetXaxis()->CenterTitle();
+  grf_local->GetYaxis()->CenterTitle();
+  grf_local->GetYaxis()->SetRangeUser(-0.5,2.5);
+  grf_local->GetXaxis()->SetLimits(0.0,2.0);
+  
+  return grf_local;
+			  
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+TGraphErrors *Data_Syst_CMS_XJ_GammaJet_Cent_00_10_276TeV()
+{
+
+  const Int_t NN = 15 ;
+  Double_t XJ[NN] = {0.200, 0.330, 0.466, 0.584, 0.706, 0.820, 0.959, 1.071, 1.187, 1.317, 1.432, 1.563, 1.693, 1.809, 1.926};
+  Double_t Error_XJ[NN] = {0.0};
+
+  Double_t EvFrac[NN] = {0.079, 0.041, 1.456, 1.717, 1.516, 0.835, 1.394, 0.433, 0.367, 0.262, 0.014, 0.015, 0.074, -0.012, 0.086};
+  Double_t EvFrac_Max[NN] = {0.108, 0.070, 1.937, 2.140, 1.795, 0.960, 1.595, 0.510, 0.463, 0.330, 0.042, 0.034, 0.093, 0.008, 0.124};
+  
+  Double_t Error_EvFrac[NN] = {0.0}; 
+  for(int i=0; i<NN; i++){Error_EvFrac[i] = EvFrac_Max[i] - EvFrac[i]; }
+
+
+  
+  TGraphErrors *grf_local = new TGraphErrors(NN, XJ, EvFrac, Error_XJ, Error_EvFrac);
+  //grf_local->SetMarkerColor(1);
+  //grf_local->SetMarkerStyle(20);
+  //grf_local->SetMarkerSize(1.5);
+
+  grf_local->SetLineColor(1);
+  
+  grf_local->GetXaxis()->SetTitle("X_{J#gamma}=p_{T}^{Jet}/p_{T}^{#gamma}");
+  grf_local->GetYaxis()->SetTitle("#frac{1}{N_{J#gamma}}#frac{dN_{J#gamma}}{dx_{J#gamma}}");
+  grf_local->GetXaxis()->CenterTitle();
+  grf_local->GetYaxis()->CenterTitle();
+  grf_local->GetYaxis()->SetRangeUser(-0.5,2.5);
+  grf_local->GetXaxis()->SetLimits(0.0,2.0);
+  
+  return grf_local;
+			  
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // CMS Data Functions for Aj
 
 TGraphErrors *Data_CMS_Aj_Cent_00_10_276TeV()
 {
-
-
   // CMS Jet momentum dependence of jet quenching in PbPb collisions at 2.76 TeV
   //1202.5022
   //cat Data_Aj_Cent_00_10.txt | awk '{printf "%.3f, ", $1}'
-  
-  
-
   const Int_t NN = 14 ;
-
   Double_t AJ[NN] = {0.031, 0.092, 0.150, 0.211, 0.272, 0.334, 0.393, 0.451, 0.512, 0.570, 0.633, 0.690, 0.753, 0.811};
   Double_t Error_AJ[NN] = {0.0};
-
-
   Double_t EvFrac[NN] = {0.100, 0.116, 0.128, 0.112, 0.115, 0.105, 0.092, 0.083, 0.067, 0.051, 0.019, 0.000, 0.000, 0.000};
   Double_t Error_EvFrac[NN] = {0.0}; 
-
-
-
-
-
   
   TGraphErrors *grf_local = new TGraphErrors(NN, AJ, EvFrac, Error_AJ, Error_EvFrac);
   grf_local->SetMarkerColor(1);
@@ -1027,14 +1259,6 @@ TGraphErrors *Data_CMS_Aj_Cent_00_10_276TeV()
   grf_local->GetYaxis()->SetRangeUser(0.0,0.32);
   grf_local->GetXaxis()->SetLimits(0.0,1.0);
 
-
-  
-
-
-
-
-
-  
   return grf_local;
 			  
 }
