@@ -16,7 +16,8 @@
 #include <cstdlib>
 #include <cmath>
 #include "TGraphErrors.h"
-#include "TGraphMultiErrors.h"
+#include "TGraphAsymmErrors.h"
+//#include "TGraphMultiErrors.h" only works for root6.20 or more
 #include "TMultiGraph.h"
 #include "TLegend.h"
 #include <fstream>
@@ -95,13 +96,16 @@ Double_t Npart_Jet_PbPb_276TeV_Cen_70_80 = 15.10  ;
 
 //const Double_t NPartCent[8] = {356.20, 266.70, 186.40, 129.30, 85.60, 53.00, 30.10, 15.10};
 //CMS Data Functions XJ as a func of CENT
-TGraphMultiErrors *Data_CMS_XJ_GammaJet_Cent_00_10_276TeV();
 
-TGraphErrors *Data_Syst_CMS_XJ_GammaJet_Cent_00_10_276TeV();
-
-
-
-
+TGraphAsymmErrors *Data_CMS_XJ_GammaJet_Cent_00_10_276TeV();
+TGraphAsymmErrors *Data_Syst_CMS_XJ_GammaJet_Cent_00_10_276TeV();
+TGraphAsymmErrors *Data_CMS_XJ_GammaJet_Cent_10_30_276TeV();
+TGraphAsymmErrors *Data_Syst_CMS_XJ_GammaJet_Cent_10_30_276TeV();
+TGraphAsymmErrors *Data_CMS_XJ_GammaJet_Cent_30_50_276TeV();
+TGraphAsymmErrors *Data_Syst_CMS_XJ_GammaJet_Cent_30_50_276TeV();
+TGraphAsymmErrors *Data_CMS_XJ_GammaJet_Cent_50_100_276TeV();
+TGraphAsymmErrors *Data_Syst_CMS_XJ_GammaJet_Cent_50_100_276TeV();
+TGraphAsymmErrors *Data_CMS_XJ_GammaJet_PP_276TeV();
 
 //CMS Data Functions AJ as a func of CENT
 TGraphErrors *Data_CMS_Aj_Cent_00_10_276TeV();
@@ -149,6 +153,8 @@ TGraphErrors *jet_production_atlas_yield_in_pp_collision_502tev();
 
 // Function to calculate Asymmetry as a function of Centrality
 Double_t calDelta(Double_t pT, Double_t alpha, Double_t MM) ;
+
+TH1D *XJ_GammaJet_Centrality(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, Double_t Alpha, Double_t MM, Double_t NPart, Int_t CentBin);
 
 
 TH1D *Asym_DiJet_Centrality(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, Double_t Alpha, Double_t MM, Double_t NPart, Int_t CentBin);
@@ -209,13 +215,6 @@ void DiJet()
   tb->SetTextColor(1);
   tb->SetTextSize(0.04);
 
-
-
-
-
-
-
-
   
   // CMS Data Graphs AJ
   TGraphErrors *grf_Data_CMS_Aj_Cent_00_10_276TeV = Data_CMS_Aj_Cent_00_10_276TeV();
@@ -225,7 +224,8 @@ void DiJet()
   TGraphErrors *grf_Data_CMS_Aj_Cent_50_70_276TeV = Data_CMS_Aj_Cent_50_70_276TeV();
   TGraphErrors *grf_Data_CMS_Aj_Cent_70_100_276TeV = Data_CMS_Aj_Cent_70_100_276TeV();
   TGraphErrors *grf_Data_CMS_Aj_pp_276TeV = Data_CMS_Aj_pp_276TeV();   
-  
+
+   
   TCanvas *Canv_Data_CMS_Aj_Cent_276TeV = new TCanvas("Canv_Data_CMS_Aj_Cent_276TeV","Canv_Data_CMS_Aj_Cent_276TeV",1600,800);//coulamXRows
   Canv_Data_CMS_Aj_Cent_276TeV->Divide(4,2);
 
@@ -253,29 +253,59 @@ void DiJet()
 
 
   // CMS Data Graphs XJ
+  TGraphAsymmErrors *grf_Data_CMS_XJ_GammaJet_Cent_00_10_276TeV = Data_CMS_XJ_GammaJet_Cent_00_10_276TeV();
+  TGraphAsymmErrors *grf_Data_Syst_CMS_XJ_GammaJet_Cent_00_10_276TeV = Data_Syst_CMS_XJ_GammaJet_Cent_00_10_276TeV();
 
-  TGraphMultiErrors *grf_Data_CMS_XJ_GammaJet_Cent_00_10_276TeV = Data_CMS_XJ_GammaJet_Cent_00_10_276TeV();
+  TGraphAsymmErrors *grf_Data_CMS_XJ_GammaJet_Cent_10_30_276TeV = Data_CMS_XJ_GammaJet_Cent_10_30_276TeV();
+  TGraphAsymmErrors *grf_Data_Syst_CMS_XJ_GammaJet_Cent_10_30_276TeV = Data_Syst_CMS_XJ_GammaJet_Cent_10_30_276TeV();
 
+  TGraphAsymmErrors *grf_Data_CMS_XJ_GammaJet_Cent_30_50_276TeV = Data_CMS_XJ_GammaJet_Cent_30_50_276TeV();
+  TGraphAsymmErrors *grf_Data_Syst_CMS_XJ_GammaJet_Cent_30_50_276TeV = Data_Syst_CMS_XJ_GammaJet_Cent_30_50_276TeV();
 
+  
+  TGraphAsymmErrors *grf_Data_CMS_XJ_GammaJet_Cent_50_100_276TeV = Data_CMS_XJ_GammaJet_Cent_50_100_276TeV();
+  TGraphAsymmErrors *grf_Data_Syst_CMS_XJ_GammaJet_Cent_50_100_276TeV = Data_Syst_CMS_XJ_GammaJet_Cent_50_100_276TeV();
 
-
-
-
-
-
-
-
+  TGraphAsymmErrors *grf_Data_CMS_XJ_GammaJet_PP_276TeV = Data_CMS_XJ_GammaJet_PP_276TeV();
+  
   TCanvas *Canv_Data_CMS_XJ_GammaJet_Cent_276TeV = new TCanvas("Canv_Data_CMS_XJ_GammaJet_Cent_276TeV","Canv_Data_CMS_XJ_GammaJet_Cent_276TeV",1200,800);//coulamXRows
   Canv_Data_CMS_XJ_GammaJet_Cent_276TeV->Divide(3,2);
 
   Canv_Data_CMS_XJ_GammaJet_Cent_276TeV->cd(1);
   gPad->SetLeftMargin(0.2);
-  //gme->Draw("APS ; Z ; 5 s=0.5");
-  grf_Data_CMS_XJ_GammaJet_Cent_00_10_276TeV->Draw("APS ; Z ; 5 s=0.5");
-  grf_Data_Syst_CMS_XJ_GammaJet_Cent_00_10_276TeV->Draw("a2same");
+  grf_Data_CMS_XJ_GammaJet_Cent_00_10_276TeV->Draw("AP");
+  grf_Data_Syst_CMS_XJ_GammaJet_Cent_00_10_276TeV->Draw("2");
   tb->DrawLatex(0.75, 0.70, "0-10%") ;
 
-  return;
+  Canv_Data_CMS_XJ_GammaJet_Cent_276TeV->cd(2);
+  gPad->SetLeftMargin(0.2);
+  grf_Data_CMS_XJ_GammaJet_Cent_10_30_276TeV->Draw("AP");
+  grf_Data_Syst_CMS_XJ_GammaJet_Cent_10_30_276TeV->Draw("2");
+  tb->DrawLatex(0.75, 0.70, "10-30%") ;
+
+  
+  Canv_Data_CMS_XJ_GammaJet_Cent_276TeV->cd(3);
+  gPad->SetLeftMargin(0.2);
+  grf_Data_CMS_XJ_GammaJet_Cent_30_50_276TeV->Draw("AP");
+  grf_Data_Syst_CMS_XJ_GammaJet_Cent_30_50_276TeV->Draw("2");
+  tb->DrawLatex(0.75, 0.70, "30-50%") ;
+
+  Canv_Data_CMS_XJ_GammaJet_Cent_276TeV->cd(4);
+  gPad->SetLeftMargin(0.2);
+  grf_Data_CMS_XJ_GammaJet_Cent_50_100_276TeV->Draw("AP");
+  grf_Data_Syst_CMS_XJ_GammaJet_Cent_50_100_276TeV->Draw("2");
+  tb->DrawLatex(0.75, 0.70, "50-100%") ;
+
+  Canv_Data_CMS_XJ_GammaJet_Cent_276TeV->cd(5);
+  gPad->SetLeftMargin(0.2);
+  grf_Data_CMS_XJ_GammaJet_PP_276TeV->Draw("AP");
+  tb->DrawLatex(0.75, 0.70, "pp") ;
+
+
+
+
+  
+  // return;
   
   
   TGraphErrors *grf_Data_CMS_Aj_Pt_120_150_276TeV = Data_CMS_Aj_Pt_120_150_276TeV();
@@ -314,8 +344,6 @@ void DiJet()
   grf_Data_CMS_Aj_Pt_300_500_276TeV->Draw("AP");
   tb->DrawLatex(0.55, 0.70, "300 < p_{T,1} < 500 GeV/c") ;
 
-
-  
   TGraphErrors *grf_Data_ATLAS_RAA_Cent_00_10_276TeV = jet_atlas_raa_pbpb_276tev_00_rapidity_21_centrality_zero_ten();
   TGraphErrors *grf_Data_ATLAS_RAA_Cent_10_20_276TeV = jet_atlas_raa_pbpb_276tev_00_rapidity_21_centrality_ten_twenty();
   TGraphErrors *grf_Data_ATLAS_RAA_Cent_20_30_276TeV = jet_atlas_raa_pbpb_276tev_00_rapidity_21_centrality_twenty_thirty();
@@ -595,8 +623,57 @@ void DiJet()
   grf_Data_ATLAS_RAA_Cent_00_10_276TeV->Draw("AP");
   hist_Pt_Final->Draw("Psame");
   line1->Draw("same");
+
   //return;
 
+  // XJ Calculations as a function of Centrality
+ //CentBins (0,10,30,50,100)
+  const Int_t NCentBins_XJ = 4;
+  const Int_t CentBins_XJ[NCentBins_XJ+1]={0,10,30,50,100};
+  Double_t ANPartCent_XJ[NCentBins_XJ]={NPartFunc(0,10),NPartFunc(10,30),NPartFunc(30,50),NPartFunc(50,100)};
+  TH1D *HistOutJetGamma_XJ[NCentBins_XJ];
+
+  TGraphAsymmErrors *grf_Data_CMS_XJ_Cent_276TeV[NCentBins_XJ]={grf_Data_CMS_XJ_GammaJet_Cent_00_10_276TeV,grf_Data_CMS_XJ_GammaJet_Cent_10_30_276TeV,
+								grf_Data_CMS_XJ_GammaJet_Cent_30_50_276TeV,grf_Data_CMS_XJ_GammaJet_Cent_50_100_276TeV};
+
+    
+  // Canvas defined outside the centrality loop
+  
+  TCanvas *Canv_CMS_XJ_Cent_276TeV = new TCanvas("Canv_CMS_XJ_Cent_276TeV","Canv_CMS_XJ_Cent_276TeV",1200,800);//coulamXRows
+  Canv_CMS_XJ_Cent_276TeV->Divide(3,2);
+  char LatexChar_XJ[400];
+
+  for(int i=0; i< NCentBins_XJ; i++) {
+    cout<<" XJ calculation for centrality "<<CentBins_XJ[i]<<"  "<<CentBins_XJ[i+1]<<"% "<<endl;
+    HistOutJetGamma_XJ[i] = XJ_GammaJet_Centrality(fJetpp276tev,  RespT, ResPhi, alpha, MM, ANPartCent_XJ[i], i);
+
+    Canv_CMS_XJ_Cent_276TeV->cd(i+1);
+    
+    gPad->SetTopMargin(0.1);
+    gPad->SetBottomMargin(0.2);
+    gPad->SetLeftMargin(0.2);
+    
+    grf_Data_CMS_XJ_Cent_276TeV[i]->Draw("AP");
+
+
+    HistOutJetGamma_XJ[i]->GetYaxis()->SetRangeUser(0.0,2.5);
+    HistOutJetGamma_XJ[i]->Draw("Psame");
+    leg->Draw("same");
+    tb->DrawLatex(0.60,0.70,Form("Cent. %0d - %0d %%",CentBins_XJ[i],CentBins_XJ[i+1]));
+
+  }
+
+  //Canv_Asym_DiJet_Centrality->cd(7);
+  //gPad->SetTopMargin(0.1);
+  //gPad->SetBottomMargin(0.2);
+  //grf_Data_CMS_Aj_pp_276TeV->Draw("AP");
+  //hAsymmetryDiff->Draw("Psame");
+  //leg->Draw("same");
+  //tb->DrawLatex(0.6, 0.7, "pp") ;
+  Canv_CMS_XJ_Cent_276TeV->SaveAs("Figure/OutFigures/Fig_XJ_GammaJet_Centrality.pdf");
+  Canv_CMS_XJ_Cent_276TeV->SaveAs("Figure/OutFigures/Fig_XJ_GammaJet_Centrality.png");
+
+  // return;
 
   // make here pt functions
 
@@ -690,6 +767,77 @@ void DiJet()
 
 
 
+TH1D *XJ_GammaJet_Centrality(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, Double_t Alpha, Double_t MM, Double_t NPart, Int_t CentBin)
+{
+
+  //initialize the random number generator
+  TRandom3 rand(0);
+  
+  //Histogram Name should come from the Centrality Loop
+
+
+  TH1D *hAsymmetryOut = new TH1D(Form("hXJOutCent_%d ",CentBin),Form("hXJOutCent_%d ",CentBin), 20, 0.0, 2.0);
+
+  Double_t RR = RA*sqrt(NPart/(2*Am));
+  const Int_t NEvents = 5000000;
+  
+  for(int i=0; i< NEvents; i++) {
+
+    // Generate Pt 
+    Double_t Pt = JetPtFuncPP->GetRandom();
+    
+    // Generate position 
+    Double_t rr = rand.Uniform(0.0,1.0)*RR;
+    Double_t Phi = rand.Uniform(0.0,1.0)*2.0*pi;
+    
+    // Smear Phi
+    Double_t Phi1 = rand.Gaus(Phi, Phi*ResPhi);
+    Double_t Phi2 = rand.Gaus(Phi+pi, (Phi+pi)*ResPhi);
+    
+    Double_t DeltaPhi = (Phi2 - Phi1); 
+    
+    // Calculate pathlength
+    Double_t d1 = sqrt(RR*RR - rr*rr*sin(Phi1)) - rr*cos(Phi1);
+    Double_t d2 = sqrt(RR*RR - rr*rr*sin(Phi2)) - rr*cos(Phi2); 
+
+    
+    // Calculate DeltaPt
+    Double_t dEdx = calDelta(Pt, Alpha, MM);
+    
+
+    //Double_t E1 = Pt-dEdx*d1;
+    Double_t E1 = Pt; // this is assumed as Gamma
+    Double_t E2 = Pt-dEdx*d2;
+
+
+    
+    // Smear Pt
+    Double_t Pt1 = rand.Gaus(E1, E1*ResPt);
+    Double_t Pt2 = rand.Gaus(E2, E2*ResPt);
+
+    //Exp cut on Pt
+    
+    //Double_t L_Pt = TMath::Max(Pt1,Pt2);
+    //Double_t SubL_Pt = TMath::Min(Pt1,Pt2);
+
+    
+    if(Pt1 < 60.0 || Pt2 < 30.0 || DeltaPhi < (7.0*pi)/8.0) continue; 
+
+    Double_t PtXJ = Pt2/Pt1; 
+    //cout << Pt1 << "  " << Pt2<<"   "<<PtDiff << endl;
+    
+    hAsymmetryOut->Fill(PtXJ);
+  } 
+
+  hAsymmetryOut->Scale(1.0/hAsymmetryOut->Integral());
+  hAsymmetryOut->GetXaxis()->SetTitle("X_{J#gamma}=p_{T}^{Jet}/p_{T}^{#gamma}");
+  hAsymmetryOut->GetYaxis()->SetTitle("#frac{1}{N_{J#gamma}}#frac{dN_{J#gamma}}{dx_{J#gamma}}");
+  hAsymmetryOut->GetXaxis()->CenterTitle();
+  hAsymmetryOut->GetYaxis()->CenterTitle();
+  hAsymmetryOut->SetMarkerColor(kRed);
+  return hAsymmetryOut;
+}
+
 
 
 
@@ -740,7 +888,7 @@ TH1D *Asym_DiJet_Centrality(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, 
 
     //Exp cut on Pt
     Double_t L_Pt = TMath::Max(Pt1,Pt2);
-    Double_t SubL_Pt = TMath::Min(Pt1,Pt2);;
+    Double_t SubL_Pt = TMath::Min(Pt1,Pt2);
 
     
     if(L_Pt< 120.0 || SubL_Pt < 30.0 || DeltaPhi < (2.0*pi)/3.0) continue; 
@@ -781,8 +929,17 @@ TH1D *Asym_DiJet_Pt(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, Double_t
   
   for(int i=0; i< NEvents; i++) {
 
+
+
+    Double_t MinPtRandom = LPtMin-30.0;
+    Double_t MaxPtRandom = LPtMax+30.0;
+    
+    //Double_t MinPtRandom = rand.Gaus(LPtMin, LPtMin*ResPt);
+    //Double_t MaxPtRandom = rand.Gaus(LPtMax, LPtMax*ResPt);
+    
+    
     // Generate Pt 
-    Double_t Pt = JetPtFuncPP->GetRandom(LPtMin, LPtMax);
+    Double_t Pt = JetPtFuncPP->GetRandom(MinPtRandom, MaxPtRandom);
 
     //if(Pt < SLPtMin) continue;
     
@@ -834,40 +991,6 @@ TH1D *Asym_DiJet_Pt(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, Double_t
   hAsymmetryOut->SetMarkerColor(kRed);
   return hAsymmetryOut;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -1046,7 +1169,7 @@ TGraphErrors *jet_atlas_yield_00_rapidity_21_pp_276tev()
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
 
-TGraphMultiErrors *Data_CMS_XJ_GammaJet_Cent_00_10_276TeV()
+TGraphAsymmErrors *Data_CMS_XJ_GammaJet_Cent_00_10_276TeV()
 {
 
   // CMS jet quenching using isolated-photon + jet correlations in PbPb collisions at 2.76 TeV
@@ -1074,33 +1197,11 @@ TGraphMultiErrors *Data_CMS_XJ_GammaJet_Cent_00_10_276TeV()
   
   for(int i=0; i<NN; i++){Error_EvFrac_High[i] = EvFrac_Max[i] - EvFrac[i]; Error_EvFrac_Low[i] =  EvFrac[i] - EvFrac_Min[i]; }
 
-  Double_t EvFracSyst_Max[NN] = {0.108, 0.070, 1.937, 2.140, 1.795, 0.960, 1.595, 0.510, 0.463, 0.330, 0.042, 0.034, 0.093, 0.008, 0.124};
-  Double_t EvFracSyst_Min[NN] = {0.040, -0.007, 1.024, 1.313, 1.247, 0.719, 1.172, 0.337, 0.290, 0.176, -0.025, -0.024, 0.016, -0.060, 0.028};
-  
-  Double_t SystError_EvFrac_High[NN] = {0.0}; 
-  Double_t SystError_EvFrac_Low[NN] = {0.0};
-  
-  for(int i=0; i<NN; i++){SystError_EvFrac_High[i] = EvFracSyst_Max[i] - EvFrac[i]; SystError_EvFrac_Low[i] =  EvFrac[i] - EvFracSyst_Min[i]; }
-
-
-  //auto gme = new TGraphMultiErrors("gme", "TGraphMultiErrors Example", np, x, y, exl, exh, eylstat, eyhstat);
-  //gme->AddYError(np, eylsys, eyhsys);
-  //gme->SetMarkerStyle(20);
-  //gme->SetLineColor(kRed);
-  //gme->GetAttLine(0)->SetLineColor(kRed);
-  //gme->GetAttLine(1)->SetLineColor(kBlue);
-  //gme->GetAttFill(1)->SetFillStyle(0);
-  //gme->Draw("APS ; Z ; 5 s=0.5");
-
-  
-  TGraphMultiErrors *grf_local = new TGraphMultiErrors(NN, XJ, EvFrac, Error_XJ_Low, Error_XJ_High, Error_EvFrac_Low,Error_EvFrac_High);
-  grf_local->AddYError(NN,  SystError_EvFrac_Low, SystError_EvFrac_High);
+  //auto gr = new TGraphAsymmErrors(n,x,y,exl,exh,eyl,eyh);
+  TGraphAsymmErrors *grf_local = new TGraphAsymmErrors(NN, XJ, EvFrac, Error_XJ_Low, Error_XJ_High, Error_EvFrac_Low,Error_EvFrac_High);
   grf_local->SetMarkerColor(1);
   grf_local->SetMarkerStyle(20);
   grf_local->SetMarkerSize(1.5);
-
-  grf_local->GetAttFill(1)->SetFillStyle(0);
-  
   grf_local->GetXaxis()->SetTitle("X_{J#gamma}=p_{T}^{Jet}/p_{T}^{#gamma}");
   grf_local->GetYaxis()->SetTitle("#frac{1}{N_{J#gamma}}#frac{dN_{J#gamma}}{dx_{J#gamma}}");
   grf_local->GetXaxis()->CenterTitle();
@@ -1112,45 +1213,56 @@ TGraphMultiErrors *Data_CMS_XJ_GammaJet_Cent_00_10_276TeV()
 			  
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-TGraphErrors *Data_Syst_CMS_XJ_GammaJet_Cent_00_10_276TeV()
+TGraphAsymmErrors *Data_Syst_CMS_XJ_GammaJet_Cent_00_10_276TeV()
 {
-
   const Int_t NN = 15 ;
   Double_t XJ[NN] = {0.200, 0.330, 0.466, 0.584, 0.706, 0.820, 0.959, 1.071, 1.187, 1.317, 1.432, 1.563, 1.693, 1.809, 1.926};
-  Double_t Error_XJ[NN] = {0.0};
-
+  const Double_t XError_Syst = 0.025; // width of syst box
+  Double_t Error_XJ_Low[NN] = {0.0};
+  Double_t Error_XJ_High[NN] = {0.0};
+  for(int i=0; i<NN; i++){Error_XJ_Low[i]=XError_Syst;Error_XJ_High[i]=XError_Syst;}
   Double_t EvFrac[NN] = {0.079, 0.041, 1.456, 1.717, 1.516, 0.835, 1.394, 0.433, 0.367, 0.262, 0.014, 0.015, 0.074, -0.012, 0.086};
-  Double_t EvFrac_Max[NN] = {0.108, 0.070, 1.937, 2.140, 1.795, 0.960, 1.595, 0.510, 0.463, 0.330, 0.042, 0.034, 0.093, 0.008, 0.124};
-  
-  Double_t Error_EvFrac[NN] = {0.0}; 
-  for(int i=0; i<NN; i++){Error_EvFrac[i] = EvFrac_Max[i] - EvFrac[i]; }
-
-
-  
-  TGraphErrors *grf_local = new TGraphErrors(NN, XJ, EvFrac, Error_XJ, Error_EvFrac);
-  //grf_local->SetMarkerColor(1);
-  //grf_local->SetMarkerStyle(20);
-  //grf_local->SetMarkerSize(1.5);
-
+  Double_t EvFracSyst_Max[NN] = {0.108, 0.070, 1.937, 2.140, 1.795, 0.960, 1.595, 0.510, 0.463, 0.330, 0.042, 0.034, 0.093, 0.008, 0.124};
+  Double_t EvFracSyst_Min[NN] = {0.040, -0.007, 1.024, 1.313, 1.247, 0.719, 1.172, 0.337, 0.290, 0.176, -0.025, -0.024, 0.016, -0.060, 0.028};
+  Double_t SystError_EvFrac_High[NN] = {0.0}; 
+  Double_t SystError_EvFrac_Low[NN] = {0.0};
+  for(int i=0; i<NN; i++){SystError_EvFrac_High[i] = EvFracSyst_Max[i] - EvFrac[i]; SystError_EvFrac_Low[i] =  EvFrac[i] - EvFracSyst_Min[i]; }
+  TGraphAsymmErrors *grf_local = new TGraphAsymmErrors(NN, XJ, EvFrac, Error_XJ_Low, Error_XJ_High, SystError_EvFrac_Low, SystError_EvFrac_High);
   grf_local->SetLineColor(1);
+  grf_local->SetFillStyle(0000);
+  grf_local->GetXaxis()->SetTitle("X_{J#gamma}=p_{T}^{Jet}/p_{T}^{#gamma}");
+  grf_local->GetYaxis()->SetTitle("#frac{1}{N_{J#gamma}}#frac{dN_{J#gamma}}{dx_{J#gamma}}");
+  grf_local->GetXaxis()->CenterTitle();
+  grf_local->GetYaxis()->CenterTitle();
+  grf_local->GetYaxis()->SetRangeUser(-0.5,2.5);
+  grf_local->GetXaxis()->SetLimits(0.0,2.0);
+  return grf_local;
+}
+
+
+TGraphAsymmErrors *Data_CMS_XJ_GammaJet_Cent_10_30_276TeV()
+{
+
   
+  const Int_t NN =  13;
+  Double_t XJ[NN] = {0.177, 0.308, 0.430, 0.555, 0.674, 0.800, 0.935, 1.056, 1.191, 1.310, 1.436, 1.562, 1.702};
+  Double_t Error_XJ_Low[NN] = {0.0};
+  Double_t Error_XJ_High[NN] = {0.0};
+
+ 
+  Double_t EvFrac[NN] = {0.027, 0.420, 1.342, 1.456, 1.465, 1.444, 0.962, 0.538, 0.056, 0.045, 0.092, 0.014, -0.016};
+  Double_t EvFrac_Max[NN] = {0.075, 0.526, 1.554, 1.687, 1.695, 1.636, 1.135, 0.682, 0.142, 0.151, 0.159, 0.081, 0.022};
+  Double_t EvFrac_Min[NN] = {-0.002, 0.305, 1.121, 1.225, 1.243, 1.223, 0.770, 0.384, -0.040, -0.080, 0.005, -0.044, -0.074};
+
+  Double_t Error_EvFrac_High[NN] = {0.0}; 
+  Double_t Error_EvFrac_Low[NN] = {0.0};
+  
+  for(int i=0; i<NN; i++){Error_EvFrac_High[i] = EvFrac_Max[i] - EvFrac[i]; Error_EvFrac_Low[i] =  EvFrac[i] - EvFrac_Min[i]; }
+
+  TGraphAsymmErrors *grf_local = new TGraphAsymmErrors(NN, XJ, EvFrac, Error_XJ_Low, Error_XJ_High, Error_EvFrac_Low,Error_EvFrac_High);
+  grf_local->SetMarkerColor(1);
+  grf_local->SetMarkerStyle(20);
+  grf_local->SetMarkerSize(1.5);
   grf_local->GetXaxis()->SetTitle("X_{J#gamma}=p_{T}^{Jet}/p_{T}^{#gamma}");
   grf_local->GetYaxis()->SetTitle("#frac{1}{N_{J#gamma}}#frac{dN_{J#gamma}}{dx_{J#gamma}}");
   grf_local->GetXaxis()->CenterTitle();
@@ -1161,6 +1273,194 @@ TGraphErrors *Data_Syst_CMS_XJ_GammaJet_Cent_00_10_276TeV()
   return grf_local;
 			  
 }
+
+TGraphAsymmErrors *Data_Syst_CMS_XJ_GammaJet_Cent_10_30_276TeV()
+{
+  const Int_t NN = 13;
+  Double_t XJ[NN] = {0.177, 0.308, 0.430, 0.555, 0.674, 0.800, 0.935, 1.056, 1.191, 1.310, 1.436, 1.562, 1.702};
+  const Double_t XError_Syst = 0.025; // width of syst box
+  Double_t Error_XJ_Low[NN] = {0.0};
+  Double_t Error_XJ_High[NN] = {0.0};
+  for(int i=0; i<NN; i++){Error_XJ_Low[i]=XError_Syst;Error_XJ_High[i]=XError_Syst;}
+
+  Double_t EvFrac[NN] = {0.027, 0.420, 1.342, 1.456, 1.465, 1.444, 0.962, 0.538, 0.056, 0.045, 0.092, 0.014, -0.016};
+  Double_t EvFracSyst_Max[NN] = {0.085, 0.564, 1.746, 1.793, 1.715, 1.636, 1.097, 0.634, 0.085, 0.074, 0.121, 0.052, 0.012};
+  Double_t EvFracSyst_Min[NN] = {-0.002, 0.266, 0.948, 1.120, 1.205, 1.223, 0.799, 0.422, 0.017, -0.003, 0.034, -0.015, -0.045};
+  Double_t SystError_EvFrac_High[NN] = {0.0}; 
+  Double_t SystError_EvFrac_Low[NN] = {0.0};
+  for(int i=0; i<NN; i++){SystError_EvFrac_High[i] = EvFracSyst_Max[i] - EvFrac[i]; SystError_EvFrac_Low[i] =  EvFrac[i] - EvFracSyst_Min[i]; }
+  TGraphAsymmErrors *grf_local = new TGraphAsymmErrors(NN, XJ, EvFrac, Error_XJ_Low, Error_XJ_High, SystError_EvFrac_Low, SystError_EvFrac_High);
+  grf_local->SetLineColor(1);
+  grf_local->SetFillStyle(0000);
+  grf_local->GetXaxis()->SetTitle("X_{J#gamma}=p_{T}^{Jet}/p_{T}^{#gamma}");
+  grf_local->GetYaxis()->SetTitle("#frac{1}{N_{J#gamma}}#frac{dN_{J#gamma}}{dx_{J#gamma}}");
+  grf_local->GetXaxis()->CenterTitle();
+  grf_local->GetYaxis()->CenterTitle();
+  grf_local->GetYaxis()->SetRangeUser(-0.5,2.5);
+  grf_local->GetXaxis()->SetLimits(0.0,2.0);
+  return grf_local;
+}
+
+
+TGraphAsymmErrors *Data_CMS_XJ_GammaJet_Cent_30_50_276TeV()
+{
+
+  
+  const Int_t NN =  14;
+  Double_t XJ[NN] = {0.181, 0.312, 0.431, 0.562, 0.681, 0.806, 0.931, 1.049, 1.187, 1.306, 1.444, 1.562, 1.826, 1.931};
+  Double_t Error_XJ_Low[NN] = {0.0};
+  Double_t Error_XJ_High[NN] = {0.0};
+
+ 
+  Double_t EvFrac[NN] = {0.061, 0.070, 0.777, 1.283, 1.322, 1.283, 1.322, 1.341, 0.137, 0.385, -0.035, 0.089, 0.061, -0.045};
+  Double_t EvFrac_Max[NN] = {0.118, 0.156, 1.025, 1.608, 1.637, 1.637, 1.656, 1.666, 0.299, 0.576, 0.089, 0.166, 0.127, 0.013};
+  Double_t EvFrac_Min[NN] = {0.003, -0.035, 0.500, 0.930, 0.997, 0.959, 1.025, 1.006, -0.016, 0.185, -0.150, -0.025, 0.013, -0.102};
+
+  Double_t Error_EvFrac_High[NN] = {0.0}; 
+  Double_t Error_EvFrac_Low[NN] = {0.0};
+  
+  for(int i=0; i<NN; i++){Error_EvFrac_High[i] = EvFrac_Max[i] - EvFrac[i]; Error_EvFrac_Low[i] =  EvFrac[i] - EvFrac_Min[i]; }
+
+  TGraphAsymmErrors *grf_local = new TGraphAsymmErrors(NN, XJ, EvFrac, Error_XJ_Low, Error_XJ_High, Error_EvFrac_Low,Error_EvFrac_High);
+  grf_local->SetMarkerColor(1);
+  grf_local->SetMarkerStyle(20);
+  grf_local->SetMarkerSize(1.5);
+  grf_local->GetXaxis()->SetTitle("X_{J#gamma}=p_{T}^{Jet}/p_{T}^{#gamma}");
+  grf_local->GetYaxis()->SetTitle("#frac{1}{N_{J#gamma}}#frac{dN_{J#gamma}}{dx_{J#gamma}}");
+  grf_local->GetXaxis()->CenterTitle();
+  grf_local->GetYaxis()->CenterTitle();
+  grf_local->GetYaxis()->SetRangeUser(-0.5,2.5);
+  grf_local->GetXaxis()->SetLimits(0.0,2.0);
+  
+  return grf_local;
+			  
+}
+
+TGraphAsymmErrors *Data_Syst_CMS_XJ_GammaJet_Cent_30_50_276TeV()
+{
+  const Int_t NN = 14;
+  Double_t XJ[NN] = {0.181, 0.312, 0.431, 0.562, 0.681, 0.806, 0.931, 1.049, 1.187, 1.306, 1.444, 1.562, 1.826, 1.931};
+  const Double_t XError_Syst = 0.025; // width of syst box
+  Double_t Error_XJ_Low[NN] = {0.0};
+  Double_t Error_XJ_High[NN] = {0.0};
+  for(int i=0; i<NN; i++){Error_XJ_Low[i]=XError_Syst;Error_XJ_High[i]=XError_Syst;}
+
+  Double_t EvFrac[NN] = {0.061, 0.070, 0.777, 1.283, 1.322, 1.283, 1.322, 1.341, 0.137, 0.385, -0.035, 0.089, 0.061, -0.045};
+  Double_t EvFracSyst_Max[NN] = {0.099, 0.108, 0.920, 1.455, 1.484, 1.484, 1.599, 1.694, 0.194, 0.538, 0.003, 0.118, 0.108, -0.006};
+  Double_t EvFracSyst_Min[NN] = {0.022, 0.022, 0.615, 1.083, 1.150, 1.102, 1.064, 0.978, 0.089, 0.223, -0.073, 0.032, 0.003, -0.092};
+  Double_t SystError_EvFrac_High[NN] = {0.0}; 
+  Double_t SystError_EvFrac_Low[NN] = {0.0};
+  for(int i=0; i<NN; i++){SystError_EvFrac_High[i] = EvFracSyst_Max[i] - EvFrac[i]; SystError_EvFrac_Low[i] =  EvFrac[i] - EvFracSyst_Min[i]; }
+  TGraphAsymmErrors *grf_local = new TGraphAsymmErrors(NN, XJ, EvFrac, Error_XJ_Low, Error_XJ_High, SystError_EvFrac_Low, SystError_EvFrac_High);
+  grf_local->SetLineColor(1);
+  grf_local->SetFillStyle(0000);
+  grf_local->GetXaxis()->SetTitle("X_{J#gamma}=p_{T}^{Jet}/p_{T}^{#gamma}");
+  grf_local->GetYaxis()->SetTitle("#frac{1}{N_{J#gamma}}#frac{dN_{J#gamma}}{dx_{J#gamma}}");
+  grf_local->GetXaxis()->CenterTitle();
+  grf_local->GetYaxis()->CenterTitle();
+  grf_local->GetYaxis()->SetRangeUser(-0.5,2.5);
+  grf_local->GetXaxis()->SetLimits(0.0,2.0);
+  return grf_local;
+}
+
+
+TGraphAsymmErrors *Data_CMS_XJ_GammaJet_Cent_50_100_276TeV()
+{
+
+  
+  const Int_t NN = 8;
+  Double_t XJ[NN] = {0.305, 0.508, 0.704, 0.902, 1.103, 1.302, 1.501, 1.702};
+  Double_t Error_XJ_Low[NN] = {0.0};
+  Double_t Error_XJ_High[NN] = {0.0};
+
+ 
+  Double_t EvFrac[NN] = {0.245, 1.627, 1.375, 0.609, 0.689, 0.451, 0.098, 0.053};
+  Double_t EvFrac_Max[NN] = {0.379, 2.007, 1.722, 0.926, 0.958, 0.672, 0.185, 0.140};
+  Double_t EvFrac_Min[NN] = {0.100, 1.238, 1.029, 0.292, 0.429, 0.230, 0.031, -0.062};
+
+  Double_t Error_EvFrac_High[NN] = {0.0}; 
+  Double_t Error_EvFrac_Low[NN] = {0.0};
+  
+  for(int i=0; i<NN; i++){Error_EvFrac_High[i] = EvFrac_Max[i] - EvFrac[i]; Error_EvFrac_Low[i] =  EvFrac[i] - EvFrac_Min[i]; }
+
+  TGraphAsymmErrors *grf_local = new TGraphAsymmErrors(NN, XJ, EvFrac, Error_XJ_Low, Error_XJ_High, Error_EvFrac_Low,Error_EvFrac_High);
+  grf_local->SetMarkerColor(1);
+  grf_local->SetMarkerStyle(20);
+  grf_local->SetMarkerSize(1.5);
+  grf_local->GetXaxis()->SetTitle("X_{J#gamma}=p_{T}^{Jet}/p_{T}^{#gamma}");
+  grf_local->GetYaxis()->SetTitle("#frac{1}{N_{J#gamma}}#frac{dN_{J#gamma}}{dx_{J#gamma}}");
+  grf_local->GetXaxis()->CenterTitle();
+  grf_local->GetYaxis()->CenterTitle();
+  grf_local->GetYaxis()->SetRangeUser(-0.5,2.5);
+  grf_local->GetXaxis()->SetLimits(0.0,2.0);
+  
+  return grf_local;
+			  
+}
+
+TGraphAsymmErrors *Data_Syst_CMS_XJ_GammaJet_Cent_50_100_276TeV()
+{
+  const Int_t NN = 8;
+  Double_t XJ[NN] = {0.305, 0.508, 0.704, 0.902, 1.103, 1.302, 1.501, 1.702};
+  const Double_t XError_Syst = 0.025; // width of syst box
+  Double_t Error_XJ_Low[NN] = {0.0};
+  Double_t Error_XJ_High[NN] = {0.0};
+  for(int i=0; i<NN; i++){Error_XJ_Low[i]=XError_Syst;Error_XJ_High[i]=XError_Syst;}
+
+  Double_t EvFrac[NN] = {0.245, 1.627, 1.375, 0.609, 0.689, 0.451, 0.098, 0.053};
+  Double_t EvFracSyst_Max[NN] = {0.283, 1.834, 1.577, 0.724, 0.872, 0.605, 0.147, 0.082};
+  Double_t EvFracSyst_Min[NN] = {0.197, 1.421, 1.174, 0.484, 0.516, 0.297, 0.070, 0.005};
+  Double_t SystError_EvFrac_High[NN] = {0.0}; 
+  Double_t SystError_EvFrac_Low[NN] = {0.0};
+  for(int i=0; i<NN; i++){SystError_EvFrac_High[i] = EvFracSyst_Max[i] - EvFrac[i]; SystError_EvFrac_Low[i] =  EvFrac[i] - EvFracSyst_Min[i]; }
+  TGraphAsymmErrors *grf_local = new TGraphAsymmErrors(NN, XJ, EvFrac, Error_XJ_Low, Error_XJ_High, SystError_EvFrac_Low, SystError_EvFrac_High);
+  grf_local->SetLineColor(1);
+  grf_local->SetFillStyle(0000);
+  grf_local->GetXaxis()->SetTitle("X_{J#gamma}=p_{T}^{Jet}/p_{T}^{#gamma}");
+  grf_local->GetYaxis()->SetTitle("#frac{1}{N_{J#gamma}}#frac{dN_{J#gamma}}{dx_{J#gamma}}");
+  grf_local->GetXaxis()->CenterTitle();
+  grf_local->GetYaxis()->CenterTitle();
+  grf_local->GetYaxis()->SetRangeUser(-0.5,2.5);
+  grf_local->GetXaxis()->SetLimits(0.0,2.0);
+  return grf_local;
+}
+
+
+TGraphAsymmErrors *Data_CMS_XJ_GammaJet_PP_276TeV()
+{
+
+  
+  const Int_t NN =  8;
+  Double_t XJ[NN] = {0.306, 0.508, 0.703, 0.903, 1.105, 1.296, 1.502, 1.902};
+  Double_t Error_XJ_Low[NN] = {0.0};
+  Double_t Error_XJ_High[NN] = {0.0};
+
+ 
+  Double_t EvFrac[NN] = {0.475, 0.728, 1.135, 0.955, 1.199, 0.615, 0.147, -0.098};
+  Double_t EvFrac_Max[NN] = {0.802, 1.132, 1.664, 1.426, 1.881, 1.038, 0.387, 0.027};
+  Double_t EvFrac_Min[NN] = {0.129, 0.334, 0.597, 0.292, 0.535, 0.192, -0.161, -0.165};
+
+  Double_t Error_EvFrac_High[NN] = {0.0}; 
+  Double_t Error_EvFrac_Low[NN] = {0.0};
+  
+  for(int i=0; i<NN; i++){Error_EvFrac_High[i] = EvFrac_Max[i] - EvFrac[i]; Error_EvFrac_Low[i] =  EvFrac[i] - EvFrac_Min[i]; }
+
+  TGraphAsymmErrors *grf_local = new TGraphAsymmErrors(NN, XJ, EvFrac, Error_XJ_Low, Error_XJ_High, Error_EvFrac_Low,Error_EvFrac_High);
+  grf_local->SetMarkerColor(1);
+  grf_local->SetMarkerStyle(20);
+  grf_local->SetMarkerSize(1.5);
+  grf_local->GetXaxis()->SetTitle("X_{J#gamma}=p_{T}^{Jet}/p_{T}^{#gamma}");
+  grf_local->GetYaxis()->SetTitle("#frac{1}{N_{J#gamma}}#frac{dN_{J#gamma}}{dx_{J#gamma}}");
+  grf_local->GetXaxis()->CenterTitle();
+  grf_local->GetYaxis()->CenterTitle();
+  grf_local->GetYaxis()->SetRangeUser(-0.5,2.5);
+  grf_local->GetXaxis()->SetLimits(0.0,2.0);
+  
+  return grf_local;
+			  
+}
+
+
 
 
 
