@@ -154,7 +154,7 @@ TGraphErrors *jet_production_atlas_yield_in_pp_collision_502tev();
 // Function to calculate Asymmetry as a function of Centrality
 Double_t calDelta(Double_t pT, Double_t alpha, Double_t MM) ;
 
-TH1D *XJ_GammaJet_Centrality(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, Double_t Alpha, Double_t MM, Double_t NPart, Int_t CentBin);
+TH1D *XJ_GammaJet_Centrality(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, Double_t Alpha, Double_t MM, Double_t NPart, Int_t CentBin, Int_t isPP);
 
 
 TH1D *Asym_DiJet_Centrality(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, Double_t Alpha, Double_t MM, Double_t NPart, Int_t CentBin);
@@ -303,9 +303,6 @@ void DiJet()
 
 
 
-
-  
-  // return;
   
   
   TGraphErrors *grf_Data_CMS_Aj_Pt_120_150_276TeV = Data_CMS_Aj_Pt_120_150_276TeV();
@@ -636,7 +633,8 @@ void DiJet()
   TGraphAsymmErrors *grf_Data_CMS_XJ_Cent_276TeV[NCentBins_XJ]={grf_Data_CMS_XJ_GammaJet_Cent_00_10_276TeV,grf_Data_CMS_XJ_GammaJet_Cent_10_30_276TeV,
 								grf_Data_CMS_XJ_GammaJet_Cent_30_50_276TeV,grf_Data_CMS_XJ_GammaJet_Cent_50_100_276TeV};
 
-    
+  TGraphAsymmErrors *grf_Data_Syst_CMS_XJ_Cent_276TeV[NCentBins_XJ]={grf_Data_Syst_CMS_XJ_GammaJet_Cent_00_10_276TeV,grf_Data_Syst_CMS_XJ_GammaJet_Cent_10_30_276TeV,
+								grf_Data_Syst_CMS_XJ_GammaJet_Cent_30_50_276TeV,grf_Data_Syst_CMS_XJ_GammaJet_Cent_50_100_276TeV};
   // Canvas defined outside the centrality loop
   
   TCanvas *Canv_CMS_XJ_Cent_276TeV = new TCanvas("Canv_CMS_XJ_Cent_276TeV","Canv_CMS_XJ_Cent_276TeV",1200,800);//coulamXRows
@@ -645,7 +643,7 @@ void DiJet()
 
   for(int i=0; i< NCentBins_XJ; i++) {
     cout<<" XJ calculation for centrality "<<CentBins_XJ[i]<<"  "<<CentBins_XJ[i+1]<<"% "<<endl;
-    HistOutJetGamma_XJ[i] = XJ_GammaJet_Centrality(fJetpp276tev,  RespT, ResPhi, alpha, MM, ANPartCent_XJ[i], i);
+    HistOutJetGamma_XJ[i] = XJ_GammaJet_Centrality(fJetpp276tev,  RespT, ResPhi, alpha, MM, ANPartCent_XJ[i], i,0);
 
     Canv_CMS_XJ_Cent_276TeV->cd(i+1);
     
@@ -654,22 +652,26 @@ void DiJet()
     gPad->SetLeftMargin(0.2);
     
     grf_Data_CMS_XJ_Cent_276TeV[i]->Draw("AP");
-
-
-    HistOutJetGamma_XJ[i]->GetYaxis()->SetRangeUser(0.0,2.5);
+    grf_Data_Syst_CMS_XJ_Cent_276TeV[i]->Draw("2");
+    HistOutJetGamma_XJ[i]->GetYaxis()->SetRangeUser(0.0,3.0);
     HistOutJetGamma_XJ[i]->Draw("Psame");
     leg->Draw("same");
     tb->DrawLatex(0.60,0.70,Form("Cent. %0d - %0d %%",CentBins_XJ[i],CentBins_XJ[i+1]));
 
   }
 
-  //Canv_Asym_DiJet_Centrality->cd(7);
-  //gPad->SetTopMargin(0.1);
-  //gPad->SetBottomMargin(0.2);
-  //grf_Data_CMS_Aj_pp_276TeV->Draw("AP");
-  //hAsymmetryDiff->Draw("Psame");
-  //leg->Draw("same");
-  //tb->DrawLatex(0.6, 0.7, "pp") ;
+  Canv_CMS_XJ_Cent_276TeV->cd(5);
+  gPad->SetTopMargin(0.1);
+  gPad->SetBottomMargin(0.2);
+  gPad->SetLeftMargin(0.2);
+  //This need to be coded better
+  TH1D *HistOutJetGamma_XJ_PP = XJ_GammaJet_Centrality(fJetpp276tev,  RespT, ResPhi, alpha, MM, ANPartCent_XJ[3], 4,1);
+  grf_Data_CMS_XJ_GammaJet_PP_276TeV->Draw("AP");
+  HistOutJetGamma_XJ_PP->Draw("Psame");
+  leg->Draw("same");
+  tb->DrawLatex(0.6, 0.7, "pp") ;
+
+
   Canv_CMS_XJ_Cent_276TeV->SaveAs("Figure/OutFigures/Fig_XJ_GammaJet_Centrality.pdf");
   Canv_CMS_XJ_Cent_276TeV->SaveAs("Figure/OutFigures/Fig_XJ_GammaJet_Centrality.png");
 
@@ -767,7 +769,7 @@ void DiJet()
 
 
 
-TH1D *XJ_GammaJet_Centrality(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, Double_t Alpha, Double_t MM, Double_t NPart, Int_t CentBin)
+TH1D *XJ_GammaJet_Centrality(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, Double_t Alpha, Double_t MM, Double_t NPart, Int_t CentBin, Int_t isPP)
 {
 
   //initialize the random number generator
@@ -804,11 +806,10 @@ TH1D *XJ_GammaJet_Centrality(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi,
     // Calculate DeltaPt
     Double_t dEdx = calDelta(Pt, Alpha, MM);
     
-
-    //Double_t E1 = Pt-dEdx*d1;
+    //Put the energy Loss
     Double_t E1 = Pt; // this is assumed as Gamma
-    Double_t E2 = Pt-dEdx*d2;
-
+    Double_t E2 = Pt-dEdx*d2; // this is assumed as Jet
+    if(isPP ==1)E2 = Pt;
 
     
     // Smear Pt
@@ -817,11 +818,10 @@ TH1D *XJ_GammaJet_Centrality(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi,
 
     //Exp cut on Pt
     
-    //Double_t L_Pt = TMath::Max(Pt1,Pt2);
-    //Double_t SubL_Pt = TMath::Min(Pt1,Pt2);
-
+    const Double_t MinGammaPt = 60.0;
+    const Double_t MinJetPt = 30.0;
     
-    if(Pt1 < 60.0 || Pt2 < 30.0 || DeltaPhi < (7.0*pi)/8.0) continue; 
+    if(Pt1 < MinGammaPt || Pt2 < MinJetPt || DeltaPhi < (7.0*pi)/8.0) continue; 
 
     Double_t PtXJ = Pt2/Pt1; 
     //cout << Pt1 << "  " << Pt2<<"   "<<PtDiff << endl;
@@ -830,6 +830,7 @@ TH1D *XJ_GammaJet_Centrality(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi,
   } 
 
   hAsymmetryOut->Scale(1.0/hAsymmetryOut->Integral());
+  hAsymmetryOut->Scale(1.0/hAsymmetryOut->GetBinWidth(0));
   hAsymmetryOut->GetXaxis()->SetTitle("X_{J#gamma}=p_{T}^{Jet}/p_{T}^{#gamma}");
   hAsymmetryOut->GetYaxis()->SetTitle("#frac{1}{N_{J#gamma}}#frac{dN_{J#gamma}}{dx_{J#gamma}}");
   hAsymmetryOut->GetXaxis()->CenterTitle();
@@ -940,6 +941,7 @@ TH1D *Asym_DiJet_Pt(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, Double_t
     
     // Generate Pt 
     Double_t Pt = JetPtFuncPP->GetRandom(MinPtRandom, MaxPtRandom);
+    
 
     //if(Pt < SLPtMin) continue;
     
@@ -1206,7 +1208,7 @@ TGraphAsymmErrors *Data_CMS_XJ_GammaJet_Cent_00_10_276TeV()
   grf_local->GetYaxis()->SetTitle("#frac{1}{N_{J#gamma}}#frac{dN_{J#gamma}}{dx_{J#gamma}}");
   grf_local->GetXaxis()->CenterTitle();
   grf_local->GetYaxis()->CenterTitle();
-  grf_local->GetYaxis()->SetRangeUser(-0.5,2.5);
+  grf_local->GetYaxis()->SetRangeUser(-0.5,3.0);
   grf_local->GetXaxis()->SetLimits(0.0,2.0);
   
   return grf_local;
@@ -1234,7 +1236,7 @@ TGraphAsymmErrors *Data_Syst_CMS_XJ_GammaJet_Cent_00_10_276TeV()
   grf_local->GetYaxis()->SetTitle("#frac{1}{N_{J#gamma}}#frac{dN_{J#gamma}}{dx_{J#gamma}}");
   grf_local->GetXaxis()->CenterTitle();
   grf_local->GetYaxis()->CenterTitle();
-  grf_local->GetYaxis()->SetRangeUser(-0.5,2.5);
+  grf_local->GetYaxis()->SetRangeUser(-0.5,3.0);
   grf_local->GetXaxis()->SetLimits(0.0,2.0);
   return grf_local;
 }
@@ -1267,7 +1269,7 @@ TGraphAsymmErrors *Data_CMS_XJ_GammaJet_Cent_10_30_276TeV()
   grf_local->GetYaxis()->SetTitle("#frac{1}{N_{J#gamma}}#frac{dN_{J#gamma}}{dx_{J#gamma}}");
   grf_local->GetXaxis()->CenterTitle();
   grf_local->GetYaxis()->CenterTitle();
-  grf_local->GetYaxis()->SetRangeUser(-0.5,2.5);
+  grf_local->GetYaxis()->SetRangeUser(-0.5,3.0);
   grf_local->GetXaxis()->SetLimits(0.0,2.0);
   
   return grf_local;
@@ -1296,7 +1298,7 @@ TGraphAsymmErrors *Data_Syst_CMS_XJ_GammaJet_Cent_10_30_276TeV()
   grf_local->GetYaxis()->SetTitle("#frac{1}{N_{J#gamma}}#frac{dN_{J#gamma}}{dx_{J#gamma}}");
   grf_local->GetXaxis()->CenterTitle();
   grf_local->GetYaxis()->CenterTitle();
-  grf_local->GetYaxis()->SetRangeUser(-0.5,2.5);
+  grf_local->GetYaxis()->SetRangeUser(-0.5,3.0);
   grf_local->GetXaxis()->SetLimits(0.0,2.0);
   return grf_local;
 }
@@ -1329,7 +1331,7 @@ TGraphAsymmErrors *Data_CMS_XJ_GammaJet_Cent_30_50_276TeV()
   grf_local->GetYaxis()->SetTitle("#frac{1}{N_{J#gamma}}#frac{dN_{J#gamma}}{dx_{J#gamma}}");
   grf_local->GetXaxis()->CenterTitle();
   grf_local->GetYaxis()->CenterTitle();
-  grf_local->GetYaxis()->SetRangeUser(-0.5,2.5);
+  grf_local->GetYaxis()->SetRangeUser(-0.5,3.0);
   grf_local->GetXaxis()->SetLimits(0.0,2.0);
   
   return grf_local;
@@ -1358,7 +1360,7 @@ TGraphAsymmErrors *Data_Syst_CMS_XJ_GammaJet_Cent_30_50_276TeV()
   grf_local->GetYaxis()->SetTitle("#frac{1}{N_{J#gamma}}#frac{dN_{J#gamma}}{dx_{J#gamma}}");
   grf_local->GetXaxis()->CenterTitle();
   grf_local->GetYaxis()->CenterTitle();
-  grf_local->GetYaxis()->SetRangeUser(-0.5,2.5);
+  grf_local->GetYaxis()->SetRangeUser(-0.5,3.0);
   grf_local->GetXaxis()->SetLimits(0.0,2.0);
   return grf_local;
 }
@@ -1391,7 +1393,7 @@ TGraphAsymmErrors *Data_CMS_XJ_GammaJet_Cent_50_100_276TeV()
   grf_local->GetYaxis()->SetTitle("#frac{1}{N_{J#gamma}}#frac{dN_{J#gamma}}{dx_{J#gamma}}");
   grf_local->GetXaxis()->CenterTitle();
   grf_local->GetYaxis()->CenterTitle();
-  grf_local->GetYaxis()->SetRangeUser(-0.5,2.5);
+  grf_local->GetYaxis()->SetRangeUser(-0.5,3.0);
   grf_local->GetXaxis()->SetLimits(0.0,2.0);
   
   return grf_local;
@@ -1420,7 +1422,7 @@ TGraphAsymmErrors *Data_Syst_CMS_XJ_GammaJet_Cent_50_100_276TeV()
   grf_local->GetYaxis()->SetTitle("#frac{1}{N_{J#gamma}}#frac{dN_{J#gamma}}{dx_{J#gamma}}");
   grf_local->GetXaxis()->CenterTitle();
   grf_local->GetYaxis()->CenterTitle();
-  grf_local->GetYaxis()->SetRangeUser(-0.5,2.5);
+  grf_local->GetYaxis()->SetRangeUser(-0.5,3.0);
   grf_local->GetXaxis()->SetLimits(0.0,2.0);
   return grf_local;
 }
@@ -1453,7 +1455,7 @@ TGraphAsymmErrors *Data_CMS_XJ_GammaJet_PP_276TeV()
   grf_local->GetYaxis()->SetTitle("#frac{1}{N_{J#gamma}}#frac{dN_{J#gamma}}{dx_{J#gamma}}");
   grf_local->GetXaxis()->CenterTitle();
   grf_local->GetYaxis()->CenterTitle();
-  grf_local->GetYaxis()->SetRangeUser(-0.5,2.5);
+  grf_local->GetYaxis()->SetRangeUser(-0.5,3.0);
   grf_local->GetXaxis()->SetLimits(0.0,2.0);
   
   return grf_local;
