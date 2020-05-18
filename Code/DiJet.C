@@ -931,8 +931,8 @@ TH1D *Asym_DiJet_Pt(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, Double_t
 
 
 
-    Double_t MinPtRandom = LPtMin-30.0;
-    Double_t MaxPtRandom = LPtMax+30.0;
+    Double_t MinPtRandom = LPtMin-60.0;
+    Double_t MaxPtRandom = 500.0;
     
     //Double_t MinPtRandom = rand.Gaus(LPtMin, LPtMin*ResPt);
     //Double_t MaxPtRandom = rand.Gaus(LPtMax, LPtMax*ResPt);
