@@ -361,8 +361,8 @@ void DiJet()
   //Double_t MM = 0.4;
 
 
-  Double_t alpha = 0.50;
-  Double_t MM = 0.45;
+  Double_t alpha = 0.4;
+  Double_t MM = 0.50;
 
 
   
