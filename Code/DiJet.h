@@ -64,6 +64,236 @@ const Double_t R0 = 1.1;
 const Double_t RA = R0*pow(Am, 1.0/3.0);
 
 
+
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
+//+++++++++++++++++++++++++   CMS Data Functions for XJ (Z0+Jet) 5 TeV +++++++++++++++++++++++++++++++++++++++//
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
+
+
+
+TGraphAsymmErrors *Data_CMS_XJ_Z0Jet_Cent_00_30_502TeV()
+{
+
+  // Study of Jet Quenching with Z0 + jet Correlations in Pb-Pb and pp Collisions at 5.02 TeV
+  //Published in Phys.Rev.Lett. 119 (2017) no.8, 082301
+  //CMS-HIN-15-013, CERN-EP-2017-002
+  //DOI: 10.1103/PhysRevLett.119.082301
+  //e-Print: arXiv:1702.01060 [nucl-ex] | PDF
+  
+  const Int_t NN = 10 ;
+  Double_t XJ[NN] = {0.100, 0.300, 0.500, 0.700, 0.900, 1.100, 1.300, 1.500, 1.700, 1.900};
+  Double_t Error_XJ_Low[NN] = {0.0};
+  Double_t Error_XJ_High[NN] = {0.0};
+
+ 
+  Double_t EvFrac[NN] = {0.074, 0.29, 0.78, 0.58, 0.530, 0.240, 0.10, 0.057, 0.00, 0.00};
+  Double_t Error_EvFrac_High[NN] = {0.056, 0.12, 0.15, 0.11, 0.11, 0.08, 0.05, 0.042, 0.0, 0.0}; 
+  Double_t Error_EvFrac_Low[NN] = {0.056, 0.12, 0.15, 0.11, 0.11, 0.08, 0.05, 0.042, 0.0, 0.0};
+  
+
+  TGraphAsymmErrors *grf_local = new TGraphAsymmErrors(NN, XJ, EvFrac, Error_XJ_Low, Error_XJ_High, Error_EvFrac_Low,Error_EvFrac_High);
+  grf_local->SetMarkerColor(1);
+  grf_local->SetMarkerStyle(20);
+  grf_local->SetMarkerSize(1.5);
+  grf_local->GetXaxis()->SetTitle("X_{jZ}=p_{T}^{jet}/p_{T}^{Z}");
+  grf_local->GetYaxis()->SetTitle("#frac{1}{N_{Z}}#frac{dN_{jZ}}{dx_{jZ}}");
+  grf_local->GetYaxis()->SetTitleOffset(1.45);
+  grf_local->GetXaxis()->CenterTitle();
+  grf_local->GetYaxis()->CenterTitle();
+  grf_local->GetYaxis()->SetRangeUser(-0.2,1.0);
+  grf_local->GetXaxis()->SetLimits(0.0,2.0);
+  
+  return grf_local;
+			  
+}
+
+TGraphAsymmErrors *Data_Syst_CMS_XJ_Z0Jet_Cent_00_30_502TeV()
+{
+  const Int_t NN = 10 ;
+  Double_t XJ[NN] = {0.100, 0.300, 0.500, 0.700, 0.900, 1.100, 1.300, 1.500, 1.700, 1.900};
+  const Double_t XError_Syst = 0.10; // width of syst box
+  Double_t Error_XJ_Low[NN] = {0.0};
+  Double_t Error_XJ_High[NN] = {0.0};
+  for(int i=0; i<NN; i++){Error_XJ_Low[i]=XError_Syst;Error_XJ_High[i]=XError_Syst;}
+  Double_t EvFrac[NN] = {0.074, 0.29, 0.78, 0.58, 0.530, 0.240, 0.10, 0.057, 0.00, 0.00};
+  
+  Double_t SystError_EvFrac_High[NN] = {0.009, 0.04, 0.08, 0.06, 0.07, 0.04, 0.02, 0.011, 0.0, 0.0}; 
+  Double_t SystError_EvFrac_Low[NN] = {0.009, 0.04, 0.08, 0.06, 0.07, 0.04, 0.02, 0.011, 0.0, 0.0};
+  
+  TGraphAsymmErrors *grf_local = new TGraphAsymmErrors(NN, XJ, EvFrac, Error_XJ_Low, Error_XJ_High, SystError_EvFrac_Low, SystError_EvFrac_High);
+  grf_local->SetLineColor(1);
+  grf_local->SetFillStyle(0000);
+  grf_local->GetXaxis()->SetTitle("X_{jZ}=p_{T}^{jet}/p_{T}^{Z}");
+  grf_local->GetYaxis()->SetTitle("#frac{1}{N_{Z}}#frac{dN_{jZ}}{dx_{jZ}}");
+  grf_local->GetYaxis()->SetTitleOffset(1.45);
+  grf_local->GetXaxis()->CenterTitle();
+  grf_local->GetYaxis()->CenterTitle();
+  grf_local->GetYaxis()->SetRangeUser(-0.2,3.0);
+  grf_local->GetXaxis()->SetLimits(0.0,2.0);
+  return grf_local;
+}
+
+
+
+TGraphAsymmErrors *Data_CMS_XJ_Z0Jet_PP_502TeV()
+{
+
+  // Study of Jet Quenching with Z0 + jet Correlations in Pb-Pb and pp Collisions at 5.02 TeV
+  //Published in Phys.Rev.Lett. 119 (2017) no.8, 082301
+  //CMS-HIN-15-013, CERN-EP-2017-002
+  //DOI: 10.1103/PhysRevLett.119.082301
+  //e-Print: arXiv:1702.01060 [nucl-ex] | PDF
+  
+  const Int_t NN = 10 ;
+  Double_t XJ[NN] = {0.100, 0.300, 0.500, 0.700, 0.900, 1.100, 1.300, 1.500, 1.700, 1.900};
+  Double_t Error_XJ_Low[NN] = {0.0};
+  Double_t Error_XJ_High[NN] = {0.0};
+
+ 
+  Double_t EvFrac[NN] = {0.032, 0.230, 0.640, 0.730, 0.730, 0.460, 0.190, 0.063, 0.030, 0.021};
+  Double_t Error_EvFrac_High[NN] = {0.015, 0.040, 0.070, 0.070, 0.070, 0.060, 0.040, 0.021, 0.015, 0.012}; 
+  Double_t Error_EvFrac_Low[NN] = {0.015, 0.040, 0.070, 0.070, 0.070, 0.060, 0.040, 0.021, 0.015, 0.012};
+  
+
+  TGraphAsymmErrors *grf_local = new TGraphAsymmErrors(NN, XJ, EvFrac, Error_XJ_Low, Error_XJ_High, Error_EvFrac_Low,Error_EvFrac_High);
+  grf_local->SetMarkerColor(1);
+  grf_local->SetMarkerStyle(20);
+  grf_local->SetMarkerSize(1.5);
+  grf_local->GetXaxis()->SetTitle("X_{jZ}=p_{T}^{jet}/p_{T}^{Z}");
+  grf_local->GetYaxis()->SetTitle("#frac{1}{N_{Z}}#frac{dN_{jZ}}{dx_{jZ}}");
+  grf_local->GetYaxis()->SetTitleOffset(1.45);
+  grf_local->GetXaxis()->CenterTitle();
+  grf_local->GetYaxis()->CenterTitle();
+  grf_local->GetYaxis()->SetRangeUser(-0.2,1.0);
+  grf_local->GetXaxis()->SetLimits(0.0,2.0);
+  
+  return grf_local;
+			  
+}
+
+TGraphAsymmErrors *Data_Syst_CMS_XJ_Z0Jet_PP_502TeV()
+{
+  const Int_t NN = 10 ;
+  Double_t XJ[NN] = {0.100, 0.300, 0.500, 0.700, 0.900, 1.100, 1.300, 1.500, 1.700, 1.900};
+  const Double_t XError_Syst = 0.10; // width of syst box
+  Double_t Error_XJ_Low[NN] = {0.0};
+  Double_t Error_XJ_High[NN] = {0.0};
+  for(int i=0; i<NN; i++){Error_XJ_Low[i]=XError_Syst;Error_XJ_High[i]=XError_Syst;}
+  Double_t EvFrac[NN] = {0.032, 0.230, 0.640, 0.730, 0.730, 0.460, 0.190, 0.063, 0.030, 0.021};
+  
+  Double_t SystError_EvFrac_High[NN] = {0.002, 0.010, 0.020, 0.020, 0.030, 0.030, 0.010, 0.004, 0.002, 0.001}; 
+  Double_t SystError_EvFrac_Low[NN] = {0.002, 0.010, 0.020, 0.020, 0.030, 0.030, 0.010, 0.004, 0.002, 0.001};
+  
+  TGraphAsymmErrors *grf_local = new TGraphAsymmErrors(NN, XJ, EvFrac, Error_XJ_Low, Error_XJ_High, SystError_EvFrac_Low, SystError_EvFrac_High);
+  grf_local->SetLineColor(1);
+  grf_local->SetFillStyle(0000);
+  grf_local->GetXaxis()->SetTitle("X_{jZ}=p_{T}^{jet}/p_{T}^{Z}");
+  grf_local->GetYaxis()->SetTitle("#frac{1}{N_{Z}}#frac{dN_{jZ}}{dx_{jZ}}");
+  grf_local->GetYaxis()->SetTitleOffset(1.45);
+  grf_local->GetXaxis()->CenterTitle();
+  grf_local->GetYaxis()->CenterTitle();
+  grf_local->GetYaxis()->SetRangeUser(-0.2,3.0);
+  grf_local->GetXaxis()->SetLimits(0.0,2.0);
+  return grf_local;
+}
+
+
+
+
+
+TGraphAsymmErrors *Data_CMS_XJ_Z0Jet_PP_UnSmeared_502TeV()
+{
+
+  // Study of Jet Quenching with Z0 + jet Correlations in Pb-Pb and pp Collisions at 5.02 TeV
+  //Published in Phys.Rev.Lett. 119 (2017) no.8, 082301
+  //CMS-HIN-15-013, CERN-EP-2017-002
+  //DOI: 10.1103/PhysRevLett.119.082301
+  //e-Print: arXiv:1702.01060 [nucl-ex] | PDF
+  
+  const Int_t NN = 10 ;
+  Double_t XJ[NN] = {0.100, 0.300, 0.500, 0.700, 0.900, 1.100, 1.300, 1.500, 1.700, 1.900};
+  Double_t Error_XJ_Low[NN] = {0.0};
+  Double_t Error_XJ_High[NN] = {0.0};
+
+ 
+  Double_t EvFrac[NN] = {0.044, 0.240, 0.550, 0.740, 0.840, 0.460, 0.160, 0.029, 0.037, 0.029};
+  Double_t Error_EvFrac_High[NN] = {0.018, 0.040, 0.060, 0.070, 0.080, 0.060, 0.030, 0.015, 0.016, 0.015}; 
+  Double_t Error_EvFrac_Low[NN] = {0.018, 0.040, 0.060, 0.070, 0.080, 0.060, 0.030, 0.015, 0.016, 0.015};
+  
+
+  TGraphAsymmErrors *grf_local = new TGraphAsymmErrors(NN, XJ, EvFrac, Error_XJ_Low, Error_XJ_High, Error_EvFrac_Low,Error_EvFrac_High);
+  grf_local->SetMarkerColor(1);
+  grf_local->SetMarkerStyle(20);
+  grf_local->SetMarkerSize(1.5);
+  grf_local->GetXaxis()->SetTitle("X_{jZ}=p_{T}^{jet}/p_{T}^{Z}");
+  grf_local->GetYaxis()->SetTitle("#frac{1}{N_{Z}}#frac{dN_{jZ}}{dx_{jZ}}");
+  grf_local->GetYaxis()->SetTitleOffset(1.45);
+  grf_local->GetXaxis()->CenterTitle();
+  grf_local->GetYaxis()->CenterTitle();
+  grf_local->GetYaxis()->SetRangeUser(-0.2,1.0);
+  grf_local->GetXaxis()->SetLimits(0.0,2.0);
+  
+  return grf_local;
+			  
+}
+
+TGraphAsymmErrors *Data_Syst_CMS_XJ_Z0Jet_PP_UnSmeared_502TeV()
+{
+  const Int_t NN = 10 ;
+  Double_t XJ[NN] = {0.100, 0.300, 0.500, 0.700, 0.900, 1.100, 1.300, 1.500, 1.700, 1.900};
+  const Double_t XError_Syst = 0.10; // width of syst box
+  Double_t Error_XJ_Low[NN] = {0.0};
+  Double_t Error_XJ_High[NN] = {0.0};
+  for(int i=0; i<NN; i++){Error_XJ_Low[i]=XError_Syst;Error_XJ_High[i]=XError_Syst;}
+  Double_t EvFrac[NN] = {0.044, 0.240, 0.550, 0.740, 0.840, 0.460, 0.160, 0.029, 0.037, 0.029};
+  
+  Double_t SystError_EvFrac_High[NN] = {0.002, 0.010, 0.020, 0.020, 0.030, 0.030, 0.010, 0.002, 0.003, 0.002}; 
+  Double_t SystError_EvFrac_Low[NN] = {0.002, 0.010, 0.020, 0.020, 0.030, 0.030, 0.010, 0.002, 0.003, 0.002};
+  
+  TGraphAsymmErrors *grf_local = new TGraphAsymmErrors(NN, XJ, EvFrac, Error_XJ_Low, Error_XJ_High, SystError_EvFrac_Low, SystError_EvFrac_High);
+  grf_local->SetLineColor(1);
+  grf_local->SetFillStyle(0000);
+  grf_local->GetXaxis()->SetTitle("X_{jZ}=p_{T}^{jet}/p_{T}^{Z}");
+  grf_local->GetYaxis()->SetTitle("#frac{1}{N_{Z}}#frac{dN_{jZ}}{dx_{jZ}}");
+  grf_local->GetYaxis()->SetTitleOffset(1.45);
+  grf_local->GetXaxis()->CenterTitle();
+  grf_local->GetYaxis()->CenterTitle();
+  grf_local->GetYaxis()->SetRangeUser(-0.2,3.0);
+  grf_local->GetXaxis()->SetLimits(0.0,2.0);
+  return grf_local;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
 //+++++++++++++++++++++++++   CMS Data Functions for XJ (Gamma+Jet) +++++++++++++++++++++++++++++++++++++++++++//

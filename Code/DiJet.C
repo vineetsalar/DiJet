@@ -59,8 +59,44 @@ void DiJet()
   tb->SetTextColor(1);
   tb->SetTextSize(0.04);
 
+  // CMS Data Graphs XJ (Jet +Z0)
+
+
+  TGraphAsymmErrors *grf_Data_CMS_XJ_Z0Jet_Cent_00_30_502TeV = Data_CMS_XJ_Z0Jet_Cent_00_30_502TeV();
+  TGraphAsymmErrors *grf_Data_Syst_CMS_XJ_Z0Jet_Cent_00_30_502TeV = Data_Syst_CMS_XJ_Z0Jet_Cent_00_30_502TeV();
   
-  // CMS Data Graphs XJ
+  TGraphAsymmErrors *grf_Data_CMS_XJ_Z0Jet_PP_502TeV = Data_CMS_XJ_Z0Jet_PP_502TeV();
+  TGraphAsymmErrors *grf_Data_Syst_CMS_XJ_Z0Jet_PP_502TeV = Data_Syst_CMS_XJ_Z0Jet_PP_502TeV();
+  
+  TGraphAsymmErrors *grf_Data_CMS_XJ_Z0Jet_PP_UnSmeared_502TeV = Data_CMS_XJ_Z0Jet_PP_UnSmeared_502TeV();
+  TGraphAsymmErrors *grf_Data_Syst_CMS_XJ_Z0Jet_PP_UnSmeared_502TeV = Data_Syst_CMS_XJ_Z0Jet_PP_UnSmeared_502TeV();
+  
+  TCanvas *Canv_Data_CMS_XJ_Z0Jet_502TeV = new TCanvas("Canv_Data_CMS_XJ_Z0Jet_502TeV","Canv_Data_CMS_XJ_Z0Jet_502TeV",1200,400);//coulamXRows
+  Canv_Data_CMS_XJ_Z0Jet_502TeV->Divide(3,1);
+  Canv_Data_CMS_XJ_Z0Jet_502TeV->cd(1);
+  gPad->SetLeftMargin(0.2);
+  grf_Data_CMS_XJ_Z0Jet_Cent_00_30_502TeV->Draw("AP");
+  grf_Data_Syst_CMS_XJ_Z0Jet_Cent_00_30_502TeV->Draw("2");
+  tb->DrawLatex(0.75, 0.70, "0-30%") ;
+
+  
+  Canv_Data_CMS_XJ_Z0Jet_502TeV->cd(2);
+  gPad->SetLeftMargin(0.2);
+  grf_Data_CMS_XJ_Z0Jet_PP_502TeV->Draw("AP");
+  grf_Data_Syst_CMS_XJ_Z0Jet_PP_502TeV->Draw("2");
+  tb->DrawLatex(0.75, 0.70, "pp") ;
+
+  Canv_Data_CMS_XJ_Z0Jet_502TeV->cd(3);
+  gPad->SetLeftMargin(0.2);
+  grf_Data_CMS_XJ_Z0Jet_PP_UnSmeared_502TeV->Draw("AP");
+  grf_Data_Syst_CMS_XJ_Z0Jet_PP_UnSmeared_502TeV->Draw("2");
+  tb->DrawLatex(0.75, 0.70, "pp (uns.)") ;
+  return;
+
+
+  
+  
+  // CMS Data Graphs XJ (Jet+Gamma)
   TGraphAsymmErrors *grf_Data_CMS_XJ_GammaJet_Cent_00_10_276TeV = Data_CMS_XJ_GammaJet_Cent_00_10_276TeV();
   TGraphAsymmErrors *grf_Data_Syst_CMS_XJ_GammaJet_Cent_00_10_276TeV = Data_Syst_CMS_XJ_GammaJet_Cent_00_10_276TeV();
   TGraphAsymmErrors *grf_Data_CMS_XJ_GammaJet_Cent_10_30_276TeV = Data_CMS_XJ_GammaJet_Cent_10_30_276TeV();
