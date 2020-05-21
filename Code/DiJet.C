@@ -91,7 +91,10 @@ void DiJet()
   grf_Data_CMS_XJ_Z0Jet_PP_UnSmeared_502TeV->Draw("AP");
   grf_Data_Syst_CMS_XJ_Z0Jet_PP_UnSmeared_502TeV->Draw("2");
   tb->DrawLatex(0.75, 0.70, "pp (uns.)") ;
-  return;
+
+
+
+  //return;
 
 
   
@@ -393,12 +396,12 @@ void DiJet()
   //Double_t MM = 0.2;
 
   //On 19.May.2020
-  //Double_t alpha = 0.55;
-  //Double_t MM = 0.4;
+  Double_t alpha = 0.55;
+  Double_t MM = 0.4;
 
 
-  Double_t alpha = 0.4;
-  Double_t MM = 0.50;
+  //Double_t alpha = 0.4;
+  //Double_t MM = 0.50;
 
 
   
@@ -537,6 +540,56 @@ void DiJet()
 
   //return;
 
+
+
+  TCanvas *Canv_CMS_XJ_Z0Jet_502TeV = new TCanvas("Canv_CMS_XJ_Z0Jet_502TeV","Canv_CMS_XJ_Z0Jet_502TeV",1200,400);//coulamXRows
+  Canv_CMS_XJ_Z0Jet_502TeV->Divide(3,1);
+  char LatexChar_XJ_Z0Jet[400];
+                                      
+  TH1D *HistOutJetZ0_XJ_Cent_00_30 = XJ_Z0Jet_Centrality(fJetpp276tev,  RespT, ResPhi, alpha, MM, NPart_FiveTeV(0,30), 0, 0) ;
+
+  Canv_CMS_XJ_Z0Jet_502TeV->cd(1);
+  gPad->SetTopMargin(0.1);
+  gPad->SetBottomMargin(0.2);
+  gPad->SetLeftMargin(0.2);
+  grf_Data_CMS_XJ_Z0Jet_Cent_00_30_502TeV->GetYaxis()->SetRangeUser(0.0,2.5);
+  grf_Data_CMS_XJ_Z0Jet_Cent_00_30_502TeV->Draw("AP");
+  grf_Data_Syst_CMS_XJ_Z0Jet_Cent_00_30_502TeV->Draw("2");
+  HistOutJetZ0_XJ_Cent_00_30->Draw("Psame");
+  leg->Draw("same");
+  tb->DrawLatex(0.75, 0.70, "0-30%") ;
+
+  TH1D *HistOutJetZ0_XJ_PP = XJ_Z0Jet_Centrality(fJetpp276tev,  RespT, ResPhi, alpha, MM, NPart_FiveTeV(0,30), 1, 1) ;
+
+  Canv_CMS_XJ_Z0Jet_502TeV->cd(2);
+  gPad->SetTopMargin(0.1);
+  gPad->SetBottomMargin(0.2);
+  gPad->SetLeftMargin(0.2);
+  grf_Data_CMS_XJ_Z0Jet_PP_502TeV->GetYaxis()->SetRangeUser(0.0,2.5);
+  grf_Data_CMS_XJ_Z0Jet_PP_502TeV->Draw("AP");
+  grf_Data_Syst_CMS_XJ_Z0Jet_PP_502TeV->Draw("2");
+  HistOutJetZ0_XJ_PP->Draw("Psame");
+  leg->Draw("same");
+  tb->DrawLatex(0.75, 0.70, "pp") ;
+
+
+  TH1D *HistOutJetZ0_XJ_PP_UnS = XJ_Z0Jet_Centrality(fJetpp276tev,  RespT, ResPhi, alpha, MM, NPart_FiveTeV(0,30), 2, 2) ;
+
+  Canv_CMS_XJ_Z0Jet_502TeV->cd(3);
+  gPad->SetTopMargin(0.1);
+  gPad->SetBottomMargin(0.2);
+  gPad->SetLeftMargin(0.2);
+  grf_Data_CMS_XJ_Z0Jet_PP_UnSmeared_502TeV->GetYaxis()->SetRangeUser(0.0,2.5);
+  grf_Data_CMS_XJ_Z0Jet_PP_UnSmeared_502TeV->Draw("AP");
+  grf_Data_Syst_CMS_XJ_Z0Jet_PP_UnSmeared_502TeV->Draw("2");
+  HistOutJetZ0_XJ_PP_UnS->Draw("Psame");
+  leg->Draw("same");
+  tb->DrawLatex(0.75, 0.70, "pp (uns)") ;
+
+
+  return;
+
+  
   // XJ Calculations as a function of Centrality
  //CentBins (0,10,30,50,100)
   const Int_t NCentBins_XJ = 4;
@@ -679,6 +732,26 @@ void DiJet()
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
   //OutFile->Write();
   //OutFile->Close();  
   //return;
