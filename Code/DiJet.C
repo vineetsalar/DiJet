@@ -1,10 +1,11 @@
 #include "DiJet.h"
+#include "DiJetDataFunctions.h"
 
 // Function to calculate Asymmetry as a function of Centrality
-Double_t calDelta(Double_t pT, Double_t alpha, Double_t MM) ;
-TH1D *XJ_GammaJet_Centrality(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, Double_t Alpha, Double_t MM, Double_t NPart, Int_t CentBin, Int_t isPP);
-TH1D *Asym_DiJet_Centrality(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, Double_t Alpha, Double_t MM, Double_t NPart, Int_t CentBin);
-TH1D *Asym_DiJet_Pt(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, Double_t Alpha, Double_t MM, Double_t NPart, Double_t LPtMin, Double_t LPtMax, Int_t PtBin);
+//Double_t calDelta(Double_t pT, Double_t alpha, Double_t MM) ;
+//TH1D *XJ_GammaJet_Centrality(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, Double_t Alpha, Double_t MM, Double_t NPart, Int_t CentBin, Int_t isPP);
+//TH1D *Asym_DiJet_Centrality(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, Double_t Alpha, Double_t MM, Double_t NPart, Int_t CentBin);
+//TH1D *Asym_DiJet_Pt(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, Double_t Alpha, Double_t MM, Double_t NPart, Double_t LPtMin, Double_t LPtMax, Int_t PtBin);
 
 
 void DiJet()
@@ -587,7 +588,7 @@ void DiJet()
   tb->DrawLatex(0.75, 0.70, "pp (uns)") ;
 
 
-  return;
+  //return;
 
   
   // XJ Calculations as a function of Centrality
@@ -729,28 +730,6 @@ void DiJet()
   //tb->DrawLatex(0.6, 0.7, "pp") ;
   Canv_Asym_DiJet_Centrality->SaveAs("Figure/OutFigures/Fig_Asym_DiJet_Centrality.pdf");
   Canv_Asym_DiJet_Centrality->SaveAs("Figure/OutFigures/Fig_Asym_DiJet_Centrality.png");
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   
   //OutFile->Write();
   //OutFile->Close();  
@@ -760,232 +739,6 @@ void DiJet()
   
 }//void DiJet
 
-
-
-TH1D *XJ_GammaJet_Centrality(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, Double_t Alpha, Double_t MM, Double_t NPart, Int_t CentBin, Int_t isPP)
-{
-
-  //initialize the random number generator
-  TRandom3 rand(0);
-  
-  //Histogram Name should come from the Centrality Loop
-
-
-  TH1D *hAsymmetryOut = new TH1D(Form("hXJOutCent_%d ",CentBin),Form("hXJOutCent_%d ",CentBin), 20, 0.0, 2.0);
-
-  Double_t RR = RA*sqrt(NPart/(2*Am));
-  const Int_t NEvents = 5000000;
-  
-  for(int i=0; i< NEvents; i++) {
-
-    // Generate Pt 
-    Double_t Pt = JetPtFuncPP->GetRandom();
-    
-    // Generate position 
-    Double_t rr = rand.Uniform(0.0,1.0)*RR;
-    Double_t Phi = rand.Uniform(0.0,1.0)*2.0*pi;
-    
-    // Smear Phi
-    Double_t Phi1 = rand.Gaus(Phi, Phi*ResPhi);
-    Double_t Phi2 = rand.Gaus(Phi+pi, (Phi+pi)*ResPhi);
-    
-    Double_t DeltaPhi = (Phi2 - Phi1); 
-    
-    // Calculate pathlength
-    Double_t d1 = sqrt(RR*RR - rr*rr*sin(Phi1)) - rr*cos(Phi1);
-    Double_t d2 = sqrt(RR*RR - rr*rr*sin(Phi2)) - rr*cos(Phi2); 
-
-    
-    // Calculate DeltaPt
-    Double_t dEdx = calDelta(Pt, Alpha, MM);
-    
-    //Put the energy Loss
-    Double_t E1 = Pt; // this is assumed as Gamma
-    Double_t E2 = Pt-dEdx*d2; // this is assumed as Jet
-    if(isPP ==1)E2 = Pt;
-
-    
-    // Smear Pt
-    Double_t Pt1 = rand.Gaus(E1, E1*ResPt);
-    Double_t Pt2 = rand.Gaus(E2, E2*ResPt);
-
-    //Exp cut on Pt
-    
-    const Double_t MinGammaPt = 60.0;
-    const Double_t MinJetPt = 30.0;
-    
-    if(Pt1 < MinGammaPt || Pt2 < MinJetPt || DeltaPhi < (7.0*pi)/8.0) continue; 
-
-    Double_t PtXJ = Pt2/Pt1; 
-    //cout << Pt1 << "  " << Pt2<<"   "<<PtDiff << endl;
-    
-    hAsymmetryOut->Fill(PtXJ);
-  } 
-
-  hAsymmetryOut->Scale(1.0/hAsymmetryOut->Integral());
-  hAsymmetryOut->Scale(1.0/hAsymmetryOut->GetBinWidth(0));
-  hAsymmetryOut->GetXaxis()->SetTitle("X_{J#gamma}=p_{T}^{Jet}/p_{T}^{#gamma}");
-  hAsymmetryOut->GetYaxis()->SetTitle("#frac{1}{N_{J#gamma}}#frac{dN_{J#gamma}}{dx_{J#gamma}}");
-  hAsymmetryOut->GetXaxis()->CenterTitle();
-  hAsymmetryOut->GetYaxis()->CenterTitle();
-  hAsymmetryOut->SetMarkerColor(kRed);
-  return hAsymmetryOut;
-}
-
-
-
-
-
-TH1D *Asym_DiJet_Centrality(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, Double_t Alpha, Double_t MM, Double_t NPart, Int_t CentBin)
-{
-
-  //initialize the random number generator
-  TRandom3 rand(0);
-  
-  //Histogram Name should come from the Centrality Loop
-
-
-  TH1D *hAsymmetryOut = new TH1D(Form("hAsymmetryOutCent_%d ",CentBin),Form("hAsymmetryOutCent_%d ",CentBin), 17, 0.0, 1.0);
-
-  Double_t RR = RA*sqrt(NPart/(2*Am));
-  const Int_t NEvents = 5000000;
-  
-  for(int i=0; i< NEvents; i++) {
-
-    // Generate Pt 
-    Double_t Pt = JetPtFuncPP->GetRandom();
-    
-    // Generate position 
-    Double_t rr = rand.Uniform(0.0,1.0)*RR;
-    Double_t Phi = rand.Uniform(0.0,1.0)*2.0*pi;
-    
-    // Smear Phi
-    Double_t Phi1 = rand.Gaus(Phi, Phi*ResPhi);
-    Double_t Phi2 = rand.Gaus(Phi+pi, (Phi+pi)*ResPhi);
-    
-    Double_t DeltaPhi = (Phi2 - Phi1); 
-    
-    // Calculate pathlength
-    Double_t d1 = sqrt(RR*RR - rr*rr*sin(Phi1)) - rr*cos(Phi1);
-    Double_t d2 = sqrt(RR*RR - rr*rr*sin(Phi2)) - rr*cos(Phi2); 
-
-    
-    // Calculate DeltaPt
-    Double_t dEdx = calDelta(Pt, Alpha, MM);
-    
-    Double_t E1 = Pt-dEdx*d1;
-    Double_t E2 = Pt-dEdx*d2;
-
-    // Smear Pt
-    Double_t Pt1 = rand.Gaus(E1, E1*ResPt);
-    Double_t Pt2 = rand.Gaus(E2, E2*ResPt);
-
-    //Exp cut on Pt
-    Double_t L_Pt = TMath::Max(Pt1,Pt2);
-    Double_t SubL_Pt = TMath::Min(Pt1,Pt2);
-
-    
-    if(L_Pt< 120.0 || SubL_Pt < 30.0 || DeltaPhi < (2.0*pi)/3.0) continue; 
-    Double_t PtDiff = (L_Pt-SubL_Pt)/(L_Pt+SubL_Pt); 
-    //cout << Pt1 << "  " << Pt2<<"   "<<PtDiff << endl;
-    
-    hAsymmetryOut->Fill(PtDiff);
-  } 
-
-  hAsymmetryOut->Scale(1.0/hAsymmetryOut->Integral());
-  hAsymmetryOut->GetXaxis()->SetTitle("A_{J}");
-  hAsymmetryOut->GetYaxis()->SetTitle("Event Fraction");
-  hAsymmetryOut->GetXaxis()->CenterTitle();
-  hAsymmetryOut->GetYaxis()->CenterTitle();
-  hAsymmetryOut->SetMarkerColor(kRed);
-  return hAsymmetryOut;
-}
-
-
-
-
-
-TH1D *Asym_DiJet_Pt(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, Double_t Alpha, Double_t MM, Double_t NPart, Double_t LPtMin, Double_t LPtMax, Int_t PtBin)
-{
-
-  const Double_t SLPtMin = 30.0;
-  
-  //initialize the random number generator
-  TRandom3 rand(0);
-  
-  //Histogram Name should come from the Centrality Loop
-
-
-  TH1D *hAsymmetryOut = new TH1D(Form("hAsymmetryOutPt_%d ",PtBin),Form("hAsymmetryOutPt_%d ",PtBin), 17, 0.0, 1.0);
-
-  Double_t RR = RA*sqrt(NPart/(2*Am));
-  const Int_t NEvents = 5000000;
-  
-  for(int i=0; i< NEvents; i++) {
-
-
-
-    Double_t MinPtRandom = LPtMin-0.7*LPtMin;
-    Double_t MaxPtRandom = 500.0;
-    
-    //Double_t MinPtRandom = rand.Gaus(LPtMin, LPtMin*ResPt);
-    //Double_t MaxPtRandom = rand.Gaus(LPtMax, LPtMax*ResPt);
-    
-    
-    // Generate Pt 
-    Double_t Pt = JetPtFuncPP->GetRandom(MinPtRandom, MaxPtRandom);
-    
-
-    //if(Pt < SLPtMin) continue;
-    
-    // Generate position
-    Double_t rr = rand.Uniform(0.0,1.0)*RR;
-    Double_t Phi = rand.Uniform(0.0,1.0)*2.0*pi;
-    
-    // Smear Phi
-    Double_t Phi1 = rand.Gaus(Phi, Phi*ResPhi);
-    Double_t Phi2 = rand.Gaus(Phi+pi, (Phi+pi)*ResPhi);
-    
-    Double_t DeltaPhi = (Phi2 - Phi1); 
-    
-    // Calculate pathlength
-    Double_t d1 = sqrt(RR*RR - rr*rr*sin(Phi1)) - rr*cos(Phi1);
-    Double_t d2 = sqrt(RR*RR - rr*rr*sin(Phi2)) - rr*cos(Phi2); 
-
-    
-    // Calculate DeltaPt
-    Double_t dEdx = calDelta(Pt, Alpha, MM);
-    
-    Double_t E1 = Pt-dEdx*d1;
-    Double_t E2 = Pt-dEdx*d2;
-
-    // Smear Pt
-    Double_t Pt1 = rand.Gaus(E1, E1*ResPt);
-    Double_t Pt2 = rand.Gaus(E2, E2*ResPt);
-
-    //Exp cut on Pt
-    Double_t L_Pt = TMath::Max(Pt1,Pt2);
-    Double_t SubL_Pt = TMath::Min(Pt1,Pt2);;
-
-
-        
-    if( (L_Pt < LPtMin || L_Pt > LPtMax) || (SubL_Pt < SLPtMin) || DeltaPhi < (2.0*pi)/3.0) continue; 
-
-
-    Double_t PtDiff = (L_Pt-SubL_Pt)/(L_Pt+SubL_Pt); 
-    //cout << Pt1 << "  " << Pt2<<"   "<<PtDiff << endl;
-    
-    hAsymmetryOut->Fill(PtDiff);
-  } 
-
-  hAsymmetryOut->Scale(1.0/hAsymmetryOut->Integral());
-  hAsymmetryOut->GetXaxis()->SetTitle("A_{J}");
-  hAsymmetryOut->GetYaxis()->SetTitle("Event Fraction");
-  hAsymmetryOut->GetXaxis()->CenterTitle();
-  hAsymmetryOut->GetYaxis()->CenterTitle();
-  hAsymmetryOut->SetMarkerColor(kRed);
-  return hAsymmetryOut;
-}
 
 
 
