@@ -1,13 +1,6 @@
 #include "DiJet.h"
 #include "DiJetDataFunctions.h"
 
-// Function to calculate Asymmetry as a function of Centrality
-//Double_t calDelta(Double_t pT, Double_t alpha, Double_t MM) ;
-//TH1D *XJ_GammaJet_Centrality(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, Double_t Alpha, Double_t MM, Double_t NPart, Int_t CentBin, Int_t isPP);
-//TH1D *Asym_DiJet_Centrality(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, Double_t Alpha, Double_t MM, Double_t NPart, Int_t CentBin);
-//TH1D *Asym_DiJet_Pt(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, Double_t Alpha, Double_t MM, Double_t NPart, Double_t LPtMin, Double_t LPtMax, Int_t PtBin);
-
-
 void DiJet()
 {
 
@@ -542,7 +535,48 @@ void DiJet()
   //return;
 
 
+ // make here pt functions
 
+  //PtBins (120,150,180,220,260,300,500)
+
+  const Int_t NPtBins = 6;
+  const Int_t APtBins[NPtBins+1]={120,150,180,220,260,300,500};
+  
+  TH1D *HistOutJetAsymPt[NPtBins];
+
+  TGraphErrors *grf_Data_CMS_Aj_Pt_276TeV[NPtBins]={grf_Data_CMS_Aj_Pt_120_150_276TeV,grf_Data_CMS_Aj_Pt_150_180_276TeV,
+						    grf_Data_CMS_Aj_Pt_180_220_276TeV, grf_Data_CMS_Aj_Pt_220_260_276TeV,
+						    grf_Data_CMS_Aj_Pt_260_300_276TeV, grf_Data_CMS_Aj_Pt_300_500_276TeV};
+
+
+  TCanvas *Canv_Asym_DiJet_Pt = new TCanvas("Canv_Asym_DiJet_Pt","Canv_Asym_DiJet_Pt",1200,800);//coulamXRows
+  Canv_Asym_DiJet_Pt->Divide(3,2);
+  
+  for(int i=0; i< NPtBins; i++) {
+    cout<<" calculation for Pt "<<APtBins[i]<<"  "<<APtBins[i+1]<<" GeV/c "<<endl;
+    HistOutJetAsymPt[i] = Asym_DiJet_Pt(fJetpp276tev,  RespT, ResPhi, alpha, MM, NPartFunc(0,20), APtBins[i], APtBins[i+1], i);
+    
+    Canv_Asym_DiJet_Pt->cd(i+1);
+    
+    gPad->SetTopMargin(0.1);
+    gPad->SetBottomMargin(0.2);
+    grf_Data_CMS_Aj_Pt_276TeV[i]->Draw("AP");
+    HistOutJetAsymPt[i]->GetYaxis()->SetRangeUser(0.0,0.32);
+    HistOutJetAsymPt[i]->Draw("EPsame");
+    leg->Draw("same");
+    tb->DrawLatex(0.60,0.70,Form("%0d < p_{T} < %0d",APtBins[i],APtBins[i+1]));
+
+  }
+
+  Canv_Asym_DiJet_Pt->SaveAs("Figure/OutFigures/Fig_Asym_DiJet_Pt.pdf");
+  Canv_Asym_DiJet_Pt->SaveAs("Figure/OutFigures/Fig_Asym_DiJet_Pt.png");
+
+  
+  return;
+
+
+
+  
   TCanvas *Canv_CMS_XJ_Z0Jet_502TeV = new TCanvas("Canv_CMS_XJ_Z0Jet_502TeV","Canv_CMS_XJ_Z0Jet_502TeV",1200,400);//coulamXRows
   Canv_CMS_XJ_Z0Jet_502TeV->Divide(3,1);
   char LatexChar_XJ_Z0Jet[400];
@@ -645,47 +679,7 @@ void DiJet()
 
   // return;
 
-  // make here pt functions
-
-  //PtBins (120,150,180,220,260,300,500)
-  const Int_t NPtBins = 6;
-  const Int_t APtBins[NPtBins+1]={120,150,180,220,260,300,500};
-  
-  TH1D *HistOutJetAsymPt[NPtBins];
-
-  TGraphErrors *grf_Data_CMS_Aj_Pt_276TeV[NPtBins]={grf_Data_CMS_Aj_Pt_120_150_276TeV,grf_Data_CMS_Aj_Pt_150_180_276TeV,
-						    grf_Data_CMS_Aj_Pt_180_220_276TeV, grf_Data_CMS_Aj_Pt_220_260_276TeV,
-						    grf_Data_CMS_Aj_Pt_260_300_276TeV, grf_Data_CMS_Aj_Pt_300_500_276TeV};
-
-
-  TCanvas *Canv_Asym_DiJet_Pt = new TCanvas("Canv_Asym_DiJet_Pt","Canv_Asym_DiJet_Pt",1200,800);//coulamXRows
-  Canv_Asym_DiJet_Pt->Divide(3,2);
-  
-  for(int i=0; i< NPtBins; i++) {
-    cout<<" calculation for Pt "<<APtBins[i]<<"  "<<APtBins[i+1]<<" GeV/c "<<endl;
-
-    //Asym_DiJet_Pt(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, Double_t Alpha, Double_t MM, Double_t NPart, Double_t LPtMin, Double_t LPtMax, Int_t PtBin)
-    HistOutJetAsymPt[i] = Asym_DiJet_Pt(fJetpp276tev,  RespT, ResPhi, alpha, MM, NPartFunc(0,20), APtBins[i], APtBins[i+1], i);
-
-    
-    Canv_Asym_DiJet_Pt->cd(i+1);
-    
-    gPad->SetTopMargin(0.1);
-    gPad->SetBottomMargin(0.2);
-    grf_Data_CMS_Aj_Pt_276TeV[i]->Draw("AP");
-    HistOutJetAsymPt[i]->GetYaxis()->SetRangeUser(0.0,0.32);
-    HistOutJetAsymPt[i]->Draw("Psame");
-    leg->Draw("same");
-    tb->DrawLatex(0.60,0.70,Form("%0d < p_{T} < %0d",APtBins[i],APtBins[i+1]));
-
-  }
-
-  Canv_Asym_DiJet_Pt->SaveAs("Figure/OutFigures/Fig_Asym_DiJet_Pt.pdf");
-  Canv_Asym_DiJet_Pt->SaveAs("Figure/OutFigures/Fig_Asym_DiJet_Pt.png");
-
-  
-  //return;
-
+ 
   //CentBins (0,10,20,30,50,70,100)
   const Int_t NCentBins = 6;
   const Int_t CentBins[NCentBins+1]={0,10,20,30,50,70,100};

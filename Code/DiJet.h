@@ -305,31 +305,28 @@ TH1D *Asym_DiJet_Pt(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, Double_t
   //initialize the random number generator
   TRandom3 rand(0);
   
-  //Histogram Name should come from the Centrality Loop
-
-
+  //Histogram Name should come from the Pt Loop
+  
+  
   TH1D *hAsymmetryOut = new TH1D(Form("hAsymmetryOutPt_%d ",PtBin),Form("hAsymmetryOutPt_%d ",PtBin), 17, 0.0, 1.0);
-
+  hAsymmetryOut->Sumw2();
   Double_t RR = RA*sqrt(NPart/(2*Am));
+  
+  
   const Int_t NEvents = 5000000;
   
+  
+  //Int_t Trial = 0;
+
   for(int i=0; i< NEvents; i++) {
-
-
-
+    //do{
+    
     Double_t MinPtRandom = LPtMin-0.7*LPtMin;
     Double_t MaxPtRandom = 500.0;
-    
-    //Double_t MinPtRandom = rand.Gaus(LPtMin, LPtMin*ResPt);
-    //Double_t MaxPtRandom = rand.Gaus(LPtMax, LPtMax*ResPt);
-    
-    
     // Generate Pt 
     Double_t Pt = JetPtFuncPP->GetRandom(MinPtRandom, MaxPtRandom);
-    
-
-    //if(Pt < SLPtMin) continue;
-    
+    //Double_t Pt = JetPtFuncPP->GetRandom();
+        
     // Generate position
     Double_t rr = rand.Uniform(0.0,1.0)*RR;
     Double_t Phi = rand.Uniform(0.0,1.0)*2.0*pi;
@@ -364,11 +361,17 @@ TH1D *Asym_DiJet_Pt(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, Double_t
     if( (L_Pt < LPtMin || L_Pt > LPtMax) || (SubL_Pt < SLPtMin) || DeltaPhi < (2.0*pi)/3.0) continue; 
 
 
-    Double_t PtDiff = (L_Pt-SubL_Pt)/(L_Pt+SubL_Pt); 
-    //cout << Pt1 << "  " << Pt2<<"   "<<PtDiff << endl;
+    Double_t PtDiff = (L_Pt-SubL_Pt)/(L_Pt+SubL_Pt);
     
+    //cout << Pt1 << "  " << Pt2<<"   "<<PtDiff << endl;
+    //if(Trial%10==0)cout<<" Trial "<<Trial<<endl;    
     hAsymmetryOut->Fill(PtDiff);
+
+    //Trial++;
   } 
+  //while(Trial < NEvents);
+
+
 
   hAsymmetryOut->Scale(1.0/hAsymmetryOut->Integral());
   hAsymmetryOut->GetXaxis()->SetTitle("A_{J}");
