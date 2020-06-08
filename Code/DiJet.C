@@ -53,9 +53,22 @@ void DiJet()
   tb->SetTextColor(1);
   tb->SetTextSize(0.04);
 
+
+
+
+  //Test Data Graph
+  TGraphErrors *grf_Data_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV = Data_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV();
+
+  new TCanvas;
+  gPad->SetLogy(1);
+  gPad->SetLeftMargin(0.15);
+  grf_Data_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV->Draw("AP");
+
+  //return;
+
+
+
   // CMS Data Graphs XJ (Jet +Z0)
-
-
   TGraphAsymmErrors *grf_Data_CMS_XJ_Z0Jet_Cent_00_30_502TeV = Data_CMS_XJ_Z0Jet_Cent_00_30_502TeV();
   TGraphAsymmErrors *grf_Data_Syst_CMS_XJ_Z0Jet_Cent_00_30_502TeV = Data_Syst_CMS_XJ_Z0Jet_Cent_00_30_502TeV();
   

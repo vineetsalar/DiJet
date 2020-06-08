@@ -1647,14 +1647,17 @@ TGraphErrors *jet_atlas_yield_00_rapidity_21_pp_276tev()
   Double_t stat_err[15] = {3.047427e+01 ,8.016544e+00 ,2.677197e+00 ,6.454510e-01 ,1.928954e-01 ,4.904014e-02 ,
 			 1.137164e-02 ,2.372112e-03 ,4.984053e-04 ,9.266249e-05 ,1.485154e-05 ,2.036022e-06};
 
-
+  cout<<" ATLAS pp Jet Distribution "<<endl;
   for(int i=0; i<N_point; i++){
     yield[i]    = yield[i]/sigma_alice_276tev1 ; 
     stat_err[i] = stat_err[i]/sigma_alice_276tev1 ;
-    
+
+
+    cout<<" yield "<<  yield[i]*
     // yield[i]    = yield[i]    * pow(10.0, 8.0) ;
     // stat_err[i] = stat_err[i] * pow(10.0, 8.0) ;
   }
+
   
   TGraphErrors *gr_data = new TGraphErrors(N_point, pT, yield, pT_err, stat_err);
   gr_data->SetMarkerColor(2);
@@ -1814,4 +1817,61 @@ TGraphErrors *jet_production_atlas_yield_in_pp_collision_502tev()
 
   return gr_data ; 
 
+}
+
+
+
+TGraphErrors *Data_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV()
+{
+
+  // We had taken data from PHYSICAL REVIEW C 96, 014912 (2017) 
+  //Jet Yield for Z0+Jet Root_s = 7 TeV
+  //R = 0.5, |y_Jet| < 2.4
+  //71 < M_{ll} << 111 GeV
+  // |p_{T}^{l}| > 20 GeV, |y^{l}|<2.4
+
+
+  
+  
+  Double_t sigma_alice_276tev1 = sigma_alice_276tev * pow(10.0, 6.0);   // Convert nb to (GeV/c)^{-2}
+
+  const Int_t NN = 17 ;
+
+
+  Double_t Pt[NN] = {40.0, 60.0, 80.0, 100.0, 120.0, 140.0, 160.0, 180.0, 200.0, 220.0, 240.0, 260.0, 295.0, 330.0, 375.0, 450.0, 600.0} ;
+
+  Double_t PtBins_LowEdge[NN] = {30.0, 50.0, 70.0, 90.0, 110.0, 130.0, 150.0, 170.0, 190.0, 210.0, 230.0, 250.0, 270.0, 310.0, 350.0, 400.0, 500.0} ;
+  Double_t PtBins_HighEdge[NN] = {50.0, 70.0, 90.0, 110.0, 130.0, 150.0, 170.0, 190.0, 210.0, 230.0, 250.0, 270.0, 310.0, 350.0, 400.0, 500.0, 700.0} ;
+
+  Double_t Err_Pt[NN] = {0.0};
+
+  Double_t DSigmaDPt[NN] = {1.689625, 0.685474, 0.308851, 0.157826, 0.087711, 0.050834, 0.030086, 0.019776, 0.012999, 0.008544, 0.005735,
+			0.003691, 0.002231, 0.001266, 0.000675, 0.000280, 0.000060};
+
+  Double_t Err_DSigmaDPt[NN] = {0.0};
+
+
+  Double_t Yield[NN] = {0.0};
+  Double_t Err_Yield[NN] = {0.0};
+  
+  for(Int_t i=0;i<NN;i++){
+    Err_Pt[i] = (PtBins_HighEdge[i] - PtBins_LowEdge[i])*0.5;
+  
+    //yield[i]    = yield[i]/sigma_alice_276tev1 ; 
+    //stat_err[i] = stat_err[i]/sigma_alice_276tev1 ;
+  }
+  
+  TGraphErrors *gr_data = new TGraphErrors(NN, Pt, DSigmaDPt, Err_Pt, Err_DSigmaDPt);
+  gr_data->GetYaxis()->SetTitle("d#sigma/dp_{T}^{J}(pb/GeV)");
+  gr_data->GetXaxis()->SetTitle("p_{T}^{J}(GeV/c)");
+  gr_data->GetYaxis()->SetRangeUser(0.00001,10.0);
+  gr_data->GetXaxis()->SetLimits(0.0,700.0);
+  gr_data->GetYaxis()->CenterTitle();
+  gr_data->GetXaxis()->CenterTitle();
+  gr_data->SetMarkerColor(2);
+  gr_data->SetMarkerStyle(20);
+  gr_data->SetMarkerSize(1.2);
+ 
+  return gr_data ;
+			  
 }
