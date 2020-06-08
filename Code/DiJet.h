@@ -51,10 +51,20 @@
 #include "TMinuit.h"
 using namespace std;
 
+
+//
+#include "DiJetDataFunctions.h"
+
+
+
+
+
+
+
+
+
 // Global Varaibles 
 const Double_t pi       = 3.14159265358979312 ;
-const Double_t sigma_alice_276tev  = 62.8 ;  // (mb)
-const Double_t sigma_atlas_502tev  = 67.6 * pow(10.0, 6.0);  // (nb) 1710.07098
 //sigma_atlas_502tev  = sigma_atlas_502tev * pow(10.0, 6.0) ;
 
 const Double_t Am = 208.0 ;
@@ -381,6 +391,85 @@ TH1D *Asym_DiJet_Pt(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, Double_t
   hAsymmetryOut->SetMarkerColor(kRed);
   return hAsymmetryOut;
 }
+
+
+
+void Fit_Data_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV()
+{
+
+
+  TGraphErrors *grf_Data_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV = Data_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV();
+
+  
+
+  TF1 *FitFunc_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV = new TF1("FitFunc_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV", tsallis_fitting_function, 0.0, 700.0, 3);
+
+  FitFunc_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV->SetParNames("dN/dy", "nn", "pzero");
+  
+  FitFunc_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV->SetParameters(1.0, 6.0, 10) ;
+  FitFunc_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV->SetParLimits(0, 0.00001, 100.0);
+  FitFunc_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV->SetParLimits(1, 4.0,   10.0) ;
+  
+  FitFunc_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV->SetParLimits(2, 0.5, 50.0) ;
+    
+  FitFunc_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV->SetLineColor(1);
+  FitFunc_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV->SetLineStyle(1);
+  FitFunc_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV->SetLineWidth(4);
+
+ 
+  //dNdy  = 0.00252839  
+  //nn    = 7.28245 
+  //pzero = 22.6085  
+
+  new TCanvas;
+  gPad->SetLogy(1);
+  gPad->SetLeftMargin(0.15);
+  grf_Data_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV->Draw("AP");
+  
+  grf_Data_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV->Fit(FitFunc_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV,  "ME", "", 60.0, 700.0) ;
+  FitFunc_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV->Draw("same");  
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

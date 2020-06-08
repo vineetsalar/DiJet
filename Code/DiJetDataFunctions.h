@@ -4,7 +4,8 @@
 #include "TMultiGraph.h"
 #include "TGraphAsymmErrors.h"
 
-
+const Double_t sigma_alice_276tev  = 62.8 ;  // (mb)
+const Double_t sigma_atlas_502tev  = 67.6 * pow(10.0, 6.0);  // (nb) 1710.07098
 
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
@@ -1653,7 +1654,7 @@ TGraphErrors *jet_atlas_yield_00_rapidity_21_pp_276tev()
     stat_err[i] = stat_err[i]/sigma_alice_276tev1 ;
 
 
-    cout<<" yield "<<  yield[i]*
+    //cout<<" yield "<<  yield[i]*
     // yield[i]    = yield[i]    * pow(10.0, 8.0) ;
     // stat_err[i] = stat_err[i] * pow(10.0, 8.0) ;
   }
@@ -1830,9 +1831,6 @@ TGraphErrors *Data_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV()
   //71 < M_{ll} << 111 GeV
   // |p_{T}^{l}| > 20 GeV, |y^{l}|<2.4
 
-
-  
-  
   Double_t sigma_alice_276tev1 = sigma_alice_276tev * pow(10.0, 6.0);   // Convert nb to (GeV/c)^{-2}
 
   const Int_t NN = 17 ;
@@ -1874,4 +1872,72 @@ TGraphErrors *Data_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV()
  
   return gr_data ;
 			  
+}
+
+
+
+
+
+
+TGraphErrors *Data_CMS_JetYield_GammaPlusJet_GammaPt_PP8TeV()
+{
+
+  // We had taken data from PHYSICAL REVIEW C 96, 014912 (2017) 
+  //Gamma Yield for Gamma+Jet Root_s = 8 TeV
+  //Pt Jet > 30 GeV
+  //R = 0.5, |y_Jet| < 2.4
+  //71 < M_{ll} << 111 GeV
+  // |p_{T}^{l}| > 20 GeV, |y^{l}|<2.4
+
+  Double_t sigma_alice_276tev1 = sigma_alice_276tev * pow(10.0, 6.0);   // Convert nb to (GeV/c)^{-2}
+
+  const Int_t NN = 14 ;
+
+
+  Double_t Pt[NN] = {106.8, 117.7, 131.1, 145.0, 161.4, 178.4, 197.2, 219.7, 242.8, 269.5, 299.9, 331.5, 368.0, 406.3} ;
+
+  Double_t PtBins_LowEdge[NN] = {101.3, 111.0, 124.4, 137.7, 152.9, 169.3, 187.5, 208.1, 230.6, 254.9, 284.1, 314.5, 348.5, 385.6} ;
+  Double_t PtBins_HighEdge[NN] = {112.3, 123.8, 137.8, 152.3, 169.3, 188.2, 207.6, 230.7, 255.6, 284.1, 314.5, 348.0, 386.2, 429.4} ;
+
+  Double_t Err_Pt[NN] = {0.0};
+
+  Double_t DSigmaDPt[NN] = {8.435452, 5.512890, 3.144394, 1.952722, 1.212673, 0.792528, 0.422295, 0.271330, 0.157414, 0.091325, 0.052089,
+			    0.029710, 0.016660, 0.009184};
+
+  Double_t Err_DSigmaDPt[NN] = {0.0};
+
+
+  Double_t Yield[NN] = {0.0};
+  Double_t Err_Yield[NN] = {0.0};
+  
+  for(Int_t i=0;i<NN;i++){
+    Err_Pt[i] = (PtBins_HighEdge[i] - PtBins_LowEdge[i])*0.5;
+  
+    //yield[i]    = yield[i]/sigma_alice_276tev1 ; 
+    //stat_err[i] = stat_err[i]/sigma_alice_276tev1 ;
+  }
+  
+  TGraphErrors *gr_data = new TGraphErrors(NN, Pt, DSigmaDPt, Err_Pt, Err_DSigmaDPt);
+  gr_data->GetYaxis()->SetTitle("d#sigma/dp_{T}^{#gamma}(pb/GeV)");
+  gr_data->GetXaxis()->SetTitle("p_{T}^{#gamma}(GeV/c)");
+  gr_data->GetYaxis()->SetRangeUser(0.001,100.0);
+  gr_data->GetXaxis()->SetLimits(0.0,450.0);
+  gr_data->GetYaxis()->CenterTitle();
+  gr_data->GetXaxis()->CenterTitle();
+  gr_data->SetMarkerColor(2);
+  gr_data->SetMarkerStyle(20);
+  gr_data->SetMarkerSize(1.2);
+ 
+  return gr_data ;
+			  
+
+
+
+
+
+
+
+
+
+
 }

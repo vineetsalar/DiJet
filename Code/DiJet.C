@@ -1,5 +1,5 @@
 #include "DiJet.h"
-#include "DiJetDataFunctions.h"
+//#include "DiJetDataFunctions.h"
 
 void DiJet()
 {
@@ -64,7 +64,23 @@ void DiJet()
   gPad->SetLeftMargin(0.15);
   grf_Data_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV->Draw("AP");
 
-  //return;
+
+
+  TGraphErrors *grf_Data_CMS_JetYield_GammaPlusJet_GammaPt_PP8TeV = Data_CMS_JetYield_GammaPlusJet_GammaPt_PP8TeV();
+  
+  new TCanvas;
+  gPad->SetLogy(1);
+  gPad->SetLeftMargin(0.15);
+  grf_Data_CMS_JetYield_GammaPlusJet_GammaPt_PP8TeV->Draw("AP");
+
+
+
+
+  Fit_Data_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV();
+
+
+
+  return;
 
 
 
@@ -344,14 +360,9 @@ void DiJet()
 
  
   // pp distribution fit 
-  //FitParaTsallisPP276TeV();
-  //cout<<" Fitting parameters for Tsallis function dN/dy "<<jet_00_rapidity_21_pp_276tev_dNdy<<" nn "<< jet_00_rapidity_21_pp_276tev_nn<<
-  //" p0 "<< jet_00_rapidity_21_pp_276tev_pzero <<endl;
-
   Double_t lc_jet_00_rapidity_21_pp_276tev_dNdy = 0.000690482;
   Double_t lc_jet_00_rapidity_21_pp_276tev_nn = 8.30672;
   Double_t lc_jet_00_rapidity_21_pp_276tev_pzero = 36.6118;
-  
   //function for pp Jet pT distribution  
   TF1 *fJetpp276tev = new TF1("fJetpp276tev", tsallis_fitting_function, 30.0, 500.0, 3);
   fJetpp276tev->SetParNames("dN/dy", "nn", "pzero");
@@ -359,9 +370,9 @@ void DiJet()
   fJetpp276tev->FixParameter(0, lc_jet_00_rapidity_21_pp_276tev_dNdy);
   fJetpp276tev->FixParameter(1, lc_jet_00_rapidity_21_pp_276tev_nn);
   fJetpp276tev->FixParameter(2, lc_jet_00_rapidity_21_pp_276tev_pzero);
-			     
-
-
+  
+  
+  
   new TCanvas ;
   gPad->SetTicks(1);
   gPad->SetLogy(1);
@@ -383,6 +394,27 @@ void DiJet()
   fJetpp276tev->SetLineColor(4);
   fJetpp276tev->Draw("same");
   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   
   // Random distribution;
   TRandom3 rand(0); 
@@ -585,7 +617,7 @@ void DiJet()
   Canv_Asym_DiJet_Pt->SaveAs("Figure/OutFigures/Fig_Asym_DiJet_Pt.png");
 
   
-  return;
+  //return;
 
 
 
