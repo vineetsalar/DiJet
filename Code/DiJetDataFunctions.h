@@ -297,7 +297,6 @@ TGraphAsymmErrors *Data_CMS_XJ_GammaJet_Cent_10_30_276TeV()
   Double_t XJ[NN] = {0.177, 0.308, 0.430, 0.555, 0.674, 0.800, 0.935, 1.056, 1.191, 1.310, 1.436, 1.562, 1.702};
   Double_t Error_XJ_Low[NN] = {0.0};
   Double_t Error_XJ_High[NN] = {0.0};
-
  
   Double_t EvFrac[NN] = {0.027, 0.420, 1.342, 1.456, 1.465, 1.444, 0.962, 0.538, 0.056, 0.045, 0.092, 0.014, -0.016};
   Double_t EvFrac_Max[NN] = {0.075, 0.526, 1.554, 1.687, 1.695, 1.636, 1.135, 0.682, 0.142, 0.151, 0.159, 0.081, 0.022};
@@ -1600,18 +1599,27 @@ TGraphErrors *jet_nuclear_modification_factor_raa_atlas_PbPb_502tev_cen_seventy7
 // Fitting Functions 
 Double_t tsallis_fitting_function(Double_t* x, Double_t* par)
 {
+
+  //Tsallis Function
+  //d^{2}Sigma/dpTdy = A_{n} 2 pi pT (1+pT/p0)^{-n} 
+
   Double_t pT    = x[0] ; 
-  Double_t dNdy  = par[0];
+
+  Double_t dNdy  = par[0]; //A_{n}
+
   Double_t nn    = par[1];
+
   Double_t pzero = par[2] ;
 
-  // Double_t Mass  = par[3] ; 
+  //Double_t Mass  = par[3] ; 
   // Double_t MT = sqrt(pT*pT + Mass*Mass) ;
-  Double_t MT = pT ; 
+  //Double_t MT = pT ; 
+
+  const Double_t Pi       = 3.14159265358979312 ;
   
   Double_t Norm = 1.0;
 
-  Double_t tsallis = dNdy * Norm * pow( (1 + pT/pzero), -nn) ;
+  Double_t tsallis = dNdy * Norm * 2.0 * Pi * pT* pow( (1 + pT/pzero), -nn) ;
   
   return tsallis ;
    
@@ -1622,21 +1630,17 @@ Double_t tsallis_fitting_function(Double_t* x, Double_t* par)
 
 //  Jet production in pp collisions at 2.76 TeV 
 // JET pT spectra in PbPb collisions @ 2.76 TeV     ///////
-Double_t jet_00_rapidity_21_pp_276tev_dNdy ;
-Double_t jet_00_rapidity_21_pp_276tev_nn     ; 
-Double_t jet_00_rapidity_21_pp_276tev_pzero  ;
-
-
-
 
 TGraphErrors *jet_atlas_yield_00_rapidity_21_pp_276tev()
 {
   //  Jet production in pp collisions at 2.76 TeV 
   //  Phys.Rev.Lett. 114 (2015) 072302, CERN-PH-EP-2014-172, arXiv:1411.2357 [hep-ex].
   
-  Double_t sigma_alice_276tev1 = sigma_alice_276tev * pow(10.0, 6.0);   // Convert nb to (GeV/c)^{-2}
+  //Double_t sigma_alice_276tev1 = sigma_alice_276tev * pow(10.0, 6.0);   // Convert nb to (GeV/c)^{-2}
 
   int N_point = 12 ;
+
+
   Double_t pT[15] = {3.500000e+01 ,4.450000e+01 ,5.650000e+01 ,7.100000e+01 ,8.950000e+01 ,1.125000e+02 ,
 		   1.415000e+02 ,1.785000e+02 ,2.250000e+02 ,2.835000e+02 ,3.570000e+02 ,4.495000e+02} ;
   Double_t pT_err[15] = {4.000000e+00 ,5.500000e+00 ,6.500000e+00 ,8.000000e+00 ,1.050000e+01 ,1.250000e+01 ,
@@ -1648,34 +1652,38 @@ TGraphErrors *jet_atlas_yield_00_rapidity_21_pp_276tev()
   Double_t stat_err[15] = {3.047427e+01 ,8.016544e+00 ,2.677197e+00 ,6.454510e-01 ,1.928954e-01 ,4.904014e-02 ,
 			 1.137164e-02 ,2.372112e-03 ,4.984053e-04 ,9.266249e-05 ,1.485154e-05 ,2.036022e-06};
 
-  cout<<" ATLAS pp Jet Distribution "<<endl;
-  for(int i=0; i<N_point; i++){
-    yield[i]    = yield[i]/sigma_alice_276tev1 ; 
-    stat_err[i] = stat_err[i]/sigma_alice_276tev1 ;
+  //cout<<" ATLAS pp Jet Distribution "<<endl;
 
-
+  //for(int i=0; i<N_point; i++){
+  //yield[i]    = yield[i]/sigma_alice_276tev1 ; 
+  //stat_err[i] = stat_err[i]/sigma_alice_276tev1 ;
     //cout<<" yield "<<  yield[i]*
     // yield[i]    = yield[i]    * pow(10.0, 8.0) ;
     // stat_err[i] = stat_err[i] * pow(10.0, 8.0) ;
-  }
+  //}
 
   
   TGraphErrors *gr_data = new TGraphErrors(N_point, pT, yield, pT_err, stat_err);
   gr_data->SetMarkerColor(2);
   gr_data->SetMarkerStyle(20);
   gr_data->SetMarkerSize(2);
-  gr_data->Draw("sameP");
+  gr_data->GetXaxis()->SetTitleSize(0.05)             ;
+  gr_data->GetXaxis()->SetTitleOffset(1.10)           ;
+  gr_data->GetXaxis()->SetLabelSize(0.03)             ;
+  gr_data->GetXaxis()->SetTitle("p_{T} (GeV/c)")      ; 
+  gr_data->GetXaxis()->CenterTitle()                  ;
+  gr_data->GetYaxis()->SetTitleSize(0.05)             ;
+  gr_data->GetYaxis()->SetTitleOffset(1.10)           ;
+  gr_data->GetYaxis()->SetLabelSize(0.03)             ;
+  gr_data->GetYaxis()->SetTitle("d^{2}#sigma/dp_{T}dy[nb/GeV]"); 
+  gr_data->GetYaxis()->CenterTitle()                  ;
   
+  gr_data->GetXaxis()->SetLimits(0.0, 500.0)          ;
+  gr_data->GetYaxis()->SetRangeUser(0.000001, 1.0e+04) ;
 
   return gr_data ;
 			  
 }
-
-
-
-
-
-
 
 
 
@@ -1688,48 +1696,40 @@ void FitParaTsallisPP276TeV()
   gPad->SetLogy(1);
   
   TGraphErrors *gr_atlas_jet_yield_00_rapidity_21 = jet_atlas_yield_00_rapidity_21_pp_276tev() ;
-  
-  gr_atlas_jet_yield_00_rapidity_21->GetXaxis()->SetTitleSize(0.05)             ;
-  gr_atlas_jet_yield_00_rapidity_21->GetXaxis()->SetTitleOffset(1.10)           ;
-  gr_atlas_jet_yield_00_rapidity_21->GetXaxis()->SetLabelSize(0.03)             ;
-  gr_atlas_jet_yield_00_rapidity_21->GetXaxis()->SetTitle("p_{T} (GeV/c)")      ; 
-  gr_atlas_jet_yield_00_rapidity_21->GetXaxis()->CenterTitle()                  ;
-  gr_atlas_jet_yield_00_rapidity_21->GetYaxis()->SetTitleSize(0.05)             ;
-  gr_atlas_jet_yield_00_rapidity_21->GetYaxis()->SetTitleOffset(1.10)           ;
-  gr_atlas_jet_yield_00_rapidity_21->GetYaxis()->SetLabelSize(0.03)             ;
-  gr_atlas_jet_yield_00_rapidity_21->GetYaxis()->SetTitle("1/(2#pi p_{T}) d^{2}N/dp_{T}dy (GeV/c)^{-2}"); 
-  gr_atlas_jet_yield_00_rapidity_21->GetYaxis()->CenterTitle()                  ;
-  
-  gr_atlas_jet_yield_00_rapidity_21->GetXaxis()->SetLimits(0.0, 500.0)          ;
-  gr_atlas_jet_yield_00_rapidity_21->GetYaxis()->SetRangeUser(1.0e-14, 1.0e+01) ;
   gr_atlas_jet_yield_00_rapidity_21->Draw("AP")                                 ;
   
 
-  TF1 *fitfunc_jet_00_rapidity_21_pp_276tev = new TF1("fitfunc_jet_00_rapidity_21_pp_276tev", tsallis_fitting_function, 0.0, 500.0, 3);
+  TF1 *fitfunc_jet_00_rapidity_21_pp_276tev = new TF1("fitfunc_jet_00_rapidity_21_pp_276tev", tsallis_fitting_function, 10.0, 500.0, 3);
 
   fitfunc_jet_00_rapidity_21_pp_276tev->SetParNames("dN/dy", "nn", "pzero");
-  //fitfunc_jet_00_rapidity_21_pp_276tev->SetParameters(1000.0, 6.0, 0.1) ;
-  //fitfunc_jet_00_rapidity_21_pp_276tev->SetParLimits(0, 750.0, 1100.0); 
-  //fitfunc_jet_00_rapidity_21_pp_276tev->SetParLimits(1, 4.0,   500.0) ;
+ 
+  
+  //fitfunc_jet_00_rapidity_21_pp_276tev->SetParameters(850.0, 9.0, 20.0) ;
 
-  fitfunc_jet_00_rapidity_21_pp_276tev->SetParameters(1.0, 6.0, 10) ;
-  fitfunc_jet_00_rapidity_21_pp_276tev->SetParLimits(0, 0.00001, 100.0);
-  fitfunc_jet_00_rapidity_21_pp_276tev->SetParLimits(1, 4.0,   10.0) ;
-  fitfunc_jet_00_rapidity_21_pp_276tev->SetParLimits(2, 0.5, 50.0) ;
+
+  fitfunc_jet_00_rapidity_21_pp_276tev->SetParameters(1035.0, 9.17, 29.0) ;
+  
+  fitfunc_jet_00_rapidity_21_pp_276tev->SetParLimits(0, 800.0, 1500.0);
+  fitfunc_jet_00_rapidity_21_pp_276tev->SetParLimits(1, 7.0,   10.0) ;
+  fitfunc_jet_00_rapidity_21_pp_276tev->SetParLimits(2, 20, 35.0) ;
+
+
+
   
   fitfunc_jet_00_rapidity_21_pp_276tev->SetLineColor(1);
   fitfunc_jet_00_rapidity_21_pp_276tev->SetLineStyle(1);
-  fitfunc_jet_00_rapidity_21_pp_276tev->SetLineWidth(4);
+  fitfunc_jet_00_rapidity_21_pp_276tev->SetLineWidth(2);
 
-  fitfunc_jet_00_rapidity_21_pp_276tev->SetParNames("dN/dy", "nn", "pzero");
-
+  
 
   //dNdy  = 0.00252839  
   //nn    = 7.28245 
   //pzero = 22.6085  
 
 
-  gr_atlas_jet_yield_00_rapidity_21->Fit(fitfunc_jet_00_rapidity_21_pp_276tev,  "ME", "", 35.0, 500.0) ;
+  //gr_atlas_jet_yield_00_rapidity_21->Fit(fitfunc_jet_00_rapidity_21_pp_276tev,  "FME", "", 35.0, 450.0) ;
+
+  gr_atlas_jet_yield_00_rapidity_21->Fit(fitfunc_jet_00_rapidity_21_pp_276tev,  "", "", 35.0, 500.0) ;
   fitfunc_jet_00_rapidity_21_pp_276tev->Draw("same");  
 
   TLegend *leg_jet_pp_yield = new TLegend(0.35, 0.74, 0.89, 0.94);
@@ -1749,11 +1749,11 @@ void FitParaTsallisPP276TeV()
   Latex_Jet_yield_pp_276TeV->SetTextSize(0.08);
   Latex_Jet_yield_pp_276TeV->DrawLatex(0.50, 0.70, "|y| < 2.1") ;
   
-  jet_00_rapidity_21_pp_276tev_dNdy      = fitfunc_jet_00_rapidity_21_pp_276tev->GetParameter(0) ;
+  Double_t jet_00_rapidity_21_pp_276tev_dNdy      = fitfunc_jet_00_rapidity_21_pp_276tev->GetParameter(0) ;
   Double_t jet_00_rapidity_21_pp_276tev_dNdy_err  = fitfunc_jet_00_rapidity_21_pp_276tev->GetParError(0)  ;
-  jet_00_rapidity_21_pp_276tev_nn               = fitfunc_jet_00_rapidity_21_pp_276tev->GetParameter(1) ;
+  Double_t jet_00_rapidity_21_pp_276tev_nn               = fitfunc_jet_00_rapidity_21_pp_276tev->GetParameter(1) ;
   Double_t jet_00_rapidity_21_pp_276tev_nn_err    = fitfunc_jet_00_rapidity_21_pp_276tev->GetParError(1)  ;
-  jet_00_rapidity_21_pp_276tev_pzero            = fitfunc_jet_00_rapidity_21_pp_276tev->GetParameter(2) ;
+  Double_t jet_00_rapidity_21_pp_276tev_pzero            = fitfunc_jet_00_rapidity_21_pp_276tev->GetParameter(2) ;
   Double_t jet_00_rapidity_21_pp_276tev_pzero_err = fitfunc_jet_00_rapidity_21_pp_276tev->GetParError(2)  ;
   Double_t jet_00_rapidity_21_pp_276tev_Chi2      = fitfunc_jet_00_rapidity_21_pp_276tev->GetChisquare()  ;
   Double_t jet_00_rapidity_21_pp_276tev_NDF       = fitfunc_jet_00_rapidity_21_pp_276tev->GetNDF()        ;
@@ -1766,11 +1766,12 @@ void FitParaTsallisPP276TeV()
   cout<<"Chi^{2}     = "<< jet_00_rapidity_21_pp_276tev_Chi2     <<endl;
   cout<<"NDF         = "<< jet_00_rapidity_21_pp_276tev_NDF      <<endl;
   cout<<"Chi^{2}_NDF = "<< jet_00_rapidity_21_pp_276tev_Chi2_NDF <<endl;
+  cout<<"Prob        = "<< TMath::Prob(jet_00_rapidity_21_pp_276tev_Chi2,jet_00_rapidity_21_pp_276tev_NDF) <<endl;
   cout<<"******************************************************************************"<<endl;
 
   
 
-  gPad->SaveAs("Figure/Figure8_jet_atlas_pT_spectra_pp_276TeV.pdf") ;
+  //gPad->SaveAs("Figure/Figure8_jet_atlas_pT_spectra_pp_276TeV.pdf") ;
 
 }
 

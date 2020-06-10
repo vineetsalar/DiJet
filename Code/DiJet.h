@@ -55,17 +55,8 @@ using namespace std;
 //
 #include "DiJetDataFunctions.h"
 
-
-
-
-
-
-
-
-
 // Global Varaibles 
 const Double_t pi       = 3.14159265358979312 ;
-//sigma_atlas_502tev  = sigma_atlas_502tev * pow(10.0, 6.0) ;
 
 const Double_t Am = 208.0 ;
 const Double_t R0 = 1.1;

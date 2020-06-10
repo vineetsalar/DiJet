@@ -78,8 +78,13 @@ void DiJet()
 
   Fit_Data_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV();
 
+  //cout<<endl<<endl;
+  //cout<<" Fitting ATLAS Jet Yield 2.76 TeV "<<endl;
+  //FitParaTsallisPP276TeV();
 
 
+
+  
   return;
 
 
@@ -360,59 +365,32 @@ void DiJet()
 
  
   // pp distribution fit 
-  Double_t lc_jet_00_rapidity_21_pp_276tev_dNdy = 0.000690482;
-  Double_t lc_jet_00_rapidity_21_pp_276tev_nn = 8.30672;
-  Double_t lc_jet_00_rapidity_21_pp_276tev_pzero = 36.6118;
+  //These are the values when func was not multiplied by 2 pi
+  //const Double_t lc_jet_00_rapidity_21_pp_276tev_dNdy = 0.000690482;
+  //const Double_t lc_jet_00_rapidity_21_pp_276tev_nn = 8.30672;
+  //const Double_t lc_jet_00_rapidity_21_pp_276tev_pzero = 36.6118;
+
+
+  const Double_t lc_jet_00_rapidity_21_pp_276tev_dNdy = 1035.26;
+  const Double_t lc_jet_00_rapidity_21_pp_276tev_nn = 9.17592;
+  const Double_t lc_jet_00_rapidity_21_pp_276tev_pzero = 29.1867;
+
   //function for pp Jet pT distribution  
   TF1 *fJetpp276tev = new TF1("fJetpp276tev", tsallis_fitting_function, 30.0, 500.0, 3);
   fJetpp276tev->SetParNames("dN/dy", "nn", "pzero");
-  //fJetpp276tev->SetParameters(jet_00_rapidity_21_pp_276tev_dNdy, jet_00_rapidity_21_pp_276tev_nn, jet_00_rapidity_21_pp_276tev_pzero);
   fJetpp276tev->FixParameter(0, lc_jet_00_rapidity_21_pp_276tev_dNdy);
   fJetpp276tev->FixParameter(1, lc_jet_00_rapidity_21_pp_276tev_nn);
   fJetpp276tev->FixParameter(2, lc_jet_00_rapidity_21_pp_276tev_pzero);
   
-  
-  
   new TCanvas ;
   gPad->SetTicks(1);
   gPad->SetLogy(1);
-  
   TGraphErrors *gr_atlas_jet_yield_00_rapidity_21 = jet_atlas_yield_00_rapidity_21_pp_276tev() ;
-  gr_atlas_jet_yield_00_rapidity_21->GetXaxis()->SetTitleSize(0.05)             ;
-  gr_atlas_jet_yield_00_rapidity_21->GetXaxis()->SetTitleOffset(1.10)           ;
-  gr_atlas_jet_yield_00_rapidity_21->GetXaxis()->SetLabelSize(0.03)             ;
-  gr_atlas_jet_yield_00_rapidity_21->GetXaxis()->SetTitle("p_{T} (GeV/c)")      ; 
-  gr_atlas_jet_yield_00_rapidity_21->GetXaxis()->CenterTitle()                  ;
-  gr_atlas_jet_yield_00_rapidity_21->GetYaxis()->SetTitleSize(0.05)             ;
-  gr_atlas_jet_yield_00_rapidity_21->GetYaxis()->SetTitleOffset(1.10)           ;
-  gr_atlas_jet_yield_00_rapidity_21->GetYaxis()->SetLabelSize(0.03)             ;
-  gr_atlas_jet_yield_00_rapidity_21->GetYaxis()->SetTitle("1/(2#pi p_{T}) d^{2}N/dp_{T}dy (GeV/c)^{-2}"); 
-  gr_atlas_jet_yield_00_rapidity_21->GetYaxis()->CenterTitle()                  ;
-  gr_atlas_jet_yield_00_rapidity_21->GetXaxis()->SetLimits(0.0, 500.0)          ;
-  gr_atlas_jet_yield_00_rapidity_21->GetYaxis()->SetRangeUser(1.0e-14, 1.0e+01) ;
-  gr_atlas_jet_yield_00_rapidity_21->Draw("AP")                                 ;
-  fJetpp276tev->SetLineColor(4);
+  gr_atlas_jet_yield_00_rapidity_21->Draw("AP");
   fJetpp276tev->Draw("same");
   
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  return;
 
 
   
