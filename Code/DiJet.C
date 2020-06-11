@@ -58,16 +58,13 @@ void DiJet()
 
   //Test Data Graph
   TGraphErrors *grf_Data_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV = Data_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV();
-
   new TCanvas;
   gPad->SetLogy(1);
   gPad->SetLeftMargin(0.15);
   grf_Data_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV->Draw("AP");
 
 
-
   TGraphErrors *grf_Data_CMS_JetYield_GammaPlusJet_GammaPt_PP8TeV = Data_CMS_JetYield_GammaPlusJet_GammaPt_PP8TeV();
-  
   new TCanvas;
   gPad->SetLogy(1);
   gPad->SetLeftMargin(0.15);
@@ -75,12 +72,21 @@ void DiJet()
 
 
 
+    
+  cout<<endl<<endl;
+  cout<<" Fitting ATLAS Jet Yield 2.76 TeV "<<endl;
+  FitParaTsallisPP276TeV();
 
+
+
+  cout<<endl<<endl;
+  cout<<" Fitting CMS Z0 + Jet Yield 7 TeV "<<endl;
   Fit_Data_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV();
 
-  //cout<<endl<<endl;
-  //cout<<" Fitting ATLAS Jet Yield 2.76 TeV "<<endl;
-  //FitParaTsallisPP276TeV();
+
+  cout<<endl<<endl;
+  cout<<" Fitting CMS Gamma + Jet Yield 8 TeV "<<endl;
+  Fit_Data_CMS_JetYield_GammaPlusJet_GammaPt_PP8TeV();
 
 
 

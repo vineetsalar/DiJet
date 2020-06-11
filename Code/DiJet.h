@@ -388,39 +388,127 @@ TH1D *Asym_DiJet_Pt(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, Double_t
 void Fit_Data_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV()
 {
 
+  TLatex *Latex_local = new TLatex();
+  Latex_local->SetNDC();
+  Latex_local->SetTextAlign(12); 
+  Latex_local->SetTextColor(1);
 
   TGraphErrors *grf_Data_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV = Data_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV();
 
   
 
-  TF1 *FitFunc_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV = new TF1("FitFunc_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV", tsallis_fitting_function, 0.0, 700.0, 3);
-
+  TF1 *FitFunc_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV = new TF1("FitFunc_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV", tsallis_fitting_function, 30.0, 700.0, 3);
   FitFunc_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV->SetParNames("dN/dy", "nn", "pzero");
-  
-  FitFunc_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV->SetParameters(1.0, 6.0, 10) ;
-  FitFunc_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV->SetParLimits(0, 0.00001, 100.0);
+  FitFunc_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV->SetParameters(5.0, 6.0, 10) ;
+  FitFunc_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV->SetParLimits(0, 0.01, 100.0);
   FitFunc_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV->SetParLimits(1, 4.0,   10.0) ;
-  
-  FitFunc_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV->SetParLimits(2, 0.5, 50.0) ;
-    
+  FitFunc_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV->SetParLimits(2, 0.5, 100.0) ;
+
   FitFunc_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV->SetLineColor(1);
-  FitFunc_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV->SetLineStyle(1);
-  FitFunc_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV->SetLineWidth(4);
+  FitFunc_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV->SetLineStyle(4);
+  FitFunc_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV->SetLineWidth(2);
 
  
-  //dNdy  = 0.00252839  
-  //nn    = 7.28245 
-  //pzero = 22.6085  
-
   new TCanvas;
   gPad->SetLogy(1);
   gPad->SetLeftMargin(0.15);
   grf_Data_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV->Draw("AP");
   
-  grf_Data_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV->Fit(FitFunc_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV,  "ME", "", 60.0, 700.0) ;
+  TFitResultPtr fp = grf_Data_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV->Fit(FitFunc_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV,  "SE", "", 40.0, 700.0) ;
   FitFunc_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV->Draw("same");  
 
+  Latex_local->DrawLatex(0.60, 0.80, "CMS Z^{0}+Jet 7 TeV") ;
+  
+  Double_t dNdy      = FitFunc_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV->GetParameter(0) ;
+  Double_t dNdy_err  = FitFunc_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV->GetParError(0)  ;
+  Double_t nn               = FitFunc_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV->GetParameter(1) ;
+  Double_t nn_err    = FitFunc_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV->GetParError(1)  ;
+  Double_t pzero            = FitFunc_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV->GetParameter(2) ;
+  Double_t pzero_err = FitFunc_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV->GetParError(2)  ;
+  Double_t Chi2      = FitFunc_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV->GetChisquare()  ;
+  Double_t NDF       = FitFunc_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV->GetNDF()        ;
+  Double_t Chi2_NDF  = Chi2/NDF ;
+  Int_t FitStatus = fp;
+  cout<<endl<<endl;
 
+  cout<<"______________________________________________________________________________"<<endl;
+  cout<<" Fitted CMS Z0+Jet Data with Tsallis Function "<<endl;
+  cout<<" Fit Status   "<< FitStatus <<endl;
+  cout<<"dNdy        = "<< dNdy  <<"   "<<" dNdy_err  = "<< dNdy_err <<endl;
+  cout<<"nn          = "<< nn    <<"   "<<" nn_err    = "<< nn_err   <<endl;
+  cout<<"pzero       = "<< pzero <<"   "<<" pzero_err = "<< pzero_err <<endl;
+  cout<<"Chi^{2}     = "<< Chi2     <<endl;
+  cout<<"NDF         = "<< NDF      <<endl;
+  cout<<"Chi^{2}_NDF = "<< Chi2_NDF <<endl;
+  cout<<"Prob        = "<< TMath::Prob(Chi2,NDF) <<endl;
+  cout<<"******************************************************************************"<<endl;
+
+  
+}
+
+
+
+
+void Fit_Data_CMS_JetYield_GammaPlusJet_GammaPt_PP8TeV()
+{
+
+  TLatex *Latex_local = new TLatex();
+  Latex_local->SetNDC();
+  Latex_local->SetTextAlign(12); 
+  Latex_local->SetTextColor(1);
+
+  TGraphErrors *grf_Data_CMS_JetYield_GammaPlusJet_GammaPt_PP8TeV = Data_CMS_JetYield_GammaPlusJet_GammaPt_PP8TeV();
+
+  
+
+  TF1 *FitFunc_CMS_JetYield_GammaPlusJet_GammaPt_PP8TeV = new TF1("FitFunc_CMS_JetYield_GammaPlusJet_GammaPt_PP8TeV", tsallis_fitting_function, 50.0, 450.0, 3);
+  FitFunc_CMS_JetYield_GammaPlusJet_GammaPt_PP8TeV->SetParNames("dN/dy", "nn", "pzero");
+  FitFunc_CMS_JetYield_GammaPlusJet_GammaPt_PP8TeV->SetParameters(94.0, 7.0, 35) ;
+  
+  FitFunc_CMS_JetYield_GammaPlusJet_GammaPt_PP8TeV->SetParLimits(0, 90.0, 120.0);
+  FitFunc_CMS_JetYield_GammaPlusJet_GammaPt_PP8TeV->SetParLimits(1, 4.0,   10.0) ;
+  FitFunc_CMS_JetYield_GammaPlusJet_GammaPt_PP8TeV->SetParLimits(2, 10.0, 50.0) ;
+
+  FitFunc_CMS_JetYield_GammaPlusJet_GammaPt_PP8TeV->SetLineColor(1);
+  FitFunc_CMS_JetYield_GammaPlusJet_GammaPt_PP8TeV->SetLineStyle(4);
+  FitFunc_CMS_JetYield_GammaPlusJet_GammaPt_PP8TeV->SetLineWidth(2);
+
+ 
+  new TCanvas;
+  gPad->SetLogy(1);
+  gPad->SetLeftMargin(0.15);
+  grf_Data_CMS_JetYield_GammaPlusJet_GammaPt_PP8TeV->Draw("AP");
+  
+  TFitResultPtr fp = grf_Data_CMS_JetYield_GammaPlusJet_GammaPt_PP8TeV->Fit(FitFunc_CMS_JetYield_GammaPlusJet_GammaPt_PP8TeV,  "S", "", 80.0, 450.0) ;
+  FitFunc_CMS_JetYield_GammaPlusJet_GammaPt_PP8TeV->Draw("same");  
+
+  Latex_local->DrawLatex(0.60, 0.80, "CMS #gamma+Jet 8 TeV") ;
+  
+  Double_t dNdy      = FitFunc_CMS_JetYield_GammaPlusJet_GammaPt_PP8TeV->GetParameter(0) ;
+  Double_t dNdy_err  = FitFunc_CMS_JetYield_GammaPlusJet_GammaPt_PP8TeV->GetParError(0)  ;
+  Double_t nn               = FitFunc_CMS_JetYield_GammaPlusJet_GammaPt_PP8TeV->GetParameter(1) ;
+  Double_t nn_err    = FitFunc_CMS_JetYield_GammaPlusJet_GammaPt_PP8TeV->GetParError(1)  ;
+  Double_t pzero            = FitFunc_CMS_JetYield_GammaPlusJet_GammaPt_PP8TeV->GetParameter(2) ;
+  Double_t pzero_err = FitFunc_CMS_JetYield_GammaPlusJet_GammaPt_PP8TeV->GetParError(2)  ;
+  Double_t Chi2      = FitFunc_CMS_JetYield_GammaPlusJet_GammaPt_PP8TeV->GetChisquare()  ;
+  Double_t NDF       = FitFunc_CMS_JetYield_GammaPlusJet_GammaPt_PP8TeV->GetNDF()        ;
+  Double_t Chi2_NDF  = Chi2/NDF ;
+  Int_t FitStatus = fp;
+  cout<<endl<<endl;
+
+  cout<<"______________________________________________________________________________"<<endl;
+  cout<<" Fitted CMS Gamma+Jet Data with Tsallis Function "<<endl;
+  cout<<" Fit Status = "<< FitStatus <<endl;
+  cout<<"dNdy        = "<< dNdy  <<"   "<<" dNdy_err  = "<< dNdy_err <<endl;
+  cout<<"nn          = "<< nn    <<"   "<<" nn_err    = "<< nn_err   <<endl;
+  cout<<"pzero       = "<< pzero <<"   "<<" pzero_err = "<< pzero_err <<endl;
+  cout<<"Chi^{2}     = "<< Chi2     <<endl;
+  cout<<"NDF         = "<< NDF      <<endl;
+  cout<<"Chi^{2}_NDF = "<< Chi2_NDF <<endl;
+  cout<<"Prob        = "<< TMath::Prob(Chi2,NDF) <<endl;
+  cout<<"******************************************************************************"<<endl;
+
+  
 }
 
 

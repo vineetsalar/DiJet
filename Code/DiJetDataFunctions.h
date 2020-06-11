@@ -7,7 +7,6 @@
 const Double_t sigma_alice_276tev  = 62.8 ;  // (mb)
 const Double_t sigma_atlas_502tev  = 67.6 * pow(10.0, 6.0);  // (nb) 1710.07098
 
-
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
 //+++++++++++++++++++++++++   CMS Data Functions for XJ (Z0+Jet) 5 TeV +++++++++++++++++++++++++++++++++++++++//
@@ -1844,24 +1843,28 @@ TGraphErrors *Data_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV()
 
   Double_t Err_Pt[NN] = {0.0};
 
+  
   Double_t DSigmaDPt[NN] = {1.689625, 0.685474, 0.308851, 0.157826, 0.087711, 0.050834, 0.030086, 0.019776, 0.012999, 0.008544, 0.005735,
 			0.003691, 0.002231, 0.001266, 0.000675, 0.000280, 0.000060};
 
   Double_t Err_DSigmaDPt[NN] = {0.0};
+  Double_t DSigmaDPtDy[NN] = {0.0};
 
-
+  Double_t DeltaY = 4.8;
+  
   Double_t Yield[NN] = {0.0};
   Double_t Err_Yield[NN] = {0.0};
   
   for(Int_t i=0;i<NN;i++){
     Err_Pt[i] = (PtBins_HighEdge[i] - PtBins_LowEdge[i])*0.5;
-  
+    DSigmaDPtDy[i] = DSigmaDPt[i] / DeltaY ;
+    
     //yield[i]    = yield[i]/sigma_alice_276tev1 ; 
     //stat_err[i] = stat_err[i]/sigma_alice_276tev1 ;
   }
   
   TGraphErrors *gr_data = new TGraphErrors(NN, Pt, DSigmaDPt, Err_Pt, Err_DSigmaDPt);
-  gr_data->GetYaxis()->SetTitle("d#sigma/dp_{T}^{J}(pb/GeV)");
+  gr_data->GetYaxis()->SetTitle("d^{2}#sigma/dp_{T}dy^{J}(pb/GeV)");
   gr_data->GetXaxis()->SetTitle("p_{T}^{J}(GeV/c)");
   gr_data->GetYaxis()->SetRangeUser(0.00001,10.0);
   gr_data->GetXaxis()->SetLimits(0.0,700.0);
@@ -1887,8 +1890,7 @@ TGraphErrors *Data_CMS_JetYield_GammaPlusJet_GammaPt_PP8TeV()
   //Gamma Yield for Gamma+Jet Root_s = 8 TeV
   //Pt Jet > 30 GeV
   //R = 0.5, |y_Jet| < 2.4
-  //71 < M_{ll} << 111 GeV
-  // |p_{T}^{l}| > 20 GeV, |y^{l}|<2.4
+  // |y^{l}|<1.4
 
   Double_t sigma_alice_276tev1 = sigma_alice_276tev * pow(10.0, 6.0);   // Convert nb to (GeV/c)^{-2}
 
@@ -1907,19 +1909,23 @@ TGraphErrors *Data_CMS_JetYield_GammaPlusJet_GammaPt_PP8TeV()
 
   Double_t Err_DSigmaDPt[NN] = {0.0};
 
-
+  Double_t DeltaY = 2.8;
+  
+  Double_t DSigmaDPtDy[NN] = {0.0};
+  
   Double_t Yield[NN] = {0.0};
   Double_t Err_Yield[NN] = {0.0};
   
   for(Int_t i=0;i<NN;i++){
     Err_Pt[i] = (PtBins_HighEdge[i] - PtBins_LowEdge[i])*0.5;
-  
+    DSigmaDPtDy[i] = DSigmaDPt[i]/DeltaY;
+    
     //yield[i]    = yield[i]/sigma_alice_276tev1 ; 
     //stat_err[i] = stat_err[i]/sigma_alice_276tev1 ;
   }
   
-  TGraphErrors *gr_data = new TGraphErrors(NN, Pt, DSigmaDPt, Err_Pt, Err_DSigmaDPt);
-  gr_data->GetYaxis()->SetTitle("d#sigma/dp_{T}^{#gamma}(pb/GeV)");
+  TGraphErrors *gr_data = new TGraphErrors(NN, Pt, DSigmaDPtDy, Err_Pt, Err_DSigmaDPt);
+  gr_data->GetYaxis()->SetTitle("d^{2}#sigma/dp_{T}dy^{#gamma}(pb/GeV)");
   gr_data->GetXaxis()->SetTitle("p_{T}^{#gamma}(GeV/c)");
   gr_data->GetYaxis()->SetRangeUser(0.001,100.0);
   gr_data->GetXaxis()->SetLimits(0.0,450.0);
@@ -1931,14 +1937,4 @@ TGraphErrors *Data_CMS_JetYield_GammaPlusJet_GammaPt_PP8TeV()
  
   return gr_data ;
 			  
-
-
-
-
-
-
-
-
-
-
 }
