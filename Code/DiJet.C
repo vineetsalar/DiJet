@@ -56,6 +56,13 @@ void DiJet()
 
 
 
+  cout<<" Test the Jet resolution Function "<<endl;
+
+  cout<<FindJetPtResolution(500.0,1)<<"  "<<FindJetPtResolution(500.0,0)<<endl;
+
+  //return;
+  
+
   //Test Data Graph
   TGraphErrors *grf_Data_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV = Data_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV();
   new TCanvas;

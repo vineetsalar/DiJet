@@ -512,6 +512,73 @@ void Fit_Data_CMS_JetYield_GammaPlusJet_GammaPt_PP8TeV()
 }
 
 
+// Gaussian Function 
+Double_t Gaussian_Function(Double_t* x, Double_t* par)
+{
+
+  //Gaussian Function
+  //f_{g}(x) = 1.0/(2.0*Pi*Sigma^{2})^{1.0/2.0} exp[-(x-a)^{2}/(2.0*Sigma^{2})]
+
+  Double_t pT    = x[0] ; 
+  Double_t a  = par[0]; 
+  Double_t Sigma    = par[1];
+
+  const Double_t Root_Pi =   1.7724539; //TMath::Sqrt(TMath::Pi())
+  const Double_t Root_2 = 1.4142136;   //TMath::Sqrt(2)
+
+  Double_t NormFac = (Root_2*Root_Pi);
+
+  Double_t gauss = 1.0/(NormFac*Sigma) * TMath::Exp(-(((pT-a)*(pT-a))/(2.0*Sigma*Sigma)));
+  
+  return gauss;
+   
+}
+
+
+Double_t FindJetPtResolution(Double_t JetPt, Int_t IsPbPb)
+{
+
+
+
+
+
+  Double_t Mean = 1.0;
+
+  Double_t CC = 0.061;
+  Double_t SS = 0.0;
+  Double_t NN = 0.0;
+
+  if(IsPbPb ==1){SS=1.24;NN=8.08;}
+  else{SS=0.95;NN=0.001;}
+
+  Double_t SigmaSquare = (CC*CC) + ((SS*SS)/JetPt) + ((NN*NN)/(JetPt*JetPt));
+  Double_t Sigma = TMath::Sqrt(SigmaSquare);
+
+  cout<<" Sigma "<<Sigma<<endl;
+
+  //TF1 *gs1 = new TF1("gs1", "gaus", 0.0, 1.0);
+  //gs1->SetParameters(1.0, 0.5, 0.1);
+  //gs1->Draw();
+
+  //TF1 *Func_CMS_JetPtResolution = new TF1("Func_CMS_JetPtResolution", Gaussian_Function, -100.0, 100.0, 2);
+
+  TF1 *Func_CMS_JetPtResolution = new TF1("Func_CMS_JetPtResolution", "gaus",0.0,2.0);
+
+  Func_CMS_JetPtResolution->SetParNames("Mean", "Sigma");
+
+  Func_CMS_JetPtResolution->SetParameter(0,1.0);
+  Func_CMS_JetPtResolution->SetParameter(1,Mean);
+  Func_CMS_JetPtResolution->SetParameter(2,Sigma);
+
+  new TCanvas;
+  Func_CMS_JetPtResolution->Draw();
+
+  
+  Double_t Reso = Func_CMS_JetPtResolution->GetRandom();
+
+  return Reso;
+
+}
 
 
 
