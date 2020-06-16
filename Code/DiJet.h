@@ -63,6 +63,45 @@ const Double_t R0 = 1.1;
 const Double_t RA = R0*pow(Am, 1.0/3.0);
 
 
+
+
+Double_t FindJetPtResolution(Double_t JetPt, Int_t IsPbPb)
+{
+
+  Double_t Mean = 1.0;
+  Double_t CC = 0.061;
+  Double_t SS = 0.0;
+  Double_t NN = 0.0;
+
+  if(IsPbPb ==1){SS=1.24;NN=8.08;}
+  else{SS=0.95;NN=0.001;}
+
+  Double_t SigmaSquare = (CC*CC) + ((SS*SS)/JetPt) + ((NN*NN)/(JetPt*JetPt));
+  Double_t Sigma = TMath::Sqrt(SigmaSquare);
+
+  //cout<<" Sigma "<<Sigma<<endl;
+
+  //TF1 *Func_CMS_JetPtResolution = new TF1("Func_CMS_JetPtResolution", "gaus",0.0,2.0);
+  //Func_CMS_JetPtResolution->SetParNames("Mean", "Sigma");
+  //Func_CMS_JetPtResolution->SetParameter(0,1.0);
+  //Func_CMS_JetPtResolution->SetParameter(1,Mean);
+  //Func_CMS_JetPtResolution->SetParameter(2,Sigma);
+
+  //new TCanvas;
+  //Func_CMS_JetPtResolution->Draw();
+
+  TRandom3 rand(0);
+  Double_t Reso = rand.Gaus(Mean, Sigma);
+  
+  // Double_t Reso = Func_CMS_JetPtResolution->GetRandom();
+
+  return Reso;
+
+}
+
+
+
+
 Double_t calDelta(Double_t pT, Double_t alpha, Double_t MM) 
 {
 
@@ -119,11 +158,36 @@ TH1D *XJ_Z0Jet_Centrality(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, Do
 
     
     // Smear Pt
-    Double_t Pt1 = rand.Gaus(E1, E1*ResPt);
-    Double_t Pt2 = rand.Gaus(E2, E2*ResPt);
+    //pt resolution fixed
+    //Double_t Pt1 = rand.Gaus(E1, E1*ResPt);
+    //Double_t Pt2 = rand.Gaus(E2, E2*ResPt);
+
+
+    //pt resolution : pT dependent
+    Double_t Mean = 1.0;
+    Double_t CC = 0.061;
+    Double_t SS = 0.0;
+    Double_t NN = 0.0;
+
+
+    if(isPP==0){SS=1.24;NN=8.08;}
+    if(isPP==1){SS=0.95;NN=0.001;}
+    if(isPP==2){SS=0.95;NN=0.001;}
+
+    Double_t SigmaSquare1 = (CC*CC) + ((SS*SS)/E1) + ((NN*NN)/(E1*E1));
+    Double_t Sigma1 = TMath::Sqrt(SigmaSquare1);
+    Double_t Reso1 = rand.Gaus(Mean, Sigma1);
+
+    Double_t SigmaSquare2 = (CC*CC) + ((SS*SS)/E2) + ((NN*NN)/(E2*E2));
+    Double_t Sigma2 = TMath::Sqrt(SigmaSquare1);
+    Double_t Reso2 = rand.Gaus(Mean, Sigma1);
+  
+    Double_t Pt1 = E1*Reso1;
+    Double_t Pt2 = E2*Reso2;
+
+
 
     //Exp cut on Pt
-    
     const Double_t MinZ0Pt = 60.0;
     const Double_t MinJetPt = 30.0;
     
@@ -162,8 +226,6 @@ TH1D *XJ_GammaJet_Centrality(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi,
   TRandom3 rand(0);
   
   //Histogram Name should come from the Centrality Loop
-
-
   TH1D *hAsymmetryOut = new TH1D(Form("hXJOutCent_%d ",CentBin),Form("hXJOutCent_%d ",CentBin), 20, 0.0, 2.0);
 
   Double_t RR = RA*sqrt(NPart/(2*Am));
@@ -199,8 +261,21 @@ TH1D *XJ_GammaJet_Centrality(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi,
 
     
     // Smear Pt
-    Double_t Pt1 = rand.Gaus(E1, E1*ResPt);
-    Double_t Pt2 = rand.Gaus(E2, E2*ResPt);
+    // pt resolution fixed given as function parameter 
+    //Double_t Pt1 = rand.Gaus(E1, E1*ResPt);
+    //Double_t Pt2 = rand.Gaus(E2, E2*ResPt);
+
+    
+    // pt dependent resolution calculated from reso func 
+    //Double_t FindJetPtResolution(Double_t JetPt, Int_t IsPbPb)
+    Int_t l_isPbPb = 1;
+    if(isPP ==1){l_isPbPb=0;}
+    Double_t l_res_pt1 = FindJetPtResolution(E1, l_isPbPb);
+    Double_t l_res_pt2 = FindJetPtResolution(E2, l_isPbPb);
+
+    
+    Double_t Pt1 = E1*l_res_pt1;
+    Double_t Pt2 = E2*l_res_pt2;
 
     //Exp cut on Pt
     
@@ -533,88 +608,6 @@ Double_t Gaussian_Function(Double_t* x, Double_t* par)
   return gauss;
    
 }
-
-
-Double_t FindJetPtResolution(Double_t JetPt, Int_t IsPbPb)
-{
-
-
-
-
-
-  Double_t Mean = 1.0;
-
-  Double_t CC = 0.061;
-  Double_t SS = 0.0;
-  Double_t NN = 0.0;
-
-  if(IsPbPb ==1){SS=1.24;NN=8.08;}
-  else{SS=0.95;NN=0.001;}
-
-  Double_t SigmaSquare = (CC*CC) + ((SS*SS)/JetPt) + ((NN*NN)/(JetPt*JetPt));
-  Double_t Sigma = TMath::Sqrt(SigmaSquare);
-
-  cout<<" Sigma "<<Sigma<<endl;
-
-  //TF1 *gs1 = new TF1("gs1", "gaus", 0.0, 1.0);
-  //gs1->SetParameters(1.0, 0.5, 0.1);
-  //gs1->Draw();
-
-  //TF1 *Func_CMS_JetPtResolution = new TF1("Func_CMS_JetPtResolution", Gaussian_Function, -100.0, 100.0, 2);
-
-  TF1 *Func_CMS_JetPtResolution = new TF1("Func_CMS_JetPtResolution", "gaus",0.0,2.0);
-
-  Func_CMS_JetPtResolution->SetParNames("Mean", "Sigma");
-
-  Func_CMS_JetPtResolution->SetParameter(0,1.0);
-  Func_CMS_JetPtResolution->SetParameter(1,Mean);
-  Func_CMS_JetPtResolution->SetParameter(2,Sigma);
-
-  new TCanvas;
-  Func_CMS_JetPtResolution->Draw();
-
-  
-  Double_t Reso = Func_CMS_JetPtResolution->GetRandom();
-
-  return Reso;
-
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
