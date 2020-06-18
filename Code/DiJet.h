@@ -80,7 +80,6 @@ Double_t FindJetPtResolution(Double_t JetPt, Int_t IsPbPb)
   Double_t Sigma = TMath::Sqrt(SigmaSquare);
 
   //cout<<" Sigma "<<Sigma<<endl;
-
   //TF1 *Func_CMS_JetPtResolution = new TF1("Func_CMS_JetPtResolution", "gaus",0.0,2.0);
   //Func_CMS_JetPtResolution->SetParNames("Mean", "Sigma");
   //Func_CMS_JetPtResolution->SetParameter(0,1.0);
@@ -114,29 +113,32 @@ Double_t calDelta(Double_t pT, Double_t alpha, Double_t MM)
 
 TH1D *XJ_Z0Jet_Centrality(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, Double_t Alpha, Double_t MM, Double_t NPart, Int_t CentBin, Int_t isPP)
 {
-
-
   if(isPP ==2) {ResPhi = 0.0;ResPt=0.0;}
-
   //initialize the random number generator
   TRandom3 rand(0);
   
   //Histogram Name should come from the Centrality Loop
   TH1D *hAsymmetryOut = new TH1D(Form("hXJZ0OutCent_%d ",CentBin),Form("hXJZ0OutCent_%d ",CentBin), 10, 0.0, 2.0);
-
+  hAsymmetryOut->Sumw2();
   Double_t RR = RA*sqrt(NPart/(2*Am));
-  const Int_t NEvents = 5000000;
+
+  const Int_t NEvents = 50000;
+
+  const Int_t PrintOutTher = NEvents/10;
+
   
   for(int i=0; i< NEvents; i++) {
 
     // Generate Pt 
     Double_t Pt = JetPtFuncPP->GetRandom();
-    
+
     // Generate position 
     Double_t rr = rand.Uniform(0.0,1.0)*RR;
     Double_t Phi = rand.Uniform(0.0,1.0)*2.0*pi;
     
 
+    if(i%PrintOutTher==0) cout<<" Random generated pT : "<< Pt<< " phi "<<Phi<<endl;
+    
     // Smear Phi
     Double_t Phi1 = rand.Gaus(Phi, Phi*ResPhi);
     Double_t Phi2 = rand.Gaus(Phi+pi, (Phi+pi)*ResPhi);
@@ -154,9 +156,11 @@ TH1D *XJ_Z0Jet_Centrality(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, Do
     //Put the energy Loss
     Double_t E1 = Pt; // this is assumed as Z0
     Double_t E2 = Pt-dEdx*d2; // this is assumed as Jet
-    if(isPP ==1 || isPP ==2)E2 = Pt; // no energy loss for PP
 
-    
+    if(isPP ==1 || isPP ==2) E2 = Pt; // no energy loss for PP
+
+    if(i%PrintOutTher==0) cout<<" After energy loss pT1 : "<< E1 << " pT2 "<< E2 <<endl;
+	
     // Smear Pt
     //pt resolution fixed
     //Double_t Pt1 = rand.Gaus(E1, E1*ResPt);
@@ -179,21 +183,23 @@ TH1D *XJ_Z0Jet_Centrality(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, Do
     Double_t Reso1 = rand.Gaus(Mean, Sigma1);
 
     Double_t SigmaSquare2 = (CC*CC) + ((SS*SS)/E2) + ((NN*NN)/(E2*E2));
-    Double_t Sigma2 = TMath::Sqrt(SigmaSquare1);
-    Double_t Reso2 = rand.Gaus(Mean, Sigma1);
+    Double_t Sigma2 = TMath::Sqrt(SigmaSquare2);
+    Double_t Reso2 = rand.Gaus(Mean, Sigma2);
   
     Double_t Pt1 = E1*Reso1;
     Double_t Pt2 = E2*Reso2;
 
-
+    if(i%PrintOutTher==0) cout<<" resolution relative "<< Sigma1 <<"   "<< Sigma2 <<endl;
+    if(i%PrintOutTher==0) cout<<" After energy loss + reso pT1 : "<< Pt1 << " pT2 "<< Pt2 <<endl<<endl;
+    
 
     //Exp cut on Pt
     const Double_t MinZ0Pt = 60.0;
     const Double_t MinJetPt = 30.0;
     
-    //if(Pt1 < MinZ0Pt || Pt2 < MinJetPt || DeltaPhi < (7.0*pi)/8.0) continue;
+    if(Pt1 < MinZ0Pt || Pt2 < MinJetPt || DeltaPhi < (7.0*pi)/8.0) continue;
 
-    if(Pt1 < MinZ0Pt || Pt2 < MinJetPt) continue; 
+    //if(Pt1 < MinZ0Pt || Pt2 < MinJetPt) continue; 
 
     Double_t PtXJ = Pt2/Pt1; 
     //cout << Pt1 << "  " << Pt2<<"   "<<PtDiff << endl;
@@ -202,9 +208,12 @@ TH1D *XJ_Z0Jet_Centrality(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, Do
   } 
 
 
-  
+  const Double_t NumberZ0 = 536.0;
+
   hAsymmetryOut->Scale(1.0/hAsymmetryOut->Integral());
   hAsymmetryOut->Scale(1.0/hAsymmetryOut->GetBinWidth(0));
+  //hAsymmetryOut->Scale(1.0/NumberZ0);
+
   hAsymmetryOut->GetXaxis()->SetTitle("X_{J#gamma}=p_{T}^{Jet}/p_{T}^{#gamma}");
   hAsymmetryOut->GetYaxis()->SetTitle("#frac{1}{N_{J#gamma}}#frac{dN_{J#gamma}}{dx_{J#gamma}}");
   hAsymmetryOut->GetXaxis()->CenterTitle();
@@ -227,7 +236,7 @@ TH1D *XJ_GammaJet_Centrality(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi,
   
   //Histogram Name should come from the Centrality Loop
   TH1D *hAsymmetryOut = new TH1D(Form("hXJOutCent_%d ",CentBin),Form("hXJOutCent_%d ",CentBin), 20, 0.0, 2.0);
-
+  hAsymmetryOut->Sumw2();
   Double_t RR = RA*sqrt(NPart/(2*Am));
   const Int_t NEvents = 5000000;
   
@@ -265,20 +274,31 @@ TH1D *XJ_GammaJet_Centrality(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi,
     //Double_t Pt1 = rand.Gaus(E1, E1*ResPt);
     //Double_t Pt2 = rand.Gaus(E2, E2*ResPt);
 
-    
-    // pt dependent resolution calculated from reso func 
-    //Double_t FindJetPtResolution(Double_t JetPt, Int_t IsPbPb)
-    Int_t l_isPbPb = 1;
-    if(isPP ==1){l_isPbPb=0;}
-    Double_t l_res_pt1 = FindJetPtResolution(E1, l_isPbPb);
-    Double_t l_res_pt2 = FindJetPtResolution(E2, l_isPbPb);
 
+
+    //pt resolution : pT dependent
+    Double_t Mean = 1.0;
+    Double_t CC = 0.061;
+    Double_t SS = 0.0;
+    Double_t NN = 0.0;
+
+
+    if(isPP==0){SS=1.24;NN=8.08;}
+    if(isPP==1){SS=0.95;NN=0.001;}
     
-    Double_t Pt1 = E1*l_res_pt1;
-    Double_t Pt2 = E2*l_res_pt2;
+    Double_t SigmaSquare1 = (CC*CC) + ((SS*SS)/E1) + ((NN*NN)/(E1*E1));
+    Double_t Sigma1 = TMath::Sqrt(SigmaSquare1);
+    Double_t Reso1 = rand.Gaus(Mean, Sigma1);
+
+    Double_t SigmaSquare2 = (CC*CC) + ((SS*SS)/E2) + ((NN*NN)/(E2*E2));
+    Double_t Sigma2 = TMath::Sqrt(SigmaSquare2);
+    Double_t Reso2 = rand.Gaus(Mean, Sigma2);
+  
+    Double_t Pt1 = E1*Reso1;
+    Double_t Pt2 = E2*Reso2;
+
 
     //Exp cut on Pt
-    
     const Double_t MinGammaPt = 60.0;
     const Double_t MinJetPt = 30.0;
     
@@ -314,7 +334,7 @@ TH1D *Asym_DiJet_Centrality(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, 
 
 
   TH1D *hAsymmetryOut = new TH1D(Form("hAsymmetryOutCent_%d ",CentBin),Form("hAsymmetryOutCent_%d ",CentBin), 17, 0.0, 1.0);
-
+  hAsymmetryOut->Sumw2();
   Double_t RR = RA*sqrt(NPart/(2*Am));
   const Int_t NEvents = 5000000;
   

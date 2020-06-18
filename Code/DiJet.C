@@ -53,15 +53,6 @@ void DiJet()
   tb->SetTextColor(1);
   tb->SetTextSize(0.04);
 
-
-
-
-  //cout<<" Test the Jet resolution Function "<<endl;
-  //cout<<FindJetPtResolution(500.0,1)<<"  "<<FindJetPtResolution(500.0,0)<<endl;
-
-  //return;
-  
-
   //Test Data Graph
   TGraphErrors *grf_Data_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV = Data_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV();
   new TCanvas;
@@ -83,22 +74,6 @@ void DiJet()
   cout<<" Fitting ATLAS Jet Yield 2.76 TeV "<<endl;
   FitParaTsallisPP276TeV();
 
-
-
-
-  
-  //return;
-
-
-
-
-  //return;
-
-
-  
-
-
-  
 
   // CMS Data Graphs AJ
   TGraphErrors *grf_Data_CMS_Aj_Cent_00_10_276TeV = Data_CMS_Aj_Cent_00_10_276TeV();
@@ -485,6 +460,117 @@ void DiJet()
 
 
 
+
+  //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
+  //++++++++++++++++++++++++++++++++++++++++++++++++ Z0 + Jet Calculations ++++++++++++++++++++++++++++++++++++++++++++++++//
+  //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
+
+  // CMS Data Graphs XJ (Jet +Z0)
+  TGraphAsymmErrors *grf_Data_CMS_XJ_Z0Jet_Cent_00_30_502TeV = Data_CMS_XJ_Z0Jet_Cent_00_30_502TeV();
+  TGraphAsymmErrors *grf_Data_Syst_CMS_XJ_Z0Jet_Cent_00_30_502TeV = Data_Syst_CMS_XJ_Z0Jet_Cent_00_30_502TeV();
+  
+  TGraphAsymmErrors *grf_Data_CMS_XJ_Z0Jet_PP_502TeV = Data_CMS_XJ_Z0Jet_PP_502TeV();
+  TGraphAsymmErrors *grf_Data_Syst_CMS_XJ_Z0Jet_PP_502TeV = Data_Syst_CMS_XJ_Z0Jet_PP_502TeV();
+  
+  TGraphAsymmErrors *grf_Data_CMS_XJ_Z0Jet_PP_UnSmeared_502TeV = Data_CMS_XJ_Z0Jet_PP_UnSmeared_502TeV();
+  TGraphAsymmErrors *grf_Data_Syst_CMS_XJ_Z0Jet_PP_UnSmeared_502TeV = Data_Syst_CMS_XJ_Z0Jet_PP_UnSmeared_502TeV();
+
+  /*
+  TCanvas *Canv_Data_CMS_XJ_Z0Jet_502TeV = new TCanvas("Canv_Data_CMS_XJ_Z0Jet_502TeV","Canv_Data_CMS_XJ_Z0Jet_502TeV",1200,400);//coulamXRows
+  Canv_Data_CMS_XJ_Z0Jet_502TeV->Divide(3,1);
+  Canv_Data_CMS_XJ_Z0Jet_502TeV->cd(1);
+  gPad->SetLeftMargin(0.2);
+  grf_Data_CMS_XJ_Z0Jet_Cent_00_30_502TeV->Draw("AP");
+  grf_Data_Syst_CMS_XJ_Z0Jet_Cent_00_30_502TeV->Draw("2");
+  tb->DrawLatex(0.75, 0.70, "0-30%") ;
+
+  
+  Canv_Data_CMS_XJ_Z0Jet_502TeV->cd(2);
+  gPad->SetLeftMargin(0.2);
+  grf_Data_CMS_XJ_Z0Jet_PP_502TeV->Draw("AP");
+  grf_Data_Syst_CMS_XJ_Z0Jet_PP_502TeV->Draw("2");
+  tb->DrawLatex(0.75, 0.70, "pp") ;
+
+  Canv_Data_CMS_XJ_Z0Jet_502TeV->cd(3);
+  gPad->SetLeftMargin(0.2);
+  grf_Data_CMS_XJ_Z0Jet_PP_UnSmeared_502TeV->Draw("AP");
+  grf_Data_Syst_CMS_XJ_Z0Jet_PP_UnSmeared_502TeV->Draw("2");
+  tb->DrawLatex(0.75, 0.70, "pp (uns.)") ;
+  */
+
+  
+  TCanvas *Canv_CMS_XJ_Z0Jet_502TeV = new TCanvas("Canv_CMS_XJ_Z0Jet_502TeV","Canv_CMS_XJ_Z0Jet_502TeV",1200,400);//coulamXRows
+  Canv_CMS_XJ_Z0Jet_502TeV->Divide(3,1);
+  char LatexChar_XJ_Z0Jet[400];
+
+  //function for random generation of Jet pT : Z0 + Jet
+  //cout<<endl<<endl;
+  //cout<<" Fitting CMS Z0 + Jet Yield 7 TeV "<<endl;
+  //Fit_Data_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV();
+
+  TF1 *Func_Z0Jet_JetPt_7TeV = new TF1("Func_Z0Jet_JetPt_7TeV", tsallis_fitting_function, 50.0, 450.0, 3);
+  Func_Z0Jet_JetPt_7TeV->SetParNames("dN/dy", "nn", "pzero");
+  Func_Z0Jet_JetPt_7TeV->SetParameter(0, 0.181431);
+  Func_Z0Jet_JetPt_7TeV->SetParameter(1, 6.91081);
+  Func_Z0Jet_JetPt_7TeV->SetParameter(2, 63.6729);
+
+  
+  // Calculating XJ as a function of Centrality for Z0+Jet events
+  TH1D *HistOutJetZ0_XJ_Cent_00_30 = XJ_Z0Jet_Centrality(Func_Z0Jet_JetPt_7TeV,  RespT, ResPhi, alpha, MM, NPart_FiveTeV(0,30), 0, 0) ;
+
+  Canv_CMS_XJ_Z0Jet_502TeV->cd(1);
+  gPad->SetTopMargin(0.1);
+  gPad->SetBottomMargin(0.2);
+  gPad->SetLeftMargin(0.2);
+  grf_Data_CMS_XJ_Z0Jet_Cent_00_30_502TeV->GetYaxis()->SetRangeUser(0.0,2.5);
+  grf_Data_CMS_XJ_Z0Jet_Cent_00_30_502TeV->Draw("AP");
+  grf_Data_Syst_CMS_XJ_Z0Jet_Cent_00_30_502TeV->Draw("2");
+  HistOutJetZ0_XJ_Cent_00_30->Draw("Psame");
+  leg->Draw("same");
+  tb->DrawLatex(0.75, 0.70, "0-30%") ;
+
+  // Calculating XJ for pp
+  TH1D *HistOutJetZ0_XJ_PP = XJ_Z0Jet_Centrality(Func_Z0Jet_JetPt_7TeV,  RespT, ResPhi, alpha, MM, NPart_FiveTeV(0,30), 1, 1) ;
+
+  Canv_CMS_XJ_Z0Jet_502TeV->cd(2);
+  gPad->SetTopMargin(0.1);
+  gPad->SetBottomMargin(0.2);
+  gPad->SetLeftMargin(0.2);
+  grf_Data_CMS_XJ_Z0Jet_PP_502TeV->GetYaxis()->SetRangeUser(0.0,2.5);
+  grf_Data_CMS_XJ_Z0Jet_PP_502TeV->Draw("AP");
+  grf_Data_Syst_CMS_XJ_Z0Jet_PP_502TeV->Draw("2");
+  HistOutJetZ0_XJ_PP->Draw("Psame");
+  leg->Draw("same");
+  tb->DrawLatex(0.75, 0.70, "pp") ;
+
+  // Calculating XJ for pp wihout any 
+  TH1D *HistOutJetZ0_XJ_PP_UnS = XJ_Z0Jet_Centrality(Func_Z0Jet_JetPt_7TeV,  RespT, ResPhi, alpha, MM, NPart_FiveTeV(0,30), 2, 2) ;
+
+  Canv_CMS_XJ_Z0Jet_502TeV->cd(3);
+  gPad->SetTopMargin(0.1);
+  gPad->SetBottomMargin(0.2);
+  gPad->SetLeftMargin(0.2);
+  grf_Data_CMS_XJ_Z0Jet_PP_UnSmeared_502TeV->GetYaxis()->SetRangeUser(0.0,2.5);
+  grf_Data_CMS_XJ_Z0Jet_PP_UnSmeared_502TeV->Draw("AP");
+  grf_Data_Syst_CMS_XJ_Z0Jet_PP_UnSmeared_502TeV->Draw("2");
+  HistOutJetZ0_XJ_PP_UnS->Draw("Psame");
+  leg->Draw("same");
+  tb->DrawLatex(0.75, 0.70, "pp (uns)") ;
+
+  Canv_CMS_XJ_Z0Jet_502TeV->SaveAs("Figure/OutFigures/Fig_XJ_Z0Jet_Centrality.pdf");
+  Canv_CMS_XJ_Z0Jet_502TeV->SaveAs("Figure/OutFigures/Fig_XJ_Z0Jet_Centrality.png");
+
+
+  return;
+
+
+  
+
+
+  
+
+
+
   //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
   //++++++++++++++++++++++++++++++++++++++++++++++++ DiJet Calculations ++++++++++++++++++++++++++++++++++++++++++++++++++++++//
   //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
@@ -586,110 +672,7 @@ void DiJet()
 
  
   
-  return;
 
-
-  //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
-  //++++++++++++++++++++++++++++++++++++++++++++++++ Z0 + Jet Calculations ++++++++++++++++++++++++++++++++++++++++++++++++//
-  //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
-
-
-
-  // CMS Data Graphs XJ (Jet +Z0)
-  TGraphAsymmErrors *grf_Data_CMS_XJ_Z0Jet_Cent_00_30_502TeV = Data_CMS_XJ_Z0Jet_Cent_00_30_502TeV();
-  TGraphAsymmErrors *grf_Data_Syst_CMS_XJ_Z0Jet_Cent_00_30_502TeV = Data_Syst_CMS_XJ_Z0Jet_Cent_00_30_502TeV();
-  
-  TGraphAsymmErrors *grf_Data_CMS_XJ_Z0Jet_PP_502TeV = Data_CMS_XJ_Z0Jet_PP_502TeV();
-  TGraphAsymmErrors *grf_Data_Syst_CMS_XJ_Z0Jet_PP_502TeV = Data_Syst_CMS_XJ_Z0Jet_PP_502TeV();
-  
-  TGraphAsymmErrors *grf_Data_CMS_XJ_Z0Jet_PP_UnSmeared_502TeV = Data_CMS_XJ_Z0Jet_PP_UnSmeared_502TeV();
-  TGraphAsymmErrors *grf_Data_Syst_CMS_XJ_Z0Jet_PP_UnSmeared_502TeV = Data_Syst_CMS_XJ_Z0Jet_PP_UnSmeared_502TeV();
-  /*
-  TCanvas *Canv_Data_CMS_XJ_Z0Jet_502TeV = new TCanvas("Canv_Data_CMS_XJ_Z0Jet_502TeV","Canv_Data_CMS_XJ_Z0Jet_502TeV",1200,400);//coulamXRows
-  Canv_Data_CMS_XJ_Z0Jet_502TeV->Divide(3,1);
-  Canv_Data_CMS_XJ_Z0Jet_502TeV->cd(1);
-  gPad->SetLeftMargin(0.2);
-  grf_Data_CMS_XJ_Z0Jet_Cent_00_30_502TeV->Draw("AP");
-  grf_Data_Syst_CMS_XJ_Z0Jet_Cent_00_30_502TeV->Draw("2");
-  tb->DrawLatex(0.75, 0.70, "0-30%") ;
-
-  
-  Canv_Data_CMS_XJ_Z0Jet_502TeV->cd(2);
-  gPad->SetLeftMargin(0.2);
-  grf_Data_CMS_XJ_Z0Jet_PP_502TeV->Draw("AP");
-  grf_Data_Syst_CMS_XJ_Z0Jet_PP_502TeV->Draw("2");
-  tb->DrawLatex(0.75, 0.70, "pp") ;
-
-  Canv_Data_CMS_XJ_Z0Jet_502TeV->cd(3);
-  gPad->SetLeftMargin(0.2);
-  grf_Data_CMS_XJ_Z0Jet_PP_UnSmeared_502TeV->Draw("AP");
-  grf_Data_Syst_CMS_XJ_Z0Jet_PP_UnSmeared_502TeV->Draw("2");
-  tb->DrawLatex(0.75, 0.70, "pp (uns.)") ;
-  */
-
-  
-  TCanvas *Canv_CMS_XJ_Z0Jet_502TeV = new TCanvas("Canv_CMS_XJ_Z0Jet_502TeV","Canv_CMS_XJ_Z0Jet_502TeV",1200,400);//coulamXRows
-  Canv_CMS_XJ_Z0Jet_502TeV->Divide(3,1);
-  char LatexChar_XJ_Z0Jet[400];
-
-  //function for random generation of Jet pT : Z0 + Jet
-  
-  cout<<endl<<endl;
-  cout<<" Fitting CMS Z0 + Jet Yield 7 TeV "<<endl;
-  Fit_Data_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV();
-
-  TF1 *Func_Z0Jet_JetPt_7TeV = new TF1("Func_Z0Jet_JetPt_7TeV", tsallis_fitting_function, 50.0, 450.0, 3);
-  Func_Z0Jet_JetPt_7TeV->SetParNames("dN/dy", "nn", "pzero");
-
-  Func_Z0Jet_JetPt_7TeV->SetParameter(0, 0.181431);
-  Func_Z0Jet_JetPt_7TeV->SetParameter(1, 6.91081);
-  Func_Z0Jet_JetPt_7TeV->SetParameter(2, 63.6729);
-
-  
-  // Calculating XJ as a function of Centrality for Z0+Jet events
-  TH1D *HistOutJetZ0_XJ_Cent_00_30 = XJ_Z0Jet_Centrality(Func_Z0Jet_JetPt_7TeV,  RespT, ResPhi, alpha, MM, NPart_FiveTeV(0,30), 0, 0) ;
-
-  Canv_CMS_XJ_Z0Jet_502TeV->cd(1);
-  gPad->SetTopMargin(0.1);
-  gPad->SetBottomMargin(0.2);
-  gPad->SetLeftMargin(0.2);
-  grf_Data_CMS_XJ_Z0Jet_Cent_00_30_502TeV->GetYaxis()->SetRangeUser(0.0,2.5);
-  grf_Data_CMS_XJ_Z0Jet_Cent_00_30_502TeV->Draw("AP");
-  grf_Data_Syst_CMS_XJ_Z0Jet_Cent_00_30_502TeV->Draw("2");
-  HistOutJetZ0_XJ_Cent_00_30->Draw("Psame");
-  leg->Draw("same");
-  tb->DrawLatex(0.75, 0.70, "0-30%") ;
-
-  // Calculating XJ for pp
-  TH1D *HistOutJetZ0_XJ_PP = XJ_Z0Jet_Centrality(Func_Z0Jet_JetPt_7TeV,  RespT, ResPhi, alpha, MM, NPart_FiveTeV(0,30), 1, 1) ;
-
-  Canv_CMS_XJ_Z0Jet_502TeV->cd(2);
-  gPad->SetTopMargin(0.1);
-  gPad->SetBottomMargin(0.2);
-  gPad->SetLeftMargin(0.2);
-  grf_Data_CMS_XJ_Z0Jet_PP_502TeV->GetYaxis()->SetRangeUser(0.0,2.5);
-  grf_Data_CMS_XJ_Z0Jet_PP_502TeV->Draw("AP");
-  grf_Data_Syst_CMS_XJ_Z0Jet_PP_502TeV->Draw("2");
-  HistOutJetZ0_XJ_PP->Draw("Psame");
-  leg->Draw("same");
-  tb->DrawLatex(0.75, 0.70, "pp") ;
-
-  // Calculating XJ for pp wihout any 
-  TH1D *HistOutJetZ0_XJ_PP_UnS = XJ_Z0Jet_Centrality(Func_Z0Jet_JetPt_7TeV,  RespT, ResPhi, alpha, MM, NPart_FiveTeV(0,30), 2, 2) ;
-
-  Canv_CMS_XJ_Z0Jet_502TeV->cd(3);
-  gPad->SetTopMargin(0.1);
-  gPad->SetBottomMargin(0.2);
-  gPad->SetLeftMargin(0.2);
-  grf_Data_CMS_XJ_Z0Jet_PP_UnSmeared_502TeV->GetYaxis()->SetRangeUser(0.0,2.5);
-  grf_Data_CMS_XJ_Z0Jet_PP_UnSmeared_502TeV->Draw("AP");
-  grf_Data_Syst_CMS_XJ_Z0Jet_PP_UnSmeared_502TeV->Draw("2");
-  HistOutJetZ0_XJ_PP_UnS->Draw("Psame");
-  leg->Draw("same");
-  tb->DrawLatex(0.75, 0.70, "pp (uns)") ;
-
-  Canv_CMS_XJ_Z0Jet_502TeV->SaveAs("Figure/OutFigures/Fig_XJ_Z0Jet_Centrality.pdf");
-  Canv_CMS_XJ_Z0Jet_502TeV->SaveAs("Figure/OutFigures/Fig_XJ_Z0Jet_Centrality.png");
 
 
 
@@ -698,8 +681,6 @@ void DiJet()
   //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
   //++++++++++++++++++++++++++++++++++++++++++++++++ Gamma + Jet Calculations ++++++++++++++++++++++++++++++++++++++++++++++++//
   //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
-
-  
   // CMS Data Graphs XJ (Jet+Gamma)
   TGraphAsymmErrors *grf_Data_CMS_XJ_GammaJet_Cent_00_10_276TeV = Data_CMS_XJ_GammaJet_Cent_00_10_276TeV();
   TGraphAsymmErrors *grf_Data_Syst_CMS_XJ_GammaJet_Cent_00_10_276TeV = Data_Syst_CMS_XJ_GammaJet_Cent_00_10_276TeV();
@@ -767,9 +748,9 @@ void DiJet()
   char LatexChar_XJ[400];
 
   //=============== Define a fitting function to be used for pT generation =======================================//
-  cout<<endl<<endl;
-  cout<<" Fitting CMS Gamma + Jet Yield 8 TeV "<<endl;
-  Fit_Data_CMS_JetYield_GammaPlusJet_GammaPt_PP8TeV();
+  //cout<<endl<<endl;
+  //cout<<" Fitting CMS Gamma + Jet Yield 8 TeV "<<endl;
+  //Fit_Data_CMS_JetYield_GammaPlusJet_GammaPt_PP8TeV();
 
 
   //function for random generation of Jet pT : Gamma + Jet  
@@ -781,11 +762,8 @@ void DiJet()
 
   for(int i=0; i< NCentBins_XJ; i++) {
     cout<<" XJ calculation for centrality "<<CentBins_XJ[i]<<"  "<<CentBins_XJ[i+1]<<"% "<<endl;
-
     HistOutJetGamma_XJ[i] = XJ_GammaJet_Centrality(Func_GammaJet_JetPt_8TeV,  RespT, ResPhi, alpha, MM, ANPartCent_XJ[i], i,0);
-    
     Canv_CMS_XJ_Cent_276TeV->cd(i+1);
-    
     gPad->SetTopMargin(0.1);
     gPad->SetBottomMargin(0.2);
     gPad->SetLeftMargin(0.2);
@@ -810,20 +788,8 @@ void DiJet()
   leg->Draw("same");
   tb->DrawLatex(0.6, 0.7, "pp") ;
   
-  
   Canv_CMS_XJ_Cent_276TeV->SaveAs("Figure/OutFigures/Fig_XJ_GammaJet_Centrality.pdf");
   Canv_CMS_XJ_Cent_276TeV->SaveAs("Figure/OutFigures/Fig_XJ_GammaJet_Centrality.png");
-  
-
-  
-
-  // return;
-
-  
-  //OutFile->Write();
-  //OutFile->Close();  
-  //return;
-
   
   
 }//void DiJet
