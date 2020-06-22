@@ -211,6 +211,113 @@ TGraphAsymmErrors *Data_Syst_CMS_XJ_Z0Jet_PP_UnSmeared_502TeV()
 
 
 
+TGraphAsymmErrors *Data_CMS_RJ_Z0Jet_PP_502TeV()
+{
+
+  //The average number of jet partners per Z boson in pp collisions. The resolutions of the measured jet energy
+  //and azimuthal angle are smeared to match those of the PbPb sample.
+
+
+  // Study of Jet Quenching with Z0 + jet Correlations in Pb-Pb and pp Collisions at 5.02 TeV
+  //Published in Phys.Rev.Lett. 119 (2017) no.8, 082301
+  //CMS-HIN-15-013, CERN-EP-2017-002
+  //DOI: 10.1103/PhysRevLett.119.082301
+  //e-Print: arXiv:1702.01060 [nucl-ex] | PDF
+  
+  const Int_t NN = 4;
+  Double_t PtZ0[NN] = {45.0,55.0,70.0,100.0};
+  Double_t Error_PtZ0_Low[NN] = {5.0,5.0,10.0,20.0};
+  Double_t Error_PtZ0_High[NN] = {5.0,5.0,10.0,20.0};
+
+ 
+  Double_t RJ[NN] = {0.32,0.46,0.51,0.76};
+  Double_t Error_RJ_High[NN] = {0.03,0.04,0.04,0.05};
+  Double_t Error_RJ_Low[NN] = {0.03,0.04,0.04,0.05}; 
+  //Syst Errors
+  //Double_t Error_RJ_Low[NN] = {0.01,0.01,0.01,0.02};
+  
+
+
+
+  TGraphAsymmErrors *grf_local = new TGraphAsymmErrors(NN, PtZ0, RJ, Error_PtZ0_Low, Error_PtZ0_High, Error_RJ_Low,Error_RJ_High);
+  grf_local->SetMarkerColor(1);
+  grf_local->SetMarkerStyle(20);
+  grf_local->SetMarkerSize(1.5);
+  grf_local->GetXaxis()->SetTitle("p_{T}^{Z^{0}}(GeV/c)");
+  grf_local->GetYaxis()->SetTitle("R_{jZ}");
+  grf_local->GetYaxis()->SetTitleOffset(1.45);
+  grf_local->GetXaxis()->CenterTitle();
+  grf_local->GetYaxis()->CenterTitle();
+  grf_local->GetYaxis()->SetRangeUser(0.0,1.0);
+  grf_local->GetXaxis()->SetLimits(40.0,120.0);
+  
+  return grf_local;
+			  
+}
+
+
+TGraphAsymmErrors *Data_CMS_RJ_Z0Jet_PbPb_502TeV()
+{
+
+  //The average number of jet partners per Z boson in pp collisions. The resolutions of the measured jet energy
+  //and azimuthal angle are smeared to match those of the PbPb sample.
+
+
+  // Study of Jet Quenching with Z0 + jet Correlations in Pb-Pb and pp Collisions at 5.02 TeV
+  //Published in Phys.Rev.Lett. 119 (2017) no.8, 082301
+  //CMS-HIN-15-013, CERN-EP-2017-002
+  //DOI: 10.1103/PhysRevLett.119.082301
+  //e-Print: arXiv:1702.01060 [nucl-ex] | PDF
+  
+  const Int_t NN = 4;
+  Double_t PtZ0[NN] = {45.0,55.0,70.0,100.0};
+  Double_t Error_PtZ0_Low[NN] = {5.0,5.0,10.0,20.0};
+  Double_t Error_PtZ0_High[NN] = {5.0,5.0,10.0,20.0};
+
+ 
+  Double_t RJ[NN] = {0.18,0.37,0.40,0.63};
+  Double_t Error_RJ_High[NN] = {0.04,0.07,0.07,0.08};
+  Double_t Error_RJ_Low[NN] = {0.04,0.07,0.07,0.08}; 
+  //Syst Errors
+  //Double_t Error_RJ_Low[NN] = {0.03,0.06,0.04,0.05};
+  
+
+
+
+  TGraphAsymmErrors *grf_local = new TGraphAsymmErrors(NN, PtZ0, RJ, Error_PtZ0_Low, Error_PtZ0_High, Error_RJ_Low,Error_RJ_High);
+  grf_local->SetMarkerColor(1);
+  grf_local->SetMarkerStyle(20);
+  grf_local->SetMarkerSize(1.5);
+  grf_local->GetXaxis()->SetTitle("p_{T}^{Z^{0}}(GeV/c)");
+  grf_local->GetYaxis()->SetTitle("R_{jZ}");
+  grf_local->GetYaxis()->SetTitleOffset(1.45);
+  grf_local->GetXaxis()->CenterTitle();
+  grf_local->GetYaxis()->CenterTitle();
+  grf_local->GetYaxis()->SetRangeUser(0.0,1.0);
+  grf_local->GetXaxis()->SetLimits(40.0,120.0);
+  
+  return grf_local;
+			  
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
 //+++++++++++++++++++++++++   CMS Data Functions for XJ (Gamma+Jet) +++++++++++++++++++++++++++++++++++++++++++//
@@ -948,6 +1055,51 @@ TGraphErrors *Data_CMS_Aj_Pt_300_500_276TeV()
   return grf_local;
 			  
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//

@@ -113,7 +113,7 @@ Double_t calDelta(Double_t pT, Double_t alpha, Double_t MM)
 
 TH1D *XJ_Z0Jet_Centrality(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, Double_t Alpha, Double_t MM, Double_t NPart, Int_t CentBin, Int_t isPP)
 {
-  if(isPP ==2) {ResPhi = 0.0;ResPt=0.0;}
+  //if(isPP ==2) {ResPhi = 0.0;ResPt=0.0;}
   //initialize the random number generator
   TRandom3 rand(0);
   
@@ -175,7 +175,7 @@ TH1D *XJ_Z0Jet_Centrality(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, Do
 
 
     if(isPP==0){SS=1.24;NN=8.08;}
-    if(isPP==1){SS=0.95;NN=0.001;}
+    if(isPP==1){SS=1.24;NN=8.08;}
     if(isPP==2){SS=0.95;NN=0.001;}
 
     Double_t SigmaSquare1 = (CC*CC) + ((SS*SS)/E1) + ((NN*NN)/(E1*E1));
@@ -210,9 +210,9 @@ TH1D *XJ_Z0Jet_Centrality(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, Do
 
   const Double_t NumberZ0 = 536.0;
 
-  hAsymmetryOut->Scale(1.0/hAsymmetryOut->Integral());
+  //hAsymmetryOut->Scale(1.0/hAsymmetryOut->Integral());
   hAsymmetryOut->Scale(1.0/hAsymmetryOut->GetBinWidth(0));
-  //hAsymmetryOut->Scale(1.0/NumberZ0);
+  hAsymmetryOut->Scale(1.0/NumberZ0);
 
   hAsymmetryOut->GetXaxis()->SetTitle("X_{J#gamma}=p_{T}^{Jet}/p_{T}^{#gamma}");
   hAsymmetryOut->GetYaxis()->SetTitle("#frac{1}{N_{J#gamma}}#frac{dN_{J#gamma}}{dx_{J#gamma}}");

@@ -381,9 +381,6 @@ void DiJet()
 
         
     if(L_Pt< 120.0 || SubL_Pt < 30.0 || DeltaPhi < (2.0*pi)/3.0) continue; 
-
-
-
     
     //Double_t pTDiff = abs((pT1-pT2)/(pT1+pT2));
 
@@ -458,9 +455,6 @@ void DiJet()
   //return;
 
 
-
-
-
   //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
   //++++++++++++++++++++++++++++++++++++++++++++++++ Z0 + Jet Calculations ++++++++++++++++++++++++++++++++++++++++++++++++//
   //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
@@ -474,29 +468,6 @@ void DiJet()
   
   TGraphAsymmErrors *grf_Data_CMS_XJ_Z0Jet_PP_UnSmeared_502TeV = Data_CMS_XJ_Z0Jet_PP_UnSmeared_502TeV();
   TGraphAsymmErrors *grf_Data_Syst_CMS_XJ_Z0Jet_PP_UnSmeared_502TeV = Data_Syst_CMS_XJ_Z0Jet_PP_UnSmeared_502TeV();
-
-  /*
-  TCanvas *Canv_Data_CMS_XJ_Z0Jet_502TeV = new TCanvas("Canv_Data_CMS_XJ_Z0Jet_502TeV","Canv_Data_CMS_XJ_Z0Jet_502TeV",1200,400);//coulamXRows
-  Canv_Data_CMS_XJ_Z0Jet_502TeV->Divide(3,1);
-  Canv_Data_CMS_XJ_Z0Jet_502TeV->cd(1);
-  gPad->SetLeftMargin(0.2);
-  grf_Data_CMS_XJ_Z0Jet_Cent_00_30_502TeV->Draw("AP");
-  grf_Data_Syst_CMS_XJ_Z0Jet_Cent_00_30_502TeV->Draw("2");
-  tb->DrawLatex(0.75, 0.70, "0-30%") ;
-
-  
-  Canv_Data_CMS_XJ_Z0Jet_502TeV->cd(2);
-  gPad->SetLeftMargin(0.2);
-  grf_Data_CMS_XJ_Z0Jet_PP_502TeV->Draw("AP");
-  grf_Data_Syst_CMS_XJ_Z0Jet_PP_502TeV->Draw("2");
-  tb->DrawLatex(0.75, 0.70, "pp") ;
-
-  Canv_Data_CMS_XJ_Z0Jet_502TeV->cd(3);
-  gPad->SetLeftMargin(0.2);
-  grf_Data_CMS_XJ_Z0Jet_PP_UnSmeared_502TeV->Draw("AP");
-  grf_Data_Syst_CMS_XJ_Z0Jet_PP_UnSmeared_502TeV->Draw("2");
-  tb->DrawLatex(0.75, 0.70, "pp (uns.)") ;
-  */
 
   
   TCanvas *Canv_CMS_XJ_Z0Jet_502TeV = new TCanvas("Canv_CMS_XJ_Z0Jet_502TeV","Canv_CMS_XJ_Z0Jet_502TeV",1200,400);//coulamXRows
@@ -529,7 +500,7 @@ void DiJet()
   leg->Draw("same");
   tb->DrawLatex(0.75, 0.70, "0-30%") ;
 
-  // Calculating XJ for pp
+  // Calculating XJ for pp (with pT smearing)
   TH1D *HistOutJetZ0_XJ_PP = XJ_Z0Jet_Centrality(Func_Z0Jet_JetPt_7TeV,  RespT, ResPhi, alpha, MM, NPart_FiveTeV(0,30), 1, 1) ;
 
   Canv_CMS_XJ_Z0Jet_502TeV->cd(2);
@@ -543,7 +514,7 @@ void DiJet()
   leg->Draw("same");
   tb->DrawLatex(0.75, 0.70, "pp") ;
 
-  // Calculating XJ for pp wihout any 
+  // Calculating XJ for pp wihout any pT smearing
   TH1D *HistOutJetZ0_XJ_PP_UnS = XJ_Z0Jet_Centrality(Func_Z0Jet_JetPt_7TeV,  RespT, ResPhi, alpha, MM, NPart_FiveTeV(0,30), 2, 2) ;
 
   Canv_CMS_XJ_Z0Jet_502TeV->cd(3);
@@ -555,7 +526,7 @@ void DiJet()
   grf_Data_Syst_CMS_XJ_Z0Jet_PP_UnSmeared_502TeV->Draw("2");
   HistOutJetZ0_XJ_PP_UnS->Draw("Psame");
   leg->Draw("same");
-  tb->DrawLatex(0.75, 0.70, "pp (uns)") ;
+  tb->DrawLatex(0.50, 0.70, "pp (unsmeared)") ;
 
   Canv_CMS_XJ_Z0Jet_502TeV->SaveAs("Figure/OutFigures/Fig_XJ_Z0Jet_Centrality.pdf");
   Canv_CMS_XJ_Z0Jet_502TeV->SaveAs("Figure/OutFigures/Fig_XJ_Z0Jet_Centrality.png");
