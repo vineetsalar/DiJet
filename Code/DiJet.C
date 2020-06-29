@@ -85,9 +85,8 @@ void DiJet()
 
 
   DiJetCalculations(alpha, MM);
-
-  
- 
+  Z0JetCalculations(alpha, MM);
+  GammaJetCalculations(alpha,MM);
   
 
   
@@ -148,59 +147,6 @@ void DiJetCalculations(Double_t Alpha, Double_t MM)
   gr_atlas_jet_yield_00_rapidity_21->Draw("AP");
   fJetpp276tev->Draw("same");
 
-
-
-
-  //=============================================== AJ as a function of pT =================================================//
-  
-  const Int_t NPtBins = 6;
-  const Int_t APtBins[NPtBins+1]={120,150,180,220,260,300,500};
-  
-  TH1D *HistOutJetAsymPt[NPtBins];
-
-  TGraphErrors *grf_Data_CMS_Aj_Pt_276TeV[NPtBins]={Data_CMS_Aj_Pt_120_150_276TeV(),Data_CMS_Aj_Pt_150_180_276TeV(),
-						    Data_CMS_Aj_Pt_180_220_276TeV(),Data_CMS_Aj_Pt_220_260_276TeV(),
-						    Data_CMS_Aj_Pt_260_300_276TeV(),Data_CMS_Aj_Pt_300_500_276TeV()};
-  
-
-  TCanvas *Canv_Asym_DiJet_Pt = new TCanvas("Canv_Asym_DiJet_Pt","Canv_Asym_DiJet_Pt",1200,800);//coulamXRows
-  Canv_Asym_DiJet_Pt->Divide(3,2);
-  
-  leg->AddEntry(grf_Data_CMS_Aj_Pt_276TeV[0],"CMS Data","P");
-
-  TH1D *hist_Ghost = new TH1D("hist_Ghost_1","hist_Ghost_1",100,0.0,500);
-
-  hist_Ghost->SetMarkerStyle(20);
-  hist_Ghost->SetMarkerColor(2);
-  leg->AddEntry(hist_Ghost,"Calculated","P");
-  
-  for(int i=0; i< NPtBins; i++) {
-    cout<<" calculation for Pt "<<APtBins[i]<<"  "<<APtBins[i+1]<<" GeV/c "<<endl;
-
-
-    //calculating AJ as a function of pT DiJet 
-
-    //Asym_DiJet_Pt(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, Double_t Alpha, Double_t MM, Double_t NPart, Double_t LPtMin, Double_t LPtMax, Int_t PtBin, Int_t IsPP)
-    HistOutJetAsymPt[i] = Asym_DiJet_Pt(fJetpp276tev,  RespT, ResPhi, Alpha, MM, NPartFunc(0,20), APtBins[i], APtBins[i+1], i,0);
-    
-    Canv_Asym_DiJet_Pt->cd(i+1);
-    gPad->SetTopMargin(0.1);
-    gPad->SetBottomMargin(0.2);
-    grf_Data_CMS_Aj_Pt_276TeV[i]->GetYaxis()->SetRangeUser(0.0,0.32);
-    grf_Data_CMS_Aj_Pt_276TeV[i]->Draw("AP");
-    HistOutJetAsymPt[i]->GetYaxis()->SetRangeUser(0.0,0.32);
-    HistOutJetAsymPt[i]->Draw("EPsame");
-    leg->Draw("same");
-    tb->DrawLatex(0.60,0.70,Form("%0d < p_{T} < %0d",APtBins[i],APtBins[i+1]));
-    gPad->Update();
-    
-  }
-
-
-  Canv_Asym_DiJet_Pt->SaveAs("Figure/OutFigures/Fig_Asym_DiJet_Pt.pdf");
-  Canv_Asym_DiJet_Pt->SaveAs("Figure/OutFigures/Fig_Asym_DiJet_Pt.png");
-
-
   
 
   //============================= Aj as a function of Centrality ==================================//  
@@ -248,7 +194,6 @@ void DiJetCalculations(Double_t Alpha, Double_t MM)
 
   Canv_Asym_DiJet_Centrality->cd(7);
 
-
   gPad->SetTopMargin(0.1);
   gPad->SetBottomMargin(0.2);
   grf_Data_CMS_Aj_pp_276TeV->Draw("AP");
@@ -258,6 +203,58 @@ void DiJetCalculations(Double_t Alpha, Double_t MM)
 
   Canv_Asym_DiJet_Centrality->SaveAs("Figure/OutFigures/Fig_Asym_DiJet_Centrality.pdf");
   Canv_Asym_DiJet_Centrality->SaveAs("Figure/OutFigures/Fig_Asym_DiJet_Centrality.png");
+
+
+  
+
+  //=============================================== AJ as a function of pT =================================================//
+  
+  const Int_t NPtBins = 6;
+  const Int_t APtBins[NPtBins+1]={120,150,180,220,260,300,500};
+  
+  TH1D *HistOutJetAsymPt[NPtBins];
+
+  TGraphErrors *grf_Data_CMS_Aj_Pt_276TeV[NPtBins]={Data_CMS_Aj_Pt_120_150_276TeV(),Data_CMS_Aj_Pt_150_180_276TeV(),
+						    Data_CMS_Aj_Pt_180_220_276TeV(),Data_CMS_Aj_Pt_220_260_276TeV(),
+						    Data_CMS_Aj_Pt_260_300_276TeV(),Data_CMS_Aj_Pt_300_500_276TeV()};
+  
+
+  TCanvas *Canv_Asym_DiJet_Pt = new TCanvas("Canv_Asym_DiJet_Pt","Canv_Asym_DiJet_Pt",1200,800);//coulamXRows
+  Canv_Asym_DiJet_Pt->Divide(3,2);
+  
+  leg->AddEntry(grf_Data_CMS_Aj_Pt_276TeV[0],"CMS Data","P");
+
+  TH1D *hist_Ghost = new TH1D("hist_Ghost_1","hist_Ghost_1",100,0.0,500);
+
+  hist_Ghost->SetMarkerStyle(20);
+  hist_Ghost->SetMarkerColor(2);
+  leg->AddEntry(hist_Ghost,"Calculated","P");
+  
+  for(int i=0; i< NPtBins; i++) {
+    cout<<" calculation for Pt "<<APtBins[i]<<"  "<<APtBins[i+1]<<" GeV/c "<<endl;
+
+
+    //calculating AJ as a function of pT DiJet 
+
+    //Asym_DiJet_Pt(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, Double_t Alpha, Double_t MM, Double_t NPart, Double_t LPtMin, Double_t LPtMax, Int_t PtBin, Int_t IsPP)
+    HistOutJetAsymPt[i] = Asym_DiJet_Pt(fJetpp276tev,  RespT, ResPhi, Alpha, MM, NPartFunc(0,20), APtBins[i], APtBins[i+1], i,0);
+    
+    Canv_Asym_DiJet_Pt->cd(i+1);
+    gPad->SetTopMargin(0.1);
+    gPad->SetBottomMargin(0.2);
+    grf_Data_CMS_Aj_Pt_276TeV[i]->GetYaxis()->SetRangeUser(0.0,0.32);
+    grf_Data_CMS_Aj_Pt_276TeV[i]->Draw("AP");
+    HistOutJetAsymPt[i]->GetYaxis()->SetRangeUser(0.0,0.32);
+    HistOutJetAsymPt[i]->Draw("EPsame");
+    leg->Draw("same");
+    tb->DrawLatex(0.60,0.70,Form("%0d < p_{T} < %0d",APtBins[i],APtBins[i+1]));
+    gPad->Update();
+    
+  }
+  Canv_Asym_DiJet_Pt->SaveAs("Figure/OutFigures/Fig_Asym_DiJet_Pt.pdf");
+  Canv_Asym_DiJet_Pt->SaveAs("Figure/OutFigures/Fig_Asym_DiJet_Pt.png");
+
+
 
 
 
