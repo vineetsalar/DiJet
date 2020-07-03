@@ -378,7 +378,8 @@ TH1D *Asym_DiJet_Centrality(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, 
 
     
     if(IsPP==0){SS=1.24;NN=8.08;}
-    if(IsPP==1){SS=0.95;NN=0.001;}
+    //if(IsPP==1){SS=0.95;NN=0.001;}
+    if(IsPP==1){SS=1.24;NN=8.08;}
     
     Double_t SigmaSquare1 = (CC*CC) + ((SS*SS)/E1) + ((NN*NN)/(E1*E1));
     Double_t Sigma1 = TMath::Sqrt(SigmaSquare1);
@@ -390,16 +391,14 @@ TH1D *Asym_DiJet_Centrality(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, 
 
     Double_t MultFac = 2.8;
 
+    //Double_t MultFac = 1.0;
+
 
     Reso1 = Reso1*MultFac;
     Reso2 = Reso2*MultFac;
     
     Double_t Pt1 = E1*Reso1;
     Double_t Pt2 = E2*Reso2;
-
-
-    
-
 
     //Exp cut on Pt
     Double_t L_Pt = TMath::Max(Pt1,Pt2);
