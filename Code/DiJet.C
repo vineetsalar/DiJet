@@ -83,10 +83,9 @@ void DiJet()
   Double_t alpha = 0.55;
   Double_t MM = 0.4;
 
+  JetRAACalculations(alpha, MM);
 
-  DiJetCalculations(alpha, MM);
-
-
+  //DiJetCalculations(alpha, MM);
 
   //Z0JetCalculations(alpha, MM);
   //GammaJetCalculations(alpha,MM);
@@ -262,24 +261,6 @@ void DiJetCalculations(Double_t Alpha, Double_t MM)
 
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 void Z0JetCalculations(Double_t Alpha, Double_t MM)
@@ -537,14 +518,6 @@ void GammaJetCalculations(Double_t Alpha, Double_t MM)
 
 }
 
-
-
-
-
-
-
-
-
 void TestDataFunctions()
 {
 
@@ -555,11 +528,6 @@ void TestDataFunctions()
   tb->SetTextAlign(12); 
   tb->SetTextColor(1);
   tb->SetTextSize(0.04);
-
-
-
-
-
 
   //Test Data Graph
   TGraphErrors *grf_Data_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV = Data_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV();
@@ -579,11 +547,6 @@ void TestDataFunctions()
   cout<<endl<<endl;
   cout<<" Fitting ATLAS Jet Yield 2.76 TeV "<<endl;
   FitParaTsallisPP276TeV();
-
-
-
-  
-  
   
   // CMS Data Graphs AJ
   TGraphErrors *grf_Data_CMS_Aj_Cent_00_10_276TeV = Data_CMS_Aj_Cent_00_10_276TeV();
@@ -752,19 +715,6 @@ void TestDataFunctions()
   grf_Data_ATLAS_RAA_Cent_70_80_502TeV->Draw("AP");
   tb->DrawLatex(0.60, 0.70, "70-80%") ;
 
-
-
-
-
-
-
-
-
-
-
-
-
-  
 }
 
 
@@ -779,6 +729,7 @@ void JetRAACalculations(Double_t Alpha, Double_t MM)
   tb->SetTextSize(0.04);
 
   TGraphErrors *grf_Data_ATLAS_RAA_Cent_00_10_276TeV = jet_atlas_raa_pbpb_276tev_00_rapidity_21_centrality_zero_ten();
+
   TGraphErrors *grf_Data_CMS_Aj_Cent_00_10_276TeV = Data_CMS_Aj_Cent_00_10_276TeV();
 
 
@@ -834,6 +785,9 @@ void JetRAACalculations(Double_t Alpha, Double_t MM)
   
   Double_t ResPhi = 0.3; // relative
   Double_t RespT = 0.28;  // Relative
+
+
+
   //Double_t RespT = 0.0;  // Relative
   
   //for Energy Loss
@@ -861,7 +815,15 @@ void JetRAACalculations(Double_t Alpha, Double_t MM)
   Double_t Npart = NPartFunc(0,10);
   Double_t RR = RA*sqrt(Npart/(2*Am));
 
-  int nn = 5000000;
+  const int nn = 5000000;
+  const int NPrints = nn/10;
+
+  const Double_t MinPtRAA = 50.0;
+
+  
+  // int nn = 20;
+
+
   
   for(int i=0; i< nn; i++) {
 
@@ -869,8 +831,9 @@ void JetRAACalculations(Double_t Alpha, Double_t MM)
     // Generate pT 
     Double_t pT = fJetpp276tev->GetRandom();
 
+    if(pT<MinPtRAA) continue;
 
-    if(pT<30.0) continue;
+    if(i%NPrints==0)cout<<" generated pt "<<pT<<endl;
     
     // Generate position 
     Double_t rr = rand.Uniform(0.0,1.0)*RR;
@@ -888,8 +851,9 @@ void JetRAACalculations(Double_t Alpha, Double_t MM)
 
     Double_t pTppMeas = rand.Gaus(pT, pT*RespT);
     //Double_t pTppMeas = pT;
-
-    if(pTppMeas>50.0) hist_Pt_Initial->Fill(pTppMeas);
+    if(i%NPrints==0)cout<<" pt after resolution "<< pTppMeas <<endl;
+    
+    if(pTppMeas>MinPtRAA) hist_Pt_Initial->Fill(pTppMeas,2);
     
     // Calculate DeltapT
     Double_t dEdx = calDelta(pT, Alpha, MM);
@@ -901,14 +865,16 @@ void JetRAACalculations(Double_t Alpha, Double_t MM)
     //E1 = pT;
     //E2 = pT;
 
-    
+    if(i%NPrints==0)cout<<" pt after energy loss "<< E1 <<endl;
+     
     // Smear pT
     Double_t pT1 = rand.Gaus(E1, E1*RespT);
     Double_t pT2 = rand.Gaus(E2, E2*RespT);
-
-    if(pT1 > 50.0) hist_Pt_Final->Fill(pT1);
     
-
+    if(i%NPrints==0)cout<<" pt after resolution and energy loss "<< pT1 <<endl;
+    
+    if(pT1 > MinPtRAA) hist_Pt_Final->Fill(pT1);
+    if(pT2 > MinPtRAA) hist_Pt_Final->Fill(pT2);
     
     //Exp cut on pT
     Double_t L_Pt = TMath::Max(pT1,pT2);
@@ -927,9 +893,6 @@ void JetRAACalculations(Double_t Alpha, Double_t MM)
     
     hAsymmetryDiff->Fill(pTDiff);
   } 
-
-
-
 
   hAsymmetryDiff->Scale(1.0/ hAsymmetryDiff->Integral());
 
