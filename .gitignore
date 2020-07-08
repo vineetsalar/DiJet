@@ -4,6 +4,9 @@
 *.pcm
 *.root
 *#
+*.bib
+*.aux
+*.log
 Code/Figure
 Papers/AJ_Pt_Cent_0_20.png
 Papers/Data_AJ_Pt_Cent_0_20/*
