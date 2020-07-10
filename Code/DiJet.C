@@ -63,13 +63,9 @@ void DiJet()
   tb->SetTextColor(1);
   tb->SetTextSize(0.04);
 
-  TestDataFunctions();
+  //TestDataFunctions();
 
-  return;
-
-
-
-  
+    
 
   //return;
   
@@ -83,9 +79,12 @@ void DiJet()
   Double_t alpha = 0.55;
   Double_t MM = 0.4;
 
-  JetRAACalculations(alpha, MM);
-
-  //DiJetCalculations(alpha, MM);
+  //JetRAACalculations(alpha, MM);
+  
+  Fit_Data_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV();
+  Fit_Data_CMS_JetYield_GammaPlusJet_GammaPt_PP8TeV();
+  
+  DiJetCalculations(alpha, MM);
 
   //Z0JetCalculations(alpha, MM);
   //GammaJetCalculations(alpha,MM);
@@ -141,6 +140,12 @@ void DiJetCalculations(Double_t Alpha, Double_t MM)
   fJetpp276tev->FixParameter(0, lc_jet_00_rapidity_21_pp_276tev_dNdy);
   fJetpp276tev->FixParameter(1, lc_jet_00_rapidity_21_pp_276tev_nn);
   fJetpp276tev->FixParameter(2, lc_jet_00_rapidity_21_pp_276tev_pzero);
+
+
+  fJetpp276tev->SetLineColor(1);
+  fJetpp276tev->SetLineStyle(4);
+  fJetpp276tev->SetLineWidth(2);
+
   
   new TCanvas ;
   gPad->SetTicks(1);
@@ -148,9 +153,11 @@ void DiJetCalculations(Double_t Alpha, Double_t MM)
   TGraphErrors *gr_atlas_jet_yield_00_rapidity_21 = jet_atlas_yield_00_rapidity_21_pp_276tev() ;
   gr_atlas_jet_yield_00_rapidity_21->Draw("AP");
   fJetpp276tev->Draw("same");
-
+  tb->DrawLatex(0.55, 0.80, "ATLAS Jet 2.76 TeV") ;
+  gPad->SaveAs("Figure/Fig_ATLAS_JetYield_JetPt_PP276TeV.png");
+  gPad->SaveAs("Figure/Fig_ATLAS_JetYield_JetPt_PP276TeV.pdf");
   
-
+  return;
   //============================= Aj as a function of Centrality ==================================//  
   //CentBins (0,10,20,30,50,70,100)
   const Int_t NCentBins = 6;

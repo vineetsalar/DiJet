@@ -120,6 +120,8 @@ TH1D *XJ_Z0Jet_Centrality(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, Do
   //Histogram Name should come from the Centrality Loop
   TH1D *hAsymmetryOut = new TH1D(Form("hXJZ0OutCent_%d ",CentBin),Form("hXJZ0OutCent_%d ",CentBin), 10, 0.0, 2.0);
   hAsymmetryOut->Sumw2();
+
+
   Double_t RR = RA*sqrt(NPart/(2*Am));
 
   const Int_t NEvents = 50000;
@@ -570,7 +572,7 @@ void Fit_Data_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV()
   
   TFitResultPtr fp = grf_Data_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV->Fit(FitFunc_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV,  "SE", "", 40.0, 700.0) ;
   FitFunc_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV->Draw("same");  
-
+  
   Latex_local->DrawLatex(0.60, 0.80, "CMS Z^{0}+Jet 7 TeV") ;
   
   Double_t dNdy      = FitFunc_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV->GetParameter(0) ;
@@ -596,6 +598,11 @@ void Fit_Data_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV()
   cout<<"Chi^{2}_NDF = "<< Chi2_NDF <<endl;
   cout<<"Prob        = "<< TMath::Prob(Chi2,NDF) <<endl;
   cout<<"******************************************************************************"<<endl;
+
+
+  gPad->SaveAs("Figure/Fig_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV.png");
+  gPad->SaveAs("Figure/Fig_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV.pdf");
+
 
   
 }
@@ -662,6 +669,9 @@ void Fit_Data_CMS_JetYield_GammaPlusJet_GammaPt_PP8TeV()
   cout<<"Prob        = "<< TMath::Prob(Chi2,NDF) <<endl;
   cout<<"******************************************************************************"<<endl;
 
+
+  gPad->SaveAs("Figure/Fig_CMS_JetYield_GammaPlusJet_JetPt_PP7TeV.png");
+  gPad->SaveAs("Figure/Fig_CMS_JetYield_GammaPlusJet_JetPt_PP7TeV.pdf");
   
 }
 
