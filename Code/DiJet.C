@@ -1,7 +1,7 @@
 #include "DiJet.h"
 //#include "DiJetDataFunctions.h"
 
-void DiJetCalculations(Double_t Alpha, Double_t MM);
+void DiJetAsymCalculations(Double_t Alpha, Double_t MM);
 void Z0JetCalculations(Double_t Alpha, Double_t MM);
 void GammaJetCalculations(Double_t Alpha, Double_t MM);
 void JetRAACalculations(Double_t Alpha, Double_t MM);
@@ -79,12 +79,12 @@ void DiJet()
   Double_t alpha = 0.55;
   Double_t MM = 0.4;
 
-  //JetRAACalculations(alpha, MM);
+  JetRAACalculations(alpha, MM);
   
-  Fit_Data_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV();
-  Fit_Data_CMS_JetYield_GammaPlusJet_GammaPt_PP8TeV();
+  //Fit_Data_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV();
+  //Fit_Data_CMS_JetYield_GammaPlusJet_GammaPt_PP8TeV();
   
-  DiJetCalculations(alpha, MM);
+  //DiJetCalculations(alpha, MM);
 
   //Z0JetCalculations(alpha, MM);
   //GammaJetCalculations(alpha,MM);
@@ -97,8 +97,159 @@ void DiJet()
 
 
 
+void JetRAACalculations(Double_t Alpha, Double_t MM)
+{
 
-void DiJetCalculations(Double_t Alpha, Double_t MM)
+  //latex for the function
+  TLatex *tb = new TLatex();
+  tb->SetNDC();
+  tb->SetTextAlign(12); 
+  tb->SetTextColor(1);
+  tb->SetTextSize(0.04);
+
+
+  //legend for the function
+  TLegend* leg= new TLegend(0.58,0.74,0.88,0.84);
+  leg->SetBorderSize(0);
+  leg->SetFillStyle(1001);
+  leg->SetFillColor(10);
+  leg->SetTextSize(0.035);
+
+  TLine *l1 = new TLine(0,1.0,400.0,1.0);
+  l1->SetLineWidth(2);
+  
+  //pp Jet yield function 
+  const Double_t lc_jet_00_rapidity_21_pp_276tev_dNdy = 1035.26;
+  const Double_t lc_jet_00_rapidity_21_pp_276tev_nn = 9.17592;
+  const Double_t lc_jet_00_rapidity_21_pp_276tev_pzero = 29.1867;
+
+  //function for pp Jet pT distribution  
+  TF1 *fJetpp276tev = new TF1("fJetpp276tev", tsallis_fitting_function, 30.0, 500.0, 3);
+  fJetpp276tev->SetParNames("dN/dy", "nn", "pzero");
+  fJetpp276tev->FixParameter(0, lc_jet_00_rapidity_21_pp_276tev_dNdy);
+  fJetpp276tev->FixParameter(1, lc_jet_00_rapidity_21_pp_276tev_nn);
+  fJetpp276tev->FixParameter(2, lc_jet_00_rapidity_21_pp_276tev_pzero);
+  
+  new TCanvas ;
+  gPad->SetTicks(1);
+  gPad->SetLogy(1);
+  TGraphErrors *gr_atlas_jet_yield_00_rapidity_21 = jet_atlas_yield_00_rapidity_21_pp_276tev() ;
+  gr_atlas_jet_yield_00_rapidity_21->Draw("AP");
+  fJetpp276tev->Draw("same");
+
+
+
+  //============================= RAA as a function of Centrality (ATLAS 2.76 TeV) ==================================//  
+  //CentBins (0,10,20,30,40,50,60,70,80)
+  const Int_t NCentBins = 8;
+  const Int_t CentBins[NCentBins+1]={0,10,20,30,40,50,60,70,80};
+  Double_t ANPartCent[NCentBins]={NPartFunc(0,10),NPartFunc(10,20),NPartFunc(20,30),NPartFunc(30,40),
+				  NPartFunc(40,50),NPartFunc(50,60),NPartFunc(60,70),NPartFunc(70,80)};
+  TH1D *HistOutJetRAACent[NCentBins];
+  
+
+  
+  TGraphErrors *grf_Data_ATLAS_RAA_Cent_276TeV[NCentBins]={jet_atlas_raa_pbpb_276tev_00_rapidity_21_centrality_zero_ten(),
+							   jet_atlas_raa_pbpb_276tev_00_rapidity_21_centrality_ten_twenty(),
+							   jet_atlas_raa_pbpb_276tev_00_rapidity_21_centrality_twenty_thirty(),
+							   jet_atlas_raa_pbpb_276tev_00_rapidity_21_centrality_thirty_forty(),
+							   jet_atlas_raa_pbpb_276tev_00_rapidity_21_centrality_forty_fifty(),
+							   jet_atlas_raa_pbpb_276tev_00_rapidity_21_centrality_fifty_sixty(),
+							   jet_atlas_raa_pbpb_276tev_00_rapidity_21_centrality_sixty_seventy(),
+							   jet_atlas_raa_pbpb_276tev_00_rapidity_21_centrality_seventy_eighty()};
+  
+  
+
+  TGraphErrors *grf_Data_ATLAS_RAA_Cent_502TeV[NCentBins]={jet_nuclear_modification_factor_raa_atlas_PbPb_502tev_cen_zero0_ten10(),
+							   jet_nuclear_modification_factor_raa_atlas_PbPb_502tev_cen_ten10_twenty20(),
+							   jet_nuclear_modification_factor_raa_atlas_PbPb_502tev_cen_twenty20_thirty30(),
+							   jet_nuclear_modification_factor_raa_atlas_PbPb_502tev_cen_thirty30_forty40(),
+							   jet_nuclear_modification_factor_raa_atlas_PbPb_502tev_cen_forty40_fifty50(),
+							   jet_nuclear_modification_factor_raa_atlas_PbPb_502tev_cen_fifty50_sixty60(),
+							   jet_nuclear_modification_factor_raa_atlas_PbPb_502tev_cen_sixty60_seventy70(),
+							   jet_nuclear_modification_factor_raa_atlas_PbPb_502tev_cen_seventy70_eighty80()};
+  
+
+  
+
+  
+  // Canvas defined outside the centrality loop
+  
+  TCanvas *Canv_ATLAS_RAA_Cent_276TeV = new TCanvas("Canv_ATLAS_RAA_Cent_276TeV","Canv_ATLAS_RAA_Cent_276TeV",1600,800);//coulamXRows
+  Canv_ATLAS_RAA_Cent_276TeV->Divide(4,2);
+  char LatexChar[400];
+
+
+
+  
+  leg->AddEntry(grf_Data_ATLAS_RAA_Cent_276TeV[0],"ATLAS Data","P");
+
+  TH1D *hist_Ghost_ATLAS_RAA_Cent_276TeV = new TH1D("hist_Ghost_ATLAS_RAA_Cent_276TeV","hist_Ghost_ATLAS_RAA_Cent_276TeV",100,0.0,500);
+  hist_Ghost_ATLAS_RAA_Cent_276TeV->SetMarkerStyle(20);
+  hist_Ghost_ATLAS_RAA_Cent_276TeV->SetMarkerColor(2);
+  leg->AddEntry(hist_Ghost_ATLAS_RAA_Cent_276TeV,"Calculated","P");
+  
+  
+  Double_t ResPhi = 0.3; // relative
+  Double_t RespT = 0.28;  // Relative
+
+
+
+  for(int i=0; i < NCentBins; i++) {
+    cout<<" calculation for centrality "<<CentBins[i]<<"  "<<CentBins[i+1]<<"% "<<endl;
+    
+    HistOutJetRAACent[i] = RAA_Jet_Centrality(fJetpp276tev,  RespT, ResPhi, Alpha, MM, ANPartCent[i], i);
+    Canv_ATLAS_RAA_Cent_276TeV->cd(i+1);
+    
+    gPad->SetTopMargin(0.1);
+    gPad->SetBottomMargin(0.2);
+    grf_Data_ATLAS_RAA_Cent_276TeV[i]->GetYaxis()->SetRangeUser(0.0,2.0);
+    grf_Data_ATLAS_RAA_Cent_276TeV[i]->Draw("AP");
+    HistOutJetRAACent[i]->GetYaxis()->SetRangeUser(0.0,2.0);
+    HistOutJetRAACent[i]->Draw("Psame");
+    //leg->Draw("same");
+    tb->DrawLatex(0.60,0.70,Form("Cent. %0d - %0d %%",CentBins[i],CentBins[i+1]));
+    l1->Draw("same");
+    leg->Draw("same");
+ }
+
+
+   Canv_ATLAS_RAA_Cent_276TeV->SaveAs("Figure/OutFigures/Fig_RAA_Jet_Centrality_276TeV.pdf");
+   Canv_ATLAS_RAA_Cent_276TeV->SaveAs("Figure/OutFigures/Fig_RAA_Jet_Centrality_276TeV.png");
+
+
+   TCanvas *Canv_ATLAS_RAA_Cent_502TeV = new TCanvas("Canv_ATLAS_RAA_Cent_502TeV","Canv_ATLAS_RAA_Cent_502TeV",1600,800);//coulamXRows
+   Canv_ATLAS_RAA_Cent_502TeV->Divide(4,2);
+
+   
+  for(int i=0; i < NCentBins; i++) {
+    
+    Canv_ATLAS_RAA_Cent_502TeV->cd(i+1);
+    
+    gPad->SetTopMargin(0.1);
+    gPad->SetBottomMargin(0.2);
+    grf_Data_ATLAS_RAA_Cent_502TeV[i]->GetYaxis()->SetRangeUser(0.0,2.0);
+    grf_Data_ATLAS_RAA_Cent_502TeV[i]->Draw("AP");
+    HistOutJetRAACent[i]->GetYaxis()->SetRangeUser(0.0,2.0);
+    HistOutJetRAACent[i]->Draw("Psame");
+    //leg->Draw("same");
+    tb->DrawLatex(0.60,0.70,Form("Cent. %0d - %0d %%",CentBins[i],CentBins[i+1]));
+    l1->Draw("same");
+    leg->Draw("same");
+ }
+
+
+   Canv_ATLAS_RAA_Cent_502TeV->SaveAs("Figure/OutFigures/Fig_RAA_Jet_Centrality_502TeV.pdf");
+   Canv_ATLAS_RAA_Cent_502TeV->SaveAs("Figure/OutFigures/Fig_RAA_Jet_Centrality_502TeV.png");
+
+
+
+
+  
+}
+
+
+void DiJetAsymCalculations(Double_t Alpha, Double_t MM)
 {
 
 
@@ -725,240 +876,3 @@ void TestDataFunctions()
 }
 
 
-
-void JetRAACalculations(Double_t Alpha, Double_t MM)
-{
-
-  TLatex *tb = new TLatex();
-  tb->SetNDC();
-  tb->SetTextAlign(12); 
-  tb->SetTextColor(1);
-  tb->SetTextSize(0.04);
-
-  TGraphErrors *grf_Data_ATLAS_RAA_Cent_00_10_276TeV = jet_atlas_raa_pbpb_276tev_00_rapidity_21_centrality_zero_ten();
-
-  TGraphErrors *grf_Data_CMS_Aj_Cent_00_10_276TeV = Data_CMS_Aj_Cent_00_10_276TeV();
-
-
-  // Histograms
-  TH1D *hAsymmetryDiff = new TH1D("hAsymmetryDiff", "hAsymmetryDiff", 17, 0.0, 1.0);
-  hAsymmetryDiff->Sumw2();
-  hAsymmetryDiff->SetLineWidth(2);
-
-  TH1D *hist_Pt_Initial = new TH1D("hist_Pt_Initial", "hist_Pt_Initial", 25, 0.0, 500.0);
-  hist_Pt_Initial->Sumw2();
-  hist_Pt_Initial->GetXaxis()->SetTitle("p_{T} (GeV/c)");
-  hist_Pt_Initial->GetYaxis()->SetTitle("Events");
-  
-  TH1D *hist_Pt_Final = new TH1D("hist_Pt_Final", "hist_Pt_Final", 25, 0.0, 500.0);
-  hist_Pt_Final->Sumw2();
-  hist_Pt_Final->GetXaxis()->SetTitle("p_{T} (GeV/c)");
-  hist_Pt_Final->GetYaxis()->SetTitle("Events");
- 
-  TH1D *hist_Pt_Ratio = new TH1D("hist_Pt_Ratio", "hist_Pt_Ratio", 25, 0.0, 500.0);
-
-
- 
-  // pp distribution fit 
-  //These are the values when func was not multiplied by 2 pi
-  //const Double_t lc_jet_00_rapidity_21_pp_276tev_dNdy = 0.000690482;
-  //const Double_t lc_jet_00_rapidity_21_pp_276tev_nn = 8.30672;
-  //const Double_t lc_jet_00_rapidity_21_pp_276tev_pzero = 36.6118;
-
-
-  const Double_t lc_jet_00_rapidity_21_pp_276tev_dNdy = 1035.26;
-  const Double_t lc_jet_00_rapidity_21_pp_276tev_nn = 9.17592;
-  const Double_t lc_jet_00_rapidity_21_pp_276tev_pzero = 29.1867;
-
-  //function for pp Jet pT distribution  
-  TF1 *fJetpp276tev = new TF1("fJetpp276tev", tsallis_fitting_function, 30.0, 500.0, 3);
-  fJetpp276tev->SetParNames("dN/dy", "nn", "pzero");
-  fJetpp276tev->FixParameter(0, lc_jet_00_rapidity_21_pp_276tev_dNdy);
-  fJetpp276tev->FixParameter(1, lc_jet_00_rapidity_21_pp_276tev_nn);
-  fJetpp276tev->FixParameter(2, lc_jet_00_rapidity_21_pp_276tev_pzero);
-  
-  new TCanvas ;
-  gPad->SetTicks(1);
-  gPad->SetLogy(1);
-  TGraphErrors *gr_atlas_jet_yield_00_rapidity_21 = jet_atlas_yield_00_rapidity_21_pp_276tev() ;
-  gr_atlas_jet_yield_00_rapidity_21->Draw("AP");
-  fJetpp276tev->Draw("same");
-  
-
-  //return;
-  
-  // Random distribution;
-  TRandom3 rand(0);
-  
-  Double_t ResPhi = 0.3; // relative
-  Double_t RespT = 0.28;  // Relative
-
-
-
-  //Double_t RespT = 0.0;  // Relative
-  
-  //for Energy Loss
-  //Double_t alpha = 0.5;
-  //Double_t MM = 0.55;
-
-  //Double_t alpha = 0.0;
-  //Double_t MM = 6.0;
-
-
-  //Double_t alpha = 0.5;
-  //Double_t MM = 0.2;
-
-  //On 19.May.2020
-  //Double_t alpha = 0.55;
-  //Double_t MM = 0.4;
-
-
-  //Double_t alpha = 0.4;
-  //Double_t MM = 0.50;
-
-
-  
-  // Size of the system
-  Double_t Npart = NPartFunc(0,10);
-  Double_t RR = RA*sqrt(Npart/(2*Am));
-
-  const int nn = 5000000;
-  const int NPrints = nn/10;
-
-  const Double_t MinPtRAA = 50.0;
-
-  
-  // int nn = 20;
-
-
-  
-  for(int i=0; i< nn; i++) {
-
-    
-    // Generate pT 
-    Double_t pT = fJetpp276tev->GetRandom();
-
-    if(pT<MinPtRAA) continue;
-
-    if(i%NPrints==0)cout<<" generated pt "<<pT<<endl;
-    
-    // Generate position 
-    Double_t rr = rand.Uniform(0.0,1.0)*RR;
-    Double_t Phi = rand.Uniform(0.0,1.0)*2.0*pi;
-
-    
-    Double_t Phi1 = rand.Gaus(Phi, Phi*ResPhi);
-    Double_t Phi2 = rand.Gaus(Phi+pi, (Phi+pi)*ResPhi);
-
-    Double_t DeltaPhi = Phi2 - Phi1; 
-    
-    // Calculate pathlength
-    Double_t d1 = sqrt(RR*RR - rr*rr*sin(Phi1)) - rr*cos(Phi1);
-    Double_t d2 = sqrt(RR*RR - rr*rr*sin(Phi2)) - rr*cos(Phi2); 
-
-    Double_t pTppMeas = rand.Gaus(pT, pT*RespT);
-    //Double_t pTppMeas = pT;
-    if(i%NPrints==0)cout<<" pt after resolution "<< pTppMeas <<endl;
-    
-    if(pTppMeas>MinPtRAA) hist_Pt_Initial->Fill(pTppMeas,2);
-    
-    // Calculate DeltapT
-    Double_t dEdx = calDelta(pT, Alpha, MM);
-
-    Double_t E1 = pT-dEdx*d1;
-    Double_t E2 = pT-dEdx*d2;
-
-    //for pp no energy loss
-    //E1 = pT;
-    //E2 = pT;
-
-    if(i%NPrints==0)cout<<" pt after energy loss "<< E1 <<endl;
-     
-    // Smear pT
-    Double_t pT1 = rand.Gaus(E1, E1*RespT);
-    Double_t pT2 = rand.Gaus(E2, E2*RespT);
-    
-    if(i%NPrints==0)cout<<" pt after resolution and energy loss "<< pT1 <<endl;
-    
-    if(pT1 > MinPtRAA) hist_Pt_Final->Fill(pT1);
-    if(pT2 > MinPtRAA) hist_Pt_Final->Fill(pT2);
-    
-    //Exp cut on pT
-    Double_t L_Pt = TMath::Max(pT1,pT2);
-    Double_t SubL_Pt = TMath::Min(pT1,pT2);;
-
-        
-    if(L_Pt< 120.0 || SubL_Pt < 30.0 || DeltaPhi < (2.0*pi)/3.0) continue; 
-    
-    //Double_t pTDiff = abs((pT1-pT2)/(pT1+pT2));
-
-    Double_t pTDiff = (L_Pt-SubL_Pt)/(L_Pt+SubL_Pt); 
-
-    //cout << pT << "  " << pTDiff << endl;
-
-    //cout << pT1 << "  " << pT2<<"   "<<pTDiff << endl;
-    
-    hAsymmetryDiff->Fill(pTDiff);
-  } 
-
-  hAsymmetryDiff->Scale(1.0/ hAsymmetryDiff->Integral());
-
-  new TCanvas;
-  hAsymmetryDiff->SetLineColor(1);
-  hAsymmetryDiff->GetXaxis()->SetTitle("Asymmetry");
-  hAsymmetryDiff->GetXaxis()->CenterTitle();
-  hAsymmetryDiff->GetYaxis()->SetTitle("No. of Events");
-  hAsymmetryDiff->GetYaxis()->CenterTitle();
-  hAsymmetryDiff->GetYaxis()->SetRangeUser(0,0.32);
-  hAsymmetryDiff->SetLineColor(2);
-  hAsymmetryDiff->SetMarkerColor(2);
-  
-  
-  grf_Data_CMS_Aj_Cent_00_10_276TeV->Draw("AP");
-  tb->DrawLatex(0.60, 0.70, "0-10%") ;
-  
-  //grf_Data_CMS_Aj_pp_276TeV->Draw("AP");
-  //tb->DrawLatex(0.60, 0.70, "pp") ;
-
-  hAsymmetryDiff->Draw("Psame");
-  
-  TLegend* leg= new TLegend(0.58,0.74,0.88,0.84);
-  leg->SetBorderSize(0);
-  leg->SetFillStyle(1001);
-  leg->SetFillColor(10);
-  leg->SetTextSize(0.035);
-  leg->AddEntry(grf_Data_CMS_Aj_Cent_00_10_276TeV,"CMS Data","P");
-  leg->AddEntry(hAsymmetryDiff,"Calculated","P");
-
-  leg->Draw();
-
-  gPad->SaveAs("Figure/OutFigures/Aj.png");
-  gPad->SaveAs("Figure/OutFigures/Aj.pdf");
-
-  TLine *line1 = new TLine(0,1,500,1);
-  line1->SetLineColor(2);
- 
-  new TCanvas;
-  gPad->SetLogy(1);
-  hist_Pt_Final->SetMarkerColor(2);
-  hist_Pt_Initial->Draw("P");
-  TH1D *temp_hist = (TH1D*)hist_Pt_Final->Clone("temp_hist");
-  temp_hist->SetMarkerColor(2);
-  temp_hist->Draw("Psame");
-    
-  hist_Pt_Final->Divide(hist_Pt_Final,hist_Pt_Initial,1.0,1.0,"B");
-
-  new TCanvas;
-  hist_Pt_Final->Draw("P");
-  line1->Draw("same");
- 
-  new TCanvas;
-  grf_Data_ATLAS_RAA_Cent_00_10_276TeV->Draw("AP");
-  hist_Pt_Final->Draw("Psame");
-  line1->Draw("same");
-
-  //return;
-
-
-
-}

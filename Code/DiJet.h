@@ -111,6 +111,113 @@ Double_t calDelta(Double_t pT, Double_t alpha, Double_t MM)
 
 
 
+
+TH1D *RAA_Jet_Centrality(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, Double_t Alpha, Double_t MM, Double_t NPart, Int_t CentBin)
+{
+
+  //initialize the random number generator
+  TRandom3 rand(0);
+  
+  //Histogram Name should come from the Centrality Loop
+  TH1D *hJetPt_PP = new TH1D(Form("hJetPt_PP_%d ",CentBin),Form("hJetPt_PP_%d ",CentBin), 25, 0.0, 500.0);
+  hJetPt_PP->Sumw2();
+
+  TH1D *hJetPt_PbPb = new TH1D(Form("hJetPt_PbPb_%d ",CentBin),Form("hJetPt_PbPb_%d ",CentBin), 25, 0.0, 500.0);
+  hJetPt_PbPb->Sumw2();
+
+  TH1D *hJetPt_Ratio = new TH1D(Form("hJetPt_Ratio_%d ",CentBin),Form("hJetPt_Ratio_%d ",CentBin), 25, 0.0, 500.0);
+  hJetPt_Ratio->Sumw2();
+  
+  Double_t RR = RA*sqrt(NPart/(2*Am));
+
+  const Int_t NEvents = 5000000;
+
+  
+  const Double_t MinPtRAA = 50.0;
+  
+  for(int i=0; i< NEvents; i++) {
+    
+    // Generate Pt 
+    Double_t Pt = JetPtFuncPP->GetRandom();
+    
+    // Generate position 
+    Double_t rr = rand.Uniform(0.0,1.0)*RR;
+    Double_t Phi = rand.Uniform(0.0,1.0)*2.0*pi;
+    
+    // Smear Phi
+    Double_t Phi1 = rand.Gaus(Phi, Phi*ResPhi);
+    Double_t Phi2 = rand.Gaus(Phi+pi, (Phi+pi)*ResPhi);
+    
+    Double_t DeltaPhi = (Phi2 - Phi1); 
+    
+    // Calculate pathlength
+    Double_t d1 = sqrt(RR*RR - rr*rr*sin(Phi1)) - rr*cos(Phi1);
+    Double_t d2 = sqrt(RR*RR - rr*rr*sin(Phi2)) - rr*cos(Phi2); 
+
+    Double_t pTppMeas = rand.Gaus(Pt, Pt*ResPt);
+
+    if(pTppMeas>MinPtRAA) hJetPt_PP->Fill(pTppMeas);
+    //if(pTppMeas>MinPtRAA) hJetPt_PP->Fill(pTppMeas);
+
+    
+    // Calculate DeltaPt
+    Double_t dEdx = calDelta(Pt, Alpha, MM);
+
+    //dEdx = 0.0;
+    Double_t E1 = Pt-dEdx*d1;
+    Double_t E2 = Pt-dEdx*d2;
+    
+    // Smear Pt
+    // Fix Resolution
+    Double_t Pt1 = rand.Gaus(E1, E1*ResPt);
+    Double_t Pt2 = rand.Gaus(E2, E2*ResPt);
+
+    //pt resolution : pT dependent
+    //Double_t Mean = 1.0;
+    //Double_t CC = 0.061;
+    //Double_t SS = 0.0;
+    //Double_t NN = 0.0;
+
+    
+    //if(IsPP==0){SS=1.24;NN=8.08;}
+    //if(IsPP==1){SS=1.24;NN=8.08;}
+    
+    //Double_t SigmaSquare1 = (CC*CC) + ((SS*SS)/E1) + ((NN*NN)/(E1*E1));
+    //Double_t Sigma1 = TMath::Sqrt(SigmaSquare1);
+    //Double_t Reso1 = rand.Gaus(Mean, Sigma1);
+    
+    //Double_t SigmaSquare2 = (CC*CC) + ((SS*SS)/E2) + ((NN*NN)/(E2*E2));
+    //Double_t Sigma2 = TMath::Sqrt(SigmaSquare2);
+    //Double_t Reso2 = rand.Gaus(Mean, Sigma2);
+
+    //Double_t MultFac = 2.8;
+
+   
+    //Reso1 = Reso1*MultFac;
+    //Reso2 = Reso2*MultFac;
+    
+    //Double_t Pt1 = E1*Reso1;
+    //Double_t Pt2 = E2*Reso2;
+
+    if(Pt1 > MinPtRAA) hJetPt_PbPb->Fill(Pt1);
+    //if(Pt2 > MinPtRAA) hJetPt_PbPb->Fill(Pt2);
+
+  } 
+
+  hJetPt_Ratio->Divide(hJetPt_PbPb,hJetPt_PP,1.0,1.0,"B");
+  
+  hJetPt_Ratio->GetXaxis()->SetTitle("p_{T} (GeV/c)");
+  hJetPt_Ratio->GetYaxis()->SetTitle("R_{AA}");
+  hJetPt_Ratio->GetXaxis()->CenterTitle();
+  hJetPt_Ratio->GetYaxis()->CenterTitle();
+  hJetPt_Ratio->SetMarkerColor(kRed);
+  return hJetPt_Ratio;
+}
+
+
+
+
+
 TH1D *XJ_Z0Jet_Centrality(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, Double_t Alpha, Double_t MM, Double_t NPart, Int_t CentBin, Int_t isPP)
 {
   //if(isPP ==2) {ResPhi = 0.0;ResPt=0.0;}
