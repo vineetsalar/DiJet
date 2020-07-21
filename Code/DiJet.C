@@ -76,15 +76,18 @@ void DiJet()
   Double_t RespT = 0.28;  // Relative
   
   //On 19.May.2020
-  Double_t alpha = 0.55;
-  Double_t MM = 0.4;
+  //Double_t alpha = 0.55;
+  //Double_t MM = 0.4;
 
-  JetRAACalculations(alpha, MM);
+  Double_t alpha = 0.55;
+  Double_t MM = 0.2;
+
+  //JetRAACalculations(alpha, MM);
   
   //Fit_Data_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV();
   //Fit_Data_CMS_JetYield_GammaPlusJet_GammaPt_PP8TeV();
   
-  //DiJetCalculations(alpha, MM);
+  DiJetAsymCalculations(alpha, MM);
 
   //Z0JetCalculations(alpha, MM);
   //GammaJetCalculations(alpha,MM);
@@ -308,7 +311,7 @@ void DiJetAsymCalculations(Double_t Alpha, Double_t MM)
   gPad->SaveAs("Figure/Fig_ATLAS_JetYield_JetPt_PP276TeV.png");
   gPad->SaveAs("Figure/Fig_ATLAS_JetYield_JetPt_PP276TeV.pdf");
   
-  return;
+  //return;
   //============================= Aj as a function of Centrality ==================================//  
   //CentBins (0,10,20,30,50,70,100)
   const Int_t NCentBins = 6;

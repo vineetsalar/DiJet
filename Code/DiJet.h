@@ -130,7 +130,8 @@ TH1D *RAA_Jet_Centrality(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, Dou
   
   Double_t RR = RA*sqrt(NPart/(2*Am));
 
-  const Int_t NEvents = 5000000;
+  Int_t MultEv = 2;
+  const Int_t NEvents = MultEv*5000000;
 
   
   const Double_t MinPtRAA = 50.0;
@@ -140,6 +141,34 @@ TH1D *RAA_Jet_Centrality(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, Dou
     // Generate Pt 
     Double_t Pt = JetPtFuncPP->GetRandom();
     
+    //pt resolution : pT dependent
+    Double_t Mean = 1.0;
+    Double_t CC = 0.061;
+    Double_t SS = 1.24;
+    Double_t NN = 8.08;
+    
+    Double_t SigmaSquare = (CC*CC) + ((SS*SS)/Pt) + ((NN*NN)/(Pt*Pt));
+    Double_t Sigma = TMath::Sqrt(SigmaSquare);
+    Double_t Reso = rand.Gaus(Mean, Sigma);
+    
+    Double_t MultFac = 1.0;
+
+   
+    Reso = Reso*MultFac;
+        
+    //Double_t Pt1 = E1*Reso1;
+    //Double_t Pt2 = E2*Reso2;
+
+
+    Double_t pTppMeas = Pt*Reso;
+
+    //Double_t pTppMeas = rand.Gaus(Pt, Pt*ResPt);
+
+    if(pTppMeas>MinPtRAA) hJetPt_PP->Fill(pTppMeas,2);
+    
+
+
+
     // Generate position 
     Double_t rr = rand.Uniform(0.0,1.0)*RR;
     Double_t Phi = rand.Uniform(0.0,1.0)*2.0*pi;
@@ -154,23 +183,26 @@ TH1D *RAA_Jet_Centrality(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, Dou
     Double_t d1 = sqrt(RR*RR - rr*rr*sin(Phi1)) - rr*cos(Phi1);
     Double_t d2 = sqrt(RR*RR - rr*rr*sin(Phi2)) - rr*cos(Phi2); 
 
-    Double_t pTppMeas = rand.Gaus(Pt, Pt*ResPt);
-
-    if(pTppMeas>MinPtRAA) hJetPt_PP->Fill(pTppMeas);
-    //if(pTppMeas>MinPtRAA) hJetPt_PP->Fill(pTppMeas);
-
     
     // Calculate DeltaPt
     Double_t dEdx = calDelta(Pt, Alpha, MM);
 
+    
     //dEdx = 0.0;
+
+    //ELossFlacWidth relative 
+
+    Double_t WW = 0.10;
+    dEdx = rand.Gaus(dEdx, dEdx*WW);
+
+
     Double_t E1 = Pt-dEdx*d1;
     Double_t E2 = Pt-dEdx*d2;
     
     // Smear Pt
     // Fix Resolution
-    Double_t Pt1 = rand.Gaus(E1, E1*ResPt);
-    Double_t Pt2 = rand.Gaus(E2, E2*ResPt);
+    //Double_t Pt1 = rand.Gaus(E1, E1*ResPt);
+    //Double_t Pt2 = rand.Gaus(E2, E2*ResPt);
 
     //pt resolution : pT dependent
     //Double_t Mean = 1.0;
@@ -182,25 +214,25 @@ TH1D *RAA_Jet_Centrality(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, Dou
     //if(IsPP==0){SS=1.24;NN=8.08;}
     //if(IsPP==1){SS=1.24;NN=8.08;}
     
-    //Double_t SigmaSquare1 = (CC*CC) + ((SS*SS)/E1) + ((NN*NN)/(E1*E1));
-    //Double_t Sigma1 = TMath::Sqrt(SigmaSquare1);
-    //Double_t Reso1 = rand.Gaus(Mean, Sigma1);
+    Double_t SigmaSquare1 = (CC*CC) + ((SS*SS)/E1) + ((NN*NN)/(E1*E1));
+    Double_t Sigma1 = TMath::Sqrt(SigmaSquare1);
+    Double_t Reso1 = rand.Gaus(Mean, Sigma1);
     
-    //Double_t SigmaSquare2 = (CC*CC) + ((SS*SS)/E2) + ((NN*NN)/(E2*E2));
-    //Double_t Sigma2 = TMath::Sqrt(SigmaSquare2);
-    //Double_t Reso2 = rand.Gaus(Mean, Sigma2);
+    Double_t SigmaSquare2 = (CC*CC) + ((SS*SS)/E2) + ((NN*NN)/(E2*E2));
+    Double_t Sigma2 = TMath::Sqrt(SigmaSquare2);
+    Double_t Reso2 = rand.Gaus(Mean, Sigma2);
 
     //Double_t MultFac = 2.8;
 
    
-    //Reso1 = Reso1*MultFac;
-    //Reso2 = Reso2*MultFac;
+    Reso1 = Reso1*MultFac;
+    Reso2 = Reso2*MultFac;
     
-    //Double_t Pt1 = E1*Reso1;
-    //Double_t Pt2 = E2*Reso2;
+    Double_t Pt1 = E1*Reso1;
+    Double_t Pt2 = E2*Reso2;
 
     if(Pt1 > MinPtRAA) hJetPt_PbPb->Fill(Pt1);
-    //if(Pt2 > MinPtRAA) hJetPt_PbPb->Fill(Pt2);
+    if(Pt2 > MinPtRAA) hJetPt_PbPb->Fill(Pt2);
 
   } 
 
@@ -468,11 +500,13 @@ TH1D *Asym_DiJet_Centrality(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, 
     
     // Calculate DeltaPt
     Double_t dEdx = calDelta(Pt, Alpha, MM);
-    
+    //smearing dEdx
+    Double_t WW = 0.5;
+    Double_t dEdx1 = rand.Gaus(dEdx, dEdx*WW);
+    Double_t dEdx2 = rand.Gaus(dEdx, dEdx*WW);
     if(IsPP ==1 ){dEdx =0.0;} // no energy loss for pp
-
-    Double_t E1 = Pt-dEdx*d1;
-    Double_t E2 = Pt-dEdx*d2;
+    Double_t E1 = Pt-dEdx1*d1;
+    Double_t E2 = Pt-dEdx2*d2;
     
     // Smear Pt
     // Fix Resolution
@@ -487,7 +521,9 @@ TH1D *Asym_DiJet_Centrality(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, 
 
     
     if(IsPP==0){SS=1.24;NN=8.08;}
+    // true pp no smearing
     //if(IsPP==1){SS=0.95;NN=0.001;}
+    //pp smeared to match PbPb
     if(IsPP==1){SS=1.24;NN=8.08;}
     
     Double_t SigmaSquare1 = (CC*CC) + ((SS*SS)/E1) + ((NN*NN)/(E1*E1));
@@ -498,7 +534,7 @@ TH1D *Asym_DiJet_Centrality(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, 
     Double_t Sigma2 = TMath::Sqrt(SigmaSquare2);
     Double_t Reso2 = rand.Gaus(Mean, Sigma2);
 
-    Double_t MultFac = 2.8;
+    Double_t MultFac = 15.0;
 
     //Double_t MultFac = 1.0;
 
