@@ -169,9 +169,6 @@ TH1D *RAA_Jet_Centrality(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, Dou
 
     if(pTppMeas>MinPtRAA) hJetPt_PP->Fill(pTppMeas,2);
     
-
-
-
     // Generate position 
     Double_t rr = rand.Uniform(0.0,1.0)*RR;
     Double_t Phi = rand.Uniform(0.0,1.0)*2.0*pi;
@@ -504,9 +501,13 @@ TH1D *Asym_DiJet_Centrality(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, 
     // Calculate DeltaPt
     Double_t dEdx = calDelta(Pt, Alpha, MM);
     //smearing dEdx
+
     Double_t WW = 0.5;
+
     Double_t dEdx1 = rand.Gaus(dEdx, dEdx*WW);
     Double_t dEdx2 = rand.Gaus(dEdx, dEdx*WW);
+
+
     if(IsPP ==1 ){dEdx =0.0;} // no energy loss for pp
     Double_t E1 = Pt-dEdx1*d1;
     Double_t E2 = Pt-dEdx2*d2;

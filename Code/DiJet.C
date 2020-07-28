@@ -82,7 +82,7 @@ void DiJet()
   Double_t alpha = 0.55;
   Double_t MM = 0.2;
 
-  //JetRAACalculations(alpha, MM);
+  JetRAACalculations(alpha, MM);
   
   //Fit_Data_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV();
   //Fit_Data_CMS_JetYield_GammaPlusJet_GammaPt_PP8TeV();
