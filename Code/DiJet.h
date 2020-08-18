@@ -1,6 +1,3 @@
-
-// This is a comment
-
 #include <iostream>
 #include <sstream>
 #include <fstream>
