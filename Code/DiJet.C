@@ -89,8 +89,8 @@ void DiJet()
   
   DiJetAsymCalculations(alpha, MM);
 
-  //Z0JetCalculations(alpha, MM);
-  //GammaJetCalculations(alpha,MM);
+  Z0JetCalculations(alpha, MM);
+  GammaJetCalculations(alpha,MM);
   
 
   
