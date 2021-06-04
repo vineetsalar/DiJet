@@ -80,7 +80,7 @@ void DiJet()
   //Double_t MM = 0.4;
 
   Double_t alpha = 0.55;
-  Double_t MM = 0.2;
+  Double_t MM = 0.25;
 
   JetRAACalculations(alpha, MM);
   
