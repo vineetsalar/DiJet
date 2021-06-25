@@ -56,13 +56,13 @@ using namespace std;
 #include "DiJetDataFunctions.h"
 
 // Global Varaibles 
-const Double_t pi       = 3.14159265358979312 ;
+const Double_t pi = 3.14159265358979312 ;
 
 const Double_t Am = 208.0 ;
 const Double_t R0 = 1.1;
 const Double_t RA = R0*pow(Am, 1.0/3.0);
 
-
+const Double_t tauF = 15.0; 
 
 
 Double_t FindJetPtResolution(Double_t JetPt, Int_t IsPbPb)
@@ -124,7 +124,7 @@ TH1D *RAA_Jet_Centrality(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, Dou
 
   TH1D *hJetPt_PbPb = new TH1D(Form("hJetPt_PbPb_%d ",CentBin),Form("hJetPt_PbPb_%d ",CentBin), 25, 0.0, 500.0);
   hJetPt_PbPb->Sumw2();
-
+  
   TH1D *hJetPt_Ratio = new TH1D(Form("hJetPt_Ratio_%d ",CentBin),Form("hJetPt_Ratio_%d ",CentBin), 25, 0.0, 500.0);
   hJetPt_Ratio->Sumw2();
   
@@ -132,15 +132,14 @@ TH1D *RAA_Jet_Centrality(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, Dou
 
   Int_t MultEv = 2;
   const Int_t NEvents = MultEv*5000000;
-
   
   const Double_t MinPtRAA = 50.0;
   
   for(int i=0; i< NEvents; i++) {
-    
+
     // Generate Pt 
     Double_t Pt = JetPtFuncPP->GetRandom();
-    
+
     //pt resolution : pT dependent
     Double_t Mean = 1.0;
     Double_t CC = 0.061;
@@ -152,8 +151,7 @@ TH1D *RAA_Jet_Centrality(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, Dou
     Double_t Reso = rand.Gaus(Mean, Sigma);
     
     Double_t MultFac = 1.0;
-
-   
+  
     Reso = Reso*MultFac;
         
     //Double_t Pt1 = E1*Reso1;
@@ -180,18 +178,16 @@ TH1D *RAA_Jet_Centrality(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, Dou
     Double_t d1 = sqrt(RR*RR - rr*rr*sin(Phi1)) - rr*cos(Phi1);
     Double_t d2 = sqrt(RR*RR - rr*rr*sin(Phi2)) - rr*cos(Phi2); 
 
+    d1 = TMath::Min(d1, tauF);
+    d2 = TMath::Min(d2, tauF);
     
     // Calculate DeltaPt
     Double_t dEdx = calDelta(Pt, Alpha, MM);
-
     
     //dEdx = 0.0;
-
     //ELossFlacWidth relative 
-
     Double_t WW = 0.10;
     dEdx = rand.Gaus(dEdx, dEdx*WW);
-
 
     Double_t E1 = Pt-dEdx*d1;
     Double_t E2 = Pt-dEdx*d2;
@@ -346,7 +342,7 @@ TH1D *XJ_Z0Jet_Centrality(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, Do
   } 
 
 
-  const Double_t NumberZ0 = 536.0;
+  const Double_t NumberZ0 = 536.0*10.0;
 
   //hAsymmetryOut->Scale(1.0/hAsymmetryOut->Integral());
   hAsymmetryOut->Scale(1.0/hAsymmetryOut->GetBinWidth(0));
@@ -494,6 +490,9 @@ TH1D *Asym_DiJet_Centrality(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, 
     Double_t d1 = sqrt(RR*RR - rr*rr*sin(Phi1)) - rr*cos(Phi1);
     Double_t d2 = sqrt(RR*RR - rr*rr*sin(Phi2)) - rr*cos(Phi2); 
 
+    d1 = TMath::Min(d1, tauF);
+    d2 = TMath::Min(d2, tauF);
+    
     
     // Calculate DeltaPt
     Double_t dEdx = calDelta(Pt, Alpha, MM);
@@ -522,8 +521,10 @@ TH1D *Asym_DiJet_Centrality(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, 
 
     
     if(IsPP==0){SS=1.24;NN=8.08;}
+
     // true pp no smearing
     //if(IsPP==1){SS=0.95;NN=0.001;}
+
     //pp smeared to match PbPb
     if(IsPP==1){SS=1.24;NN=8.08;}
     
@@ -535,10 +536,8 @@ TH1D *Asym_DiJet_Centrality(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, 
     Double_t Sigma2 = TMath::Sqrt(SigmaSquare2);
     Double_t Reso2 = rand.Gaus(Mean, Sigma2);
 
-    Double_t MultFac = 15.0;
-
+    Double_t MultFac = 2.7;
     //Double_t MultFac = 1.0;
-
 
     Reso1 = Reso1*MultFac;
     Reso2 = Reso2*MultFac;
@@ -584,6 +583,8 @@ TH1D *Asym_DiJet_Pt(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, Double_t
   
   TH1D *hAsymmetryOut = new TH1D(Form("hAsymmetryOutPt_%d ",PtBin),Form("hAsymmetryOutPt_%d ",PtBin), 17, 0.0, 1.0);
   hAsymmetryOut->Sumw2();
+
+
   Double_t RR = RA*sqrt(NPart/(2*Am));
     
   const Int_t NEvents = 5000000;
@@ -614,8 +615,17 @@ TH1D *Asym_DiJet_Pt(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, Double_t
     Double_t d1 = sqrt(RR*RR - rr*rr*sin(Phi1)) - rr*cos(Phi1);
     Double_t d2 = sqrt(RR*RR - rr*rr*sin(Phi2)) - rr*cos(Phi2); 
 
-    
-    // Calculate DeltaPt
+    //Putting freeze out condition on d1 and d2
+    //d1eff = Min(d1, tauF)
+    //d2eff =Min(d2, tauF)
+    //tauF can be 5 fm
+
+    //d1 = TMath::Min(d1, tauF);
+    //d2 = TMath::Min(d2, tauF);
+
+
+
+    //Calculate DeltaPt
     Double_t dEdx = calDelta(Pt, Alpha, MM);
     
     if(IsPP ==1 ){dEdx =0.0;} // no energy loss for pp
@@ -638,7 +648,7 @@ TH1D *Asym_DiJet_Pt(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, Double_t
     if(IsPP==0){SS=1.24;NN=8.08;}
     if(IsPP==1){SS=0.95;NN=0.001;}
     
-    Double_t MultFac = 1.8; 
+    Double_t MultFac = 2.7; 
     Double_t SigmaSquare1 = (CC*CC) + ((SS*SS)/E1) + ((NN*NN)/(E1*E1));
     Double_t Sigma1 = TMath::Sqrt(SigmaSquare1);
     Double_t Reso1 = rand.Gaus(Mean, Sigma1);
@@ -649,9 +659,7 @@ TH1D *Asym_DiJet_Pt(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, Double_t
 
     Reso1 =  Reso1*MultFac;
     Reso2 =  Reso2*MultFac;
-    
-
-    
+        
     Double_t Pt1 = E1*Reso1;
     Double_t Pt2 = E2*Reso2;
     

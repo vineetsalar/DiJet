@@ -135,6 +135,14 @@ The total energy loss for a jet then can be calculated as
 \end{equation}
  
 
+We also calculate the nuclear modification factor R$_{AA}$ for Jets. ATLAS and CMS experiments
+measured the R$_{AA}$ for the jet at $\sqrt{s_{NN}}$ 2.76 TeV and 5.02 TeV respectively.
+To calculate the R$_{AA}$ first jet \pt is generated randomly from the fitted function of the
+measurement of the \pt in pp collisions. Then two jets of this \pt (above the threshold) are
+filled in a histogram. This histogram works as denominator of the R$_{AA}$ calculation. For the
+numerator energy loss is implemented as describe above and the ratio gives us the calculated R$_{AA}$.
+
+
 
 
 \begin{figure*}
@@ -145,18 +153,18 @@ The total energy loss for a jet then can be calculated as
 \end{figure*}
 
 
-
-
-
-
-
-
+\begin{figure*}
+  \includegraphics[width=0.99\textwidth]{Figures/Fig_RAA_Jet_Centrality_502TeV.pdf}
+  \caption{(Color online) Jet R$_{AA}$ as  a function of jet \pt in several collision centrality bins
+    measured by the CMS experiment at 5.02 TeV. The measurement is compared with our model calculations.}
+  \label{Fig:JetRAAPt_ATLAS_276TeV}
+\end{figure*}
 
 
 
 
 \begin{figure*}
-  \includegraphics[width=0.99\textwidth]{Figures/Fig_Asym_DiJet_Pt.pdf}
+  \includegraphics[width=0.5\textwidth]{Figures/Fig_Asym_DiJet_Pt.pdf}
   \caption{(Color online) DiJet asymmatry as a function of jet \pt measured by CMS experiment
     compared with our calculations.}
   \label{Fig:DiJetAsymPt}
@@ -165,7 +173,7 @@ The total energy loss for a jet then can be calculated as
 
 
 \begin{figure*}
-  \includegraphics[width=0.99\textwidth]{Figures/Fig_Asym_DiJet_Centrality.pdf}
+  \includegraphics[width=0.5\textwidth]{Figures/Fig_Asym_DiJet_Centrality.pdf}
   \caption{(Color online) DiJet asymmatry as a function of collision centrality
     measured by CMS compared with our calculations.}
   \label{Fig:DiJetAsymCent}

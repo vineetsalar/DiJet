@@ -79,23 +79,39 @@ void DiJet()
   //Double_t alpha = 0.55;
   //Double_t MM = 0.4;
 
-  Double_t alpha = 0.55;
-  Double_t MM = 0.25;
+  Double_t alpha = 0.45;
+  Double_t MM = 0.6;
 
+
+  DiJetAsymCalculations(alpha, MM);
   JetRAACalculations(alpha, MM);
-  
+  GammaJetCalculations(alpha,MM);
+  Z0JetCalculations(alpha, MM);
+
+
+  return;
+
+
   //Fit_Data_CMS_JetYield_Z0PlusJet_JetPt_PP7TeV();
   //Fit_Data_CMS_JetYield_GammaPlusJet_GammaPt_PP8TeV();
   
-  DiJetAsymCalculations(alpha, MM);
 
-  Z0JetCalculations(alpha, MM);
-  GammaJetCalculations(alpha,MM);
-  
 
+
+  /*
+    what is the M and alpha value in paper.
+    What is the value of resolution ?
+    
+
+We should implement freeze out.
+    d1eff = Min(d1, tauF)
+    d2eff =Min(d2, tauF)
+    tauF can be 5 fm
+    Also we can try to put expansion as in our quakonia paper as
+    R --> R+0.5 *a*tau^2   where a = 0.1
+  */
   
- 
-  
+   
 }//void DiJet
 
 
@@ -108,11 +124,11 @@ void JetRAACalculations(Double_t Alpha, Double_t MM)
   tb->SetNDC();
   tb->SetTextAlign(12); 
   tb->SetTextColor(1);
-  tb->SetTextSize(0.04);
+  tb->SetTextSize(0.06);
 
 
   //legend for the function
-  TLegend* leg= new TLegend(0.58,0.74,0.88,0.84);
+  TLegend* leg= new TLegend(0.61,0.69,0.84,0.84);
   leg->SetBorderSize(0);
   leg->SetFillStyle(1001);
   leg->SetFillColor(10);
@@ -174,15 +190,12 @@ void JetRAACalculations(Double_t Alpha, Double_t MM)
   
 
   
-
   
   // Canvas defined outside the centrality loop
   
   TCanvas *Canv_ATLAS_RAA_Cent_276TeV = new TCanvas("Canv_ATLAS_RAA_Cent_276TeV","Canv_ATLAS_RAA_Cent_276TeV",1600,800);//coulamXRows
   Canv_ATLAS_RAA_Cent_276TeV->Divide(4,2);
   char LatexChar[400];
-
-
 
   
   leg->AddEntry(grf_Data_ATLAS_RAA_Cent_276TeV[0],"ATLAS Data","P");
@@ -191,7 +204,7 @@ void JetRAACalculations(Double_t Alpha, Double_t MM)
   hist_Ghost_ATLAS_RAA_Cent_276TeV->SetMarkerStyle(20);
   hist_Ghost_ATLAS_RAA_Cent_276TeV->SetMarkerColor(2);
   leg->AddEntry(hist_Ghost_ATLAS_RAA_Cent_276TeV,"Calculated","P");
-  
+ 
   
   Double_t ResPhi = 0.3; // relative
   Double_t RespT = 0.28;  // Relative
@@ -210,8 +223,9 @@ void JetRAACalculations(Double_t Alpha, Double_t MM)
     grf_Data_ATLAS_RAA_Cent_276TeV[i]->Draw("AP");
     HistOutJetRAACent[i]->GetYaxis()->SetRangeUser(0.0,2.0);
     HistOutJetRAACent[i]->Draw("Psame");
-    //leg->Draw("same");
-    tb->DrawLatex(0.60,0.70,Form("Cent. %0d - %0d %%",CentBins[i],CentBins[i+1]));
+    tb->DrawLatex(0.20,0.80,Form("Cent. %0d - %0d %%",CentBins[i],CentBins[i+1]));
+    tb->DrawLatex(0.2, 0.74, Form("#alpha=%.2f",Alpha)) ;
+    tb->DrawLatex(0.2, 0.68, Form("m=%.2f",MM)) ;
     l1->Draw("same");
     leg->Draw("same");
  }
@@ -236,7 +250,9 @@ void JetRAACalculations(Double_t Alpha, Double_t MM)
     HistOutJetRAACent[i]->GetYaxis()->SetRangeUser(0.0,2.0);
     HistOutJetRAACent[i]->Draw("Psame");
     //leg->Draw("same");
-    tb->DrawLatex(0.60,0.70,Form("Cent. %0d - %0d %%",CentBins[i],CentBins[i+1]));
+    tb->DrawLatex(0.20,0.80,Form("Cent. %0d - %0d %%",CentBins[i],CentBins[i+1]));
+    tb->DrawLatex(0.2, 0.74, Form("#alpha=%.2f",Alpha)) ;
+    tb->DrawLatex(0.2, 0.68, Form("m=%.2f",MM)) ;
     l1->Draw("same");
     leg->Draw("same");
  }
@@ -251,10 +267,8 @@ void JetRAACalculations(Double_t Alpha, Double_t MM)
   
 }
 
-
 void DiJetAsymCalculations(Double_t Alpha, Double_t MM)
 {
-
 
   cout<<" DiJet Calculations "<<endl;
   //Latex for function
@@ -262,7 +276,7 @@ void DiJetAsymCalculations(Double_t Alpha, Double_t MM)
   tb->SetNDC();
   tb->SetTextAlign(12); 
   tb->SetTextColor(1);
-  tb->SetTextSize(0.04);
+  tb->SetTextSize(0.06);
 
   //Legend for function
 
@@ -280,10 +294,7 @@ void DiJetAsymCalculations(Double_t Alpha, Double_t MM)
   //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
   //++++++++++++++++++++++++++++++++++++++++++++++++ DiJet Calculations ++++++++++++++++++++++++++++++++++++++++++++++++++++++//
   //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
-
-
-
-
+  
   const Double_t lc_jet_00_rapidity_21_pp_276tev_dNdy = 1035.26;
   const Double_t lc_jet_00_rapidity_21_pp_276tev_nn = 9.17592;
   const Double_t lc_jet_00_rapidity_21_pp_276tev_pzero = 29.1867;
@@ -294,12 +305,10 @@ void DiJetAsymCalculations(Double_t Alpha, Double_t MM)
   fJetpp276tev->FixParameter(0, lc_jet_00_rapidity_21_pp_276tev_dNdy);
   fJetpp276tev->FixParameter(1, lc_jet_00_rapidity_21_pp_276tev_nn);
   fJetpp276tev->FixParameter(2, lc_jet_00_rapidity_21_pp_276tev_pzero);
-
-
+  
   fJetpp276tev->SetLineColor(1);
   fJetpp276tev->SetLineStyle(4);
   fJetpp276tev->SetLineWidth(2);
-
   
   new TCanvas ;
   gPad->SetTicks(1);
@@ -319,26 +328,31 @@ void DiJetAsymCalculations(Double_t Alpha, Double_t MM)
   Double_t ANPartCent[NCentBins]={NPartFunc(0,10),NPartFunc(10,20),NPartFunc(20,30),NPartFunc(30,50),NPartFunc(50,70),NPartFunc(70,100)};
   TH1D *HistOutJetAsymCent[NCentBins];
 
-
-  
+ 
   TGraphErrors *grf_Data_CMS_Aj_Cent_276TeV[NCentBins]={Data_CMS_Aj_Cent_00_10_276TeV(),Data_CMS_Aj_Cent_10_20_276TeV(),
 							Data_CMS_Aj_Cent_20_30_276TeV(),Data_CMS_Aj_Cent_30_50_276TeV(),
 							Data_CMS_Aj_Cent_50_70_276TeV(),Data_CMS_Aj_Cent_70_100_276TeV()};
   
-    
+
+
+
   // Canvas defined outside the centrality loop
-  
-  TCanvas *Canv_Asym_DiJet_Centrality = new TCanvas("Canv_Asym_DiJet_Centrality","Canv_Asym_DiJet_Centrality",1600,800);//coulamXRows
-  Canv_Asym_DiJet_Centrality->Divide(4,2);
+  TCanvas *Canv_Asym_DiJet_Centrality = new TCanvas("Canv_Asym_DiJet_Centrality","Canv_Asym_DiJet_Centrality",600,1200);//coulamXRows
+  Canv_Asym_DiJet_Centrality->Divide(2,4); // C X R
   char LatexChar[400];
 
+  leg->AddEntry(grf_Data_CMS_Aj_Cent_276TeV[0],"Data","P");
+  TH1D *hist_Ghost = new TH1D("hist_Ghost_1","hist_Ghost_1",100,0.0,500);
+  hist_Ghost->SetMarkerStyle(20);
+  hist_Ghost->SetMarkerColor(2);
+  leg->AddEntry(hist_Ghost,"Calculated","P");
+  
   
   for(int i=0; i < NCentBins; i++) {
     cout<<" calculation for centrality "<<CentBins[i]<<"  "<<CentBins[i+1]<<"% "<<endl;
     //TH1D *Asym_DiJet_Centrality(TF1 *JetPtFuncPP,  Double_t ResPt, Double_t ResPhi, Double_t Alpha, Double_t MM, Double_t NPart, Int_t CentBin, Int_t IsPP)
     HistOutJetAsymCent[i] = Asym_DiJet_Centrality(fJetpp276tev,  RespT, ResPhi, Alpha, MM, ANPartCent[i], i, 0);
-    //Int_t j = NCentBins -i;
-    //Canv_Asym_DiJet_Centrality->cd(j);
+
     Canv_Asym_DiJet_Centrality->cd(i+1);
     
     gPad->SetTopMargin(0.1);
@@ -348,8 +362,10 @@ void DiJetAsymCalculations(Double_t Alpha, Double_t MM)
     HistOutJetAsymCent[i]->GetYaxis()->SetRangeUser(0.0,0.32);
     HistOutJetAsymCent[i]->Draw("Psame");
     leg->Draw("same");
+   
     tb->DrawLatex(0.60,0.70,Form("Cent. %0d - %0d %%",CentBins[i],CentBins[i+1]));
-
+    tb->DrawLatex(0.2, 0.80, Form("#alpha=%.2f",Alpha)) ;
+    tb->DrawLatex(0.2, 0.74, Form("m=%.2f",MM)) ;
   }
 
   TGraphErrors *grf_Data_CMS_Aj_pp_276TeV = Data_CMS_Aj_pp_276TeV();
@@ -367,14 +383,12 @@ void DiJetAsymCalculations(Double_t Alpha, Double_t MM)
   Canv_Asym_DiJet_Centrality->SaveAs("Figure/OutFigures/Fig_Asym_DiJet_Centrality.pdf");
   Canv_Asym_DiJet_Centrality->SaveAs("Figure/OutFigures/Fig_Asym_DiJet_Centrality.png");
 
-
-  
+ 
 
   //=============================================== AJ as a function of pT =================================================//
-  
   const Int_t NPtBins = 6;
   const Int_t APtBins[NPtBins+1]={120,150,180,220,260,300,500};
-  
+
   TH1D *HistOutJetAsymPt[NPtBins];
 
   TGraphErrors *grf_Data_CMS_Aj_Pt_276TeV[NPtBins]={Data_CMS_Aj_Pt_120_150_276TeV(),Data_CMS_Aj_Pt_150_180_276TeV(),
@@ -382,16 +396,9 @@ void DiJetAsymCalculations(Double_t Alpha, Double_t MM)
 						    Data_CMS_Aj_Pt_260_300_276TeV(),Data_CMS_Aj_Pt_300_500_276TeV()};
   
 
-  TCanvas *Canv_Asym_DiJet_Pt = new TCanvas("Canv_Asym_DiJet_Pt","Canv_Asym_DiJet_Pt",1200,800);//coulamXRows
-  Canv_Asym_DiJet_Pt->Divide(3,2);
+  TCanvas *Canv_Asym_DiJet_Pt = new TCanvas("Canv_Asym_DiJet_Pt","Canv_Asym_DiJet_Pt",800,1200);//coulamXRows
+  Canv_Asym_DiJet_Pt->Divide(2,3);
   
-  leg->AddEntry(grf_Data_CMS_Aj_Pt_276TeV[0],"CMS Data","P");
-
-  TH1D *hist_Ghost = new TH1D("hist_Ghost_1","hist_Ghost_1",100,0.0,500);
-
-  hist_Ghost->SetMarkerStyle(20);
-  hist_Ghost->SetMarkerColor(2);
-  leg->AddEntry(hist_Ghost,"Calculated","P");
   
   for(int i=0; i< NPtBins; i++) {
     cout<<" calculation for Pt "<<APtBins[i]<<"  "<<APtBins[i+1]<<" GeV/c "<<endl;
@@ -411,6 +418,8 @@ void DiJetAsymCalculations(Double_t Alpha, Double_t MM)
     HistOutJetAsymPt[i]->Draw("EPsame");
     leg->Draw("same");
     tb->DrawLatex(0.60,0.70,Form("%0d < p_{T} < %0d",APtBins[i],APtBins[i+1]));
+    tb->DrawLatex(0.60, 0.64, Form("#alpha=%.2f",Alpha)) ;
+    tb->DrawLatex(0.60, 0.58, Form("m=%.2f",MM)) ;
     gPad->Update();
     
   }
@@ -444,8 +453,7 @@ void Z0JetCalculations(Double_t Alpha, Double_t MM)
   leg->SetTextSize(0.035);
 
 
-
-  
+ 
 
   // We will put resolution pT and resolution phi here as of now, ultimatily we should make function where we can choose
   // whether we want to use pT dependent or fixed resolution
@@ -509,7 +517,9 @@ void Z0JetCalculations(Double_t Alpha, Double_t MM)
   HistOutJetZ0_XJ_Cent_00_30->Draw("Psame");
   leg->Draw("same");
   tb->DrawLatex(0.75, 0.70, "0-30%") ;
-
+  tb->DrawLatex(0.3, 0.8, Form("#alpha=%.2f",Alpha)) ;
+  tb->DrawLatex(0.3, 0.74, Form("m=%.2f",MM)) ;
+ 
   // Calculating XJ for pp (with pT smearing)
   TH1D *HistOutJetZ0_XJ_PP = XJ_Z0Jet_Centrality(Func_Z0Jet_JetPt_7TeV,  RespT, ResPhi, Alpha, MM, NPart_FiveTeV(0,30), 1, 1) ;
 
@@ -523,7 +533,9 @@ void Z0JetCalculations(Double_t Alpha, Double_t MM)
   HistOutJetZ0_XJ_PP->Draw("Psame");
   leg->Draw("same");
   tb->DrawLatex(0.75, 0.70, "pp") ;
-
+  //tb->DrawLatex(0.2, 0.74, Form("#alpha=%.2f",Alpha)) ;
+  //tb->DrawLatex(0.2, 0.68, Form("m=%.2f",MM)) ;
+ 
   // Calculating XJ for pp wihout any pT smearing
   TH1D *HistOutJetZ0_XJ_PP_UnS = XJ_Z0Jet_Centrality(Func_Z0Jet_JetPt_7TeV,  RespT, ResPhi, Alpha, MM, NPart_FiveTeV(0,30), 2, 2) ;
 
@@ -538,6 +550,9 @@ void Z0JetCalculations(Double_t Alpha, Double_t MM)
   leg->Draw("same");
   tb->DrawLatex(0.50, 0.70, "pp (unsmeared)") ;
 
+  //tb->DrawLatex(0.2, 0.74, Form("#alpha=%.2f",Alpha)) ;
+  //tb->DrawLatex(0.2, 0.68, Form("m=%.2f",MM)) ;
+ 
   Canv_CMS_XJ_Z0Jet_502TeV->SaveAs("Figure/OutFigures/Fig_XJ_Z0Jet_Centrality.pdf");
   Canv_CMS_XJ_Z0Jet_502TeV->SaveAs("Figure/OutFigures/Fig_XJ_Z0Jet_Centrality.png");
 
@@ -568,7 +583,7 @@ void GammaJetCalculations(Double_t Alpha, Double_t MM)
   tb->SetNDC();
   tb->SetTextAlign(12); 
   tb->SetTextColor(1);
-  tb->SetTextSize(0.04);
+  tb->SetTextSize(0.06);
 
 
   //Function Legend
@@ -655,8 +670,10 @@ void GammaJetCalculations(Double_t Alpha, Double_t MM)
     HistOutJetGamma_XJ[i]->GetYaxis()->SetRangeUser(0.0,3.0);
     HistOutJetGamma_XJ[i]->Draw("Psame");
     leg->Draw("same");
-    tb->DrawLatex(0.60,0.70,Form("Cent. %0d - %0d %%",CentBins_XJ[i],CentBins_XJ[i+1]));
-    
+    tb->DrawLatex(0.60,0.70,Form("%0d - %0d %%",CentBins_XJ[i],CentBins_XJ[i+1]));
+    tb->DrawLatex(0.3, 0.80, Form("#alpha=%.2f",Alpha)) ;
+    tb->DrawLatex(0.3, 0.74, Form("m=%.2f",MM)) ;
+   
   }
   
   Canv_CMS_XJ_Cent_276TeV->cd(5);
