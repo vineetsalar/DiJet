@@ -7,9 +7,7 @@ void GammaJetCalculations(Double_t Alpha, Double_t MM);
 void JetRAACalculations(Double_t Alpha, Double_t MM);
 void TestDataFunctions();
 
-
-
-
+Double_t calDelta(Double_t pT, Double_t alpha, Double_t MM) ;
 
 void DiJet()
 {
@@ -81,12 +79,21 @@ void DiJet()
 
   Double_t alpha = 0.45;
   Double_t MM = 0.6;
+  //Double_t Cont = -30.0;
 
+  //GammaJetCalculations(alpha,MM);
+  //Z0JetCalculations(alpha, MM);
+  DiJetAsymCalculations(alpha,MM);
 
-  DiJetAsymCalculations(alpha, MM);
-  JetRAACalculations(alpha, MM);
-  GammaJetCalculations(alpha,MM);
-  Z0JetCalculations(alpha, MM);
+  // 2. 76 TeV
+  alpha = 0.45;
+  MM=0.6;
+  //Cont = -30.0
+  //alpha = 0.45;
+  //MM=0.30;
+  //JetRAACalculations(alpha,MM);
+
+  
 
 
   return;
@@ -219,8 +226,13 @@ void JetRAACalculations(Double_t Alpha, Double_t MM)
     
     gPad->SetTopMargin(0.1);
     gPad->SetBottomMargin(0.2);
+    grf_Data_ATLAS_RAA_Cent_276TeV[i]->GetXaxis()->SetTitle("p_{T} (GeV/c)");
+    grf_Data_ATLAS_RAA_Cent_276TeV[i]->GetYaxis()->SetTitle("R_{AA}");
+    grf_Data_ATLAS_RAA_Cent_276TeV[i]->GetXaxis()->CenterTitle();
+    grf_Data_ATLAS_RAA_Cent_276TeV[i]->GetYaxis()->CenterTitle();
     grf_Data_ATLAS_RAA_Cent_276TeV[i]->GetYaxis()->SetRangeUser(0.0,2.0);
     grf_Data_ATLAS_RAA_Cent_276TeV[i]->Draw("AP");
+
     HistOutJetRAACent[i]->GetYaxis()->SetRangeUser(0.0,2.0);
     HistOutJetRAACent[i]->Draw("Psame");
     tb->DrawLatex(0.20,0.80,Form("Cent. %0d - %0d %%",CentBins[i],CentBins[i+1]));
@@ -245,6 +257,12 @@ void JetRAACalculations(Double_t Alpha, Double_t MM)
     
     gPad->SetTopMargin(0.1);
     gPad->SetBottomMargin(0.2);
+
+    grf_Data_ATLAS_RAA_Cent_502TeV[i]->GetXaxis()->SetTitle("p_{T} (GeV/c)");
+    grf_Data_ATLAS_RAA_Cent_502TeV[i]->GetYaxis()->SetTitle("R_{AA}");
+    grf_Data_ATLAS_RAA_Cent_502TeV[i]->GetXaxis()->CenterTitle();
+    grf_Data_ATLAS_RAA_Cent_502TeV[i]->GetYaxis()->CenterTitle();
+
     grf_Data_ATLAS_RAA_Cent_502TeV[i]->GetYaxis()->SetRangeUser(0.0,2.0);
     grf_Data_ATLAS_RAA_Cent_502TeV[i]->Draw("AP");
     HistOutJetRAACent[i]->GetYaxis()->SetRangeUser(0.0,2.0);
