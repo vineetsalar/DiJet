@@ -11,8 +11,6 @@ Double_t calDelta(Double_t pT, Double_t alpha, Double_t MM) ;
 
 void DiJet()
 {
-
-
   gROOT->SetStyle("Plain");
   gStyle->SetPalette(1);
   gStyle->SetOptTitle(0);
@@ -60,11 +58,8 @@ void DiJet()
   tb->SetTextAlign(12); 
   tb->SetTextColor(1);
   tb->SetTextSize(0.04);
-
+  
   //TestDataFunctions();
-
-    
-
   //return;
   
   // Random distribution;
